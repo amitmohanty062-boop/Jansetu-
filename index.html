@@ -58,7 +58,7 @@
     <div class="max-w-7xl mx-auto flex items-center gap-2 overflow-hidden">
       <span class="bg-red-600 text-white font-bold text-[10px] px-2 py-0.5 rounded shrink-0 animate-pulse">LIVE RECRUITMENT</span>
       <marquee class="font-medium text-gray-800" scrollamount="5" id="jobTicker">
-        🌾 PM-KISAN 17th Installment Active | 👩 Subhadra Yojana & Lakhpati Didi SHG Loans Open | 🎓 NSP Scholarship Applications Live | 🏢 Udyam MSME Free Registration
+        🌾 PM-KISAN Installments Active | 👩 Subhadra Yojana & Lakhpati Didi SHG Loans Open | 🎓 NSP Scholarship Applications Live | 🏢 Udyam MSME Free Registration
       </marquee>
     </div>
   </div>
@@ -180,7 +180,6 @@
     let currentUser = JSON.parse(localStorage.getItem('jansetu_user') || 'null');
     let selectedService = null;
 
-    // EXPANDED DEMOGRAPHIC & SECTOR CATEGORIES
     const categories = [
       { id: 'all', name: { en: 'All Services', or: 'ସମସ୍ତ ସେବା', hi: 'सभी सेवाएं' }, icon: 'fa-layer-group' },
       { id: 'farmers', name: { en: 'Farmers (କୃଷକ)', or: 'କୃଷକ ସେବା', hi: 'किसान कल्याण' }, icon: 'fa-wheat-awn' },
@@ -192,9 +191,7 @@
       { id: 'labour', name: { en: 'Labor & Workers', or: 'ଶ୍ରମିକ ସେବା', hi: 'श्रमिक कल्याण' }, icon: 'fa-helmet-safety' }
     ];
 
-    // EXPANDED SERVICES DATABASE TAILORED FOR ALL CITIZEN GROUPS
     const servicesData = [
-      // FARMERS
       {
         id: "farm-pmkisan", category: "farmers",
         title: { en: "PM-KISAN Samman Nidhi & eKYC", or: "ପ୍ରଧାନମନ୍ତ୍ରୀ କିଷାନ ଓ eKYC", hi: "पीएम-किसान सम्मान निधि एवं eKYC" },
@@ -207,8 +204,6 @@
         desc: { en: "Up to 60% subsidy for installing solar irrigation pumps.", or: "ସୌର ଜଳସେଚନ ପମ୍ପ ପାଇଁ ୬୦% ସବସିଡି।", hi: "सोलर सिंचाई पंप स्थापना हेतु 60% सब्सिडी।" },
         fee: 39, officialUrl: "https://pmkusum.mnre.gov.in"
       },
-
-      // HOUSEWIVES & WOMEN
       {
         id: "women-subhadra", category: "women",
         title: { en: "Subhadra Yojana / Women Empowerment", or: "ସୁଭଦ୍ରା ଯୋଜନା ସହାୟତା", hi: "सुभद्रा योजना / महिला सशक्तिकरण" },
@@ -221,8 +216,6 @@
         desc: { en: "Interest-free business loans for Self Help Group (SHG) women.", or: "ମହିଳା ସ୍ୱୟଂ ସହାୟକ ଗୋଷ୍ଠୀ ପାଇଁ ବ୍ୟବସାୟିକ ଋଣ।", hi: "महिला स्वयं सहायता समूहों के लिए ऋण।" },
         fee: 39, officialUrl: "https://daynulm.gov.in"
       },
-
-      // STUDENTS & YOUTH
       {
         id: "edu-nsp", category: "students",
         title: { en: "National Scholarship Portal (NSP)", or: "ଜାତୀୟ ସ୍କୋଲାରସିପ୍ ପୋର୍ଟାଲ୍", hi: "नेशनल स्कॉलरशिप पोर्टल" },
@@ -235,8 +228,6 @@
         desc: { en: "Government-recognized digital skills certification for college youth.", or: "ସରକାରୀ ମାନ୍ୟତା ପ୍ରାପ୍ତ ଡିଜିଟାଲ୍ ତାଲିମ।", hi: "सरकारी मान्यता प्राप्त डिजिटल कौशल प्रशिक्षण।" },
         fee: 19, officialUrl: "https://futureskillsprime.in"
       },
-
-      // ENTREPRENEURS & MSME
       {
         id: "biz-udyam", category: "entrepreneurs",
         title: { en: "MSME Udyam Govt Registration", or: "ଉଦ୍ୟମ MSME ପଞ୍ଜୀକରଣ", hi: "एमएसएमई उद्यम सरकारी पंजीकरण" },
@@ -249,24 +240,18 @@
         desc: { en: "Collateral-free business loans up to ₹10 Lakhs for small setups.", or: "ବିନା ବନ୍ଧକରେ ₹୧୦ ଲକ୍ଷ ପର୍ଯ୍ୟନ୍ତ ବ୍ୟବସାୟିକ ଋଣ।", hi: "छोटे व्यवसायों के लिए ₹10 लाख तक गारंटी-मुक्त ऋण।" },
         fee: 49, officialUrl: "https://www.mudra.org.in"
       },
-
-      // JOBS
       {
         id: "job-osssc", category: "jobs",
         title: { en: "OSSSC State Recruitment Application", or: "OSSSC ରାଜ୍ୟ ନିଯୁକ୍ତି ଆବେଦନ", hi: "OSSSC राज्य भर्ती आवेदन" },
         desc: { en: "End-to-end photo resizing, document check & application filling.", or: "ଫଟୋ ସାଇଜ୍ ଏବଂ ଦସ୍ତାବେଜ ଯାଞ୍ଚ ସହ ଆବେଦନ।", hi: "फोटो रिसाइजिंग और दस्तावेज जांच के साथ आवेदन।" },
         fee: 49, officialUrl: "https://osssc.gov.in"
       },
-
-      // PENSIONS & SENIOR CITIZENS
       {
         id: "pen-nsap", category: "pensions",
         title: { en: "Old Age & Widow Pension (NSAP)", or: "ବାର୍ଦ୍ଧକ୍ୟ ଏବଂ ବିଧବା ପେନସନ", hi: "वृद्धावस्था एवं विधवा पेंशन" },
         desc: { en: "Monthly pension assistance for senior citizens & widows.", or: "ବରିଷ୍ଠ ନାଗରିକ ଏବଂ ବିଧବାଙ୍କ ପାଇଁ ମାସିକ ପେନସନ।", hi: "वरिष्ठ नागरिकों और विधवाओं के लिए मासिक पेंशन।" },
         fee: 29, officialUrl: "https://nsap.nic.in"
       },
-
-      // LABOR & WORKERS
       {
         id: "lab-eshram", category: "labour",
         title: { en: "e-Shram Card & Unorganized Labor Insurance", or: "ଇ-ଶ୍ରମ କାର୍ଡ ପଞ୍ଜୀକରଣ", hi: "ई-श्रम कार्ड एवं दुर्घटना बीमा" },
@@ -331,6 +316,10 @@
 
     function filterByCategory(catId) {
       currentCategory = catId;
+      const catObj = categories.find(c => c.id === catId);
+      if(catObj) {
+        document.getElementById('sectionHeading').innerText = catObj.name[currentLang] || catObj.name['en'];
+      }
       renderCategoryTabs();
       renderServices();
     }
@@ -347,8 +336,7 @@
 
     function changeLanguage(langKey) {
       currentLang = langKey;
-      renderCategoryTabs();
-      renderServices();
+      filterByCategory(currentCategory);
       updateAuthUI();
     }
 
@@ -358,7 +346,6 @@
 
     function openServiceModal(serviceId) {
       if(!currentUser) {
-        alert(currentLang === 'or' ? "ଆଗକୁ ବଢିବା ପାଇଁ ପ୍ରଥମେ ନାଗରିକ ପଞ୍ଜୀକରଣ କରନ୍ତୁ।" : "Please complete citizen registration first.");
         toggleModal('authModal');
         return;
       }
