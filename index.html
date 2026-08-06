@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JanSetu - National Citizen Assistance & Livelihood Portal</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans min-h-screen flex flex-col">
+
+  <header class="bg-indigo-900 text-white shadow-md sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-3">
+      <div class="flex items-center space-x-3">
+        <i class="fa-solid fa-hands-holding-child text-amber-400 text-3xl"></i>
+        <div>
+          <h1 class="text-xl font-bold tracking-wide">JanSetu</h1>
+          <p class="text-xs text-indigo-200" id="i18n-tagline">National Citizen & Livelihood Services</p>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2 flex-wrap">
+        <button onclick="toggleModal('trackModal')" class="bg-indigo-800 hover:bg-indigo-700 px-3 py-1.5 rounded-lg border border-indigo-700 text-xs font-semibold flex items-center gap-1.5 text-amber-400 shadow">
+          <i class="fa-solid fa-magnifying-glass-location"></i>
+          <span id="i18n-trackBtn">Track Status</span>
+        </button>
+
+        <div class="relative bg-indigo-800 text-white rounded-lg px-2 py-1 flex items-center gap-1.5 border border-indigo-700 text-xs">
+          <i class="fa-solid fa-globe text-amber-400"></i>
+          <select id="langSelect" onchange="changeLanguage(this.value)" class="bg-transparent font-bold focus:outline-none cursor-pointer text-xs">
+            <option value="en" class="text-gray-900">English</option>
+            <option value="or" class="text-gray-900">ଓଡ଼ିଆ (Odia)</option>
+            <option value="hi" class="text-gray-900">हिंदी (Hindi)</option>
+          </select>
+        </div>
+
+        <button id="authBtn" onclick="toggleModal('authModal')" class="bg-emerald-600 hover:bg-emerald-700 px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 text-white shadow">
+          <i class="fa-solid fa-user"></i>
+          <span id="i18n-regBtn">Citizen Registration</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <section class="bg-gradient-to-r from-indigo-800 to-indigo-900 text-white py-8 px-4 text-center">
+    <div class="max-w-3xl mx-auto space-y-3">
+      <h2 class="text-2xl sm:text-3xl font-extrabold" id="i18n-heroTitle">Complete Citizen Services & Doorstep Assistance</h2>
+      <p class="text-indigo-200 text-xs sm:text-sm" id="i18n-heroDesc">Free information across Farmers, Housewives, Students, Entrepreneurs, Jobs & Pensions. Optional assisted filing via WhatsApp Concierge.</p>
+      
+      <div class="bg-white p-2 rounded-xl shadow-lg flex items-center max-w-xl mx-auto text-gray-800">
+        <i class="fa-solid fa-magnifying-glass text-gray-400 ml-3 mr-2"></i>
+        <input type="text" id="searchInput" onkeyup="filterServices()" placeholder="Search PM-KISAN, Subhadra, Scholarships, Mudra Loan, Solar..." class="w-full bg-transparent text-sm focus:outline-none p-1">
+      </div>
+    </div>
+  </section>
+
+  <div class="bg-amber-50 border-y border-amber-200 p-2.5 text-xs text-amber-900">
+    <div class="max-w-7xl mx-auto flex items-center gap-2 overflow-hidden">
+      <span class="bg-red-600 text-white font-bold text-[10px] px-2 py-0.5 rounded shrink-0 animate-pulse">LIVE RECRUITMENT</span>
+      <marquee class="font-medium text-gray-800" scrollamount="5" id="jobTicker">
+        🌾 PM-KISAN 17th Installment Active | 👩 Subhadra Yojana & Lakhpati Didi SHG Loans Open | 🎓 NSP Scholarship Applications Live | 🏢 Udyam MSME Free Registration
+      </marquee>
+    </div>
+  </div>
+
+  <div class="max-w-7xl mx-auto px-4 pt-6 pb-2">
+    <div class="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none text-xs font-bold" id="categoryTabs">
+      </div>
+  </div>
+
+  <main class="max-w-7xl mx-auto px-4 py-4 flex-grow w-full">
+    <div class="flex items-center justify-between mb-4">
+      <h3 class="text-lg font-bold text-gray-800 flex items-center gap-2">
+        <i class="fa-solid fa-grid-2 text-indigo-600"></i>
+        <span id="sectionHeading">All Citizen Services & Schemes</span>
+      </h3>
+      <span class="text-xs bg-emerald-100 text-emerald-800 px-2.5 py-1 rounded-full font-bold">100% Free Info</span>
+    </div>
+
+    <div id="servicesGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      </div>
+  </main>
+
+  <div id="authModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl relative">
+      <button onclick="toggleModal('authModal')" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark text-xl"></i></button>
+      <h3 class="text-lg font-bold text-indigo-900 border-b pb-2 mb-4 flex items-center gap-2">
+        <i class="fa-solid fa-address-card text-emerald-600"></i> Citizen Profile
+      </h3>
+
+      <form onsubmit="saveUserProfile(event)" class="space-y-3 text-xs">
+        <div>
+          <label class="font-bold text-gray-700 block mb-1">Full Name</label>
+          <input type="text" id="reg_name" required placeholder="Enter full name" class="w-full border rounded-lg p-2.5 bg-gray-50 focus:outline-indigo-600">
+        </div>
+        <div>
+          <label class="font-bold text-gray-700 block mb-1">Mobile Number (WhatsApp Enabled)</label>
+          <input type="tel" id="reg_phone" required placeholder="10-digit mobile number" class="w-full border rounded-lg p-2.5 bg-gray-50 focus:outline-indigo-600">
+        </div>
+        <div>
+          <label class="font-bold text-gray-700 block mb-1">State / District</label>
+          <input type="text" id="reg_state" required placeholder="e.g. Odisha, Sambalpur" class="w-full border rounded-lg p-2.5 bg-gray-50 focus:outline-indigo-600">
+        </div>
+        <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-xl shadow transition">Save Profile</button>
+      </form>
+    </div>
+  </div>
+
+  <div id="serviceModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl relative">
+      <button onclick="toggleModal('serviceModal')" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark text-xl"></i></button>
+
+      <div class="text-center mb-4">
+        <span class="bg-amber-100 text-amber-800 text-[10px] font-bold px-2.5 py-1 rounded-full uppercase">Doorstep Assistance & Tracking</span>
+        <h3 id="modalServiceTitle" class="text-lg font-bold text-indigo-900 mt-2">Service Title</h3>
+      </div>
+
+      <div class="bg-indigo-50 p-4 rounded-xl border border-indigo-100 mb-4 space-y-2 text-xs">
+        <div class="flex justify-between text-gray-600">
+          <span>Information & Guidelines:</span>
+          <span class="font-bold text-emerald-600">FREE</span>
+        </div>
+        <div class="flex justify-between text-gray-600">
+          <span>Assisted Filing & Document Formatting:</span>
+          <span class="font-bold" id="modalFeeValue">₹39.00</span>
+        </div>
+        <div class="flex justify-between text-gray-600">
+          <span>WhatsApp Status & Direct Tracking:</span>
+          <span class="font-bold text-emerald-600">INCLUDED</span>
+        </div>
+        <div class="flex justify-between text-gray-900 border-t pt-2 text-sm font-extrabold">
+          <span>Total Platform Convenience Fee:</span>
+          <span class="text-emerald-700" id="modalTotalFee">₹39.00</span>
+        </div>
+      </div>
+
+      <div class="bg-gray-100 p-3 rounded-lg text-[10px] text-gray-600 mb-4">
+        <i class="fa-solid fa-circle-info text-indigo-600 mr-1"></i>
+        <span><strong>Transparency Guarantee:</strong> Official government forms can be submitted directly on official portals for free. JanSetu charges a nominal fee for doorstep guidance, document preparation, and tracking support.</span>
+      </div>
+
+      <button onclick="sendWhatsAppRequest()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-xl shadow flex items-center justify-center gap-2 text-xs">
+        <i class="fa-brands fa-whatsapp text-lg"></i>
+        <span>Proceed via WhatsApp Concierge</span>
+      </button>
+    </div>
+  </div>
+
+  <div id="trackModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl relative text-xs">
+      <button onclick="toggleModal('trackModal')" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark text-xl"></i></button>
+      <h3 class="text-lg font-bold text-indigo-900 border-b pb-2 mb-4 flex items-center gap-2">
+        <i class="fa-solid fa-magnifying-glass-location text-amber-500"></i> Track Application Status
+      </h3>
+
+      <div class="space-y-3">
+        <div>
+          <label class="font-bold text-gray-700 block mb-1">Enter Reference ID (e.g. JS-894215)</label>
+          <div class="flex gap-2">
+            <input type="text" id="trackRefInput" placeholder="JS-XXXXXX" class="w-full border rounded-lg p-2.5 bg-gray-50 focus:outline-indigo-600 uppercase">
+            <button onclick="checkTrackStatus()" class="bg-indigo-900 text-white px-4 rounded-lg font-bold">Search</button>
+          </div>
+        </div>
+
+        <div id="trackResultBox" class="hidden p-4 rounded-xl bg-gray-50 border mt-3 space-y-2">
+          <div class="flex justify-between font-bold text-gray-900">
+            <span>Status:</span>
+            <span class="text-indigo-600" id="trackStatusVal">In Review</span>
+          </div>
+          <p class="text-gray-500 text-[11px]">Your request has been received by our WhatsApp concierge team and is under processing.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const ADMIN_WHATSAPP = "919437572429";
+    let currentLang = 'en';
+    let currentCategory = 'all';
+    let currentUser = JSON.parse(localStorage.getItem('jansetu_user') || 'null');
+    let selectedService = null;
+
+    // EXPANDED DEMOGRAPHIC & SECTOR CATEGORIES
+    const categories = [
+      { id: 'all', name: { en: 'All Services', or: 'ସମସ୍ତ ସେବା', hi: 'सभी सेवाएं' }, icon: 'fa-layer-group' },
+      { id: 'farmers', name: { en: 'Farmers (କୃଷକ)', or: 'କୃଷକ ସେବା', hi: 'किसान कल्याण' }, icon: 'fa-wheat-awn' },
+      { id: 'women', name: { en: 'Housewives & Women', or: 'ମହିଳା କଲ୍ୟାଣ', hi: 'महिला कल्याण' }, icon: 'fa-person-dress' },
+      { id: 'students', name: { en: 'Students & Youth', or: 'ଛାତ୍ର ଏବଂ ଯୁବକ', hi: 'छात्र एवं युवा' }, icon: 'fa-user-graduate' },
+      { id: 'entrepreneurs', name: { en: 'Entrepreneurs & MSME', or: 'ଉଦ୍ୟୋଗୀ', hi: 'उद्यमी एवं व्यवसाय' }, icon: 'fa-chart-line' },
+      { id: 'jobs', name: { en: 'Job Alerts', or: 'ଚାକିରି ଖବର', hi: 'नौकरी अलर्ट' }, icon: 'fa-briefcase' },
+      { id: 'pensions', name: { en: 'Pensions & Senior Citizens', or: 'ପେନସନ', hi: 'पेंशन योजनाएं' }, icon: 'fa-person-cane' },
+      { id: 'labour', name: { en: 'Labor & Workers', or: 'ଶ୍ରମିକ ସେବା', hi: 'श्रमिक कल्याण' }, icon: 'fa-helmet-safety' }
+    ];
+
+    // EXPANDED SERVICES DATABASE TAILORED FOR ALL CITIZEN GROUPS
+    const servicesData = [
+      // FARMERS
+      {
+        id: "farm-pmkisan", category: "farmers",
+        title: { en: "PM-KISAN Samman Nidhi & eKYC", or: "ପ୍ରଧାନମନ୍ତ୍ରୀ କିଷାନ ଓ eKYC", hi: "पीएम-किसान सम्मान निधि एवं eKYC" },
+        desc: { en: "₹6,000 yearly direct income support for farmers + eKYC update.", or: "କୃଷକଙ୍କ ପାଇଁ ବାର୍ଷିକ ₹୬,୦୦୦ ସହାୟତା ଏବଂ eKYC।", hi: "किसानों हेतु ₹6,000 वार्षिक सहायता एवं eKYC।" },
+        fee: 29, officialUrl: "https://pmkisan.gov.in"
+      },
+      {
+        id: "farm-pmkusum", category: "farmers",
+        title: { en: "PM-KUSUM Solar Pump Subsidy", or: "ପ୍ରଧାନମନ୍ତ୍ରୀ କୁସୁମ ସୌର ପମ୍ପ", hi: "पीएम-कुसुम सोलर पंप सब्सिडी" },
+        desc: { en: "Up to 60% subsidy for installing solar irrigation pumps.", or: "ସୌର ଜଳସେଚନ ପମ୍ପ ପାଇଁ ୬୦% ସବସିଡି।", hi: "सोलर सिंचाई पंप स्थापना हेतु 60% सब्सिडी।" },
+        fee: 39, officialUrl: "https://pmkusum.mnre.gov.in"
+      },
+
+      // HOUSEWIVES & WOMEN
+      {
+        id: "women-subhadra", category: "women",
+        title: { en: "Subhadra Yojana / Women Empowerment", or: "ସୁଭଦ୍ରା ଯୋଜନା ସହାୟତା", hi: "सुभद्रा योजना / महिला सशक्तिकरण" },
+        desc: { en: "Financial assistance & DBT registration for eligible women.", or: "ମହିଳାମାନଙ୍କ ପାଇଁ ଆର୍ଥିକ ସହାୟତା ପଞ୍ଜୀକରଣ।", hi: "पात्र महिलाओं के लिए वित्तीय सहायता पंजीकरण।" },
+        fee: 29, officialUrl: "https://subhadra.odisha.gov.in"
+      },
+      {
+        id: "women-shg", category: "women",
+        title: { en: "Lakhpati Didi SHG Micro-Loans", or: "ଲକ୍ଷପତି ଦିଦି SHG ଋଣ", hi: "लखपति दीदी एसएचजी ऋण" },
+        desc: { en: "Interest-free business loans for Self Help Group (SHG) women.", or: "ମହିଳା ସ୍ୱୟଂ ସହାୟକ ଗୋଷ୍ଠୀ ପାଇଁ ବ୍ୟବସାୟିକ ଋଣ।", hi: "महिला स्वयं सहायता समूहों के लिए ऋण।" },
+        fee: 39, officialUrl: "https://daynulm.gov.in"
+      },
+
+      // STUDENTS & YOUTH
+      {
+        id: "edu-nsp", category: "students",
+        title: { en: "National Scholarship Portal (NSP)", or: "ଜାତୀୟ ସ୍କୋଲାରସିପ୍ ପୋର୍ଟାଲ୍", hi: "नेशनल स्कॉलरशिप पोर्टल" },
+        desc: { en: "Pre & Post-matric scholarship form submission for all categories.", or: "ସମସ୍ତ ବର୍ଗର ଛାତ୍ରଛାତ୍ରୀଙ୍କ ପାଇଁ ସ୍କୋଲାରସିପ୍।", hi: "सभी वर्गों के छात्रों के लिए छात्रवृत्ति आवेदन।" },
+        fee: 29, officialUrl: "https://scholarships.gov.in"
+      },
+      {
+        id: "edu-yuva", category: "students",
+        title: { en: "Free AI & Digital Skills Certification", or: "ମାଗଣା AI ଏବଂ ଡିଜିଟାଲ୍ ତାଲିମ", hi: "मुफ्त एआई एवं डिजिटल कौशल प्रमाणन" },
+        desc: { en: "Government-recognized digital skills certification for college youth.", or: "ସରକାରୀ ମାନ୍ୟତା ପ୍ରାପ୍ତ ଡିଜିଟାଲ୍ ତାଲିମ।", hi: "सरकारी मान्यता प्राप्त डिजिटल कौशल प्रशिक्षण।" },
+        fee: 19, officialUrl: "https://futureskillsprime.in"
+      },
+
+      // ENTREPRENEURS & MSME
+      {
+        id: "biz-udyam", category: "entrepreneurs",
+        title: { en: "MSME Udyam Govt Registration", or: "ଉଦ୍ୟମ MSME ପଞ୍ଜୀକରଣ", hi: "एमएसएमई उद्यम सरकारी पंजीकरण" },
+        desc: { en: "Official MSME certificate to qualify for subsidy loans & tenders.", or: "ବ୍ୟବସାୟିକ ଋଣ ଏବଂ ସବସିଡି ପାଇଁ MSME ସାର୍ଟିଫିକେଟ୍।", hi: "सब्सिडी ऋण और निविदाओं के लिए एमएसएमई प्रमाण पत्र।" },
+        fee: 49, officialUrl: "https://udyamregistration.gov.in"
+      },
+      {
+        id: "biz-mudra", category: "entrepreneurs",
+        title: { en: "PM Mudra Loan Application (Shishu/Kishor)", or: "ପ୍ରଧାନମନ୍ତ୍ରୀ ମୁଦ୍ରା ବ୍ୟବସାୟ ଋଣ", hi: "पीएम मुद्रा ऋण आवेदन" },
+        desc: { en: "Collateral-free business loans up to ₹10 Lakhs for small setups.", or: "ବିନା ବନ୍ଧକରେ ₹୧୦ ଲକ୍ଷ ପର୍ଯ୍ୟନ୍ତ ବ୍ୟବସାୟିକ ଋଣ।", hi: "छोटे व्यवसायों के लिए ₹10 लाख तक गारंटी-मुक्त ऋण।" },
+        fee: 49, officialUrl: "https://www.mudra.org.in"
+      },
+
+      // JOBS
+      {
+        id: "job-osssc", category: "jobs",
+        title: { en: "OSSSC State Recruitment Application", or: "OSSSC ରାଜ୍ୟ ନିଯୁକ୍ତି ଆବେଦନ", hi: "OSSSC राज्य भर्ती आवेदन" },
+        desc: { en: "End-to-end photo resizing, document check & application filling.", or: "ଫଟୋ ସାଇଜ୍ ଏବଂ ଦସ୍ତାବେଜ ଯାଞ୍ଚ ସହ ଆବେଦନ।", hi: "फोटो रिसाइजिंग और दस्तावेज जांच के साथ आवेदन।" },
+        fee: 49, officialUrl: "https://osssc.gov.in"
+      },
+
+      // PENSIONS & SENIOR CITIZENS
+      {
+        id: "pen-nsap", category: "pensions",
+        title: { en: "Old Age & Widow Pension (NSAP)", or: "ବାର୍ଦ୍ଧକ୍ୟ ଏବଂ ବିଧବା ପେନସନ", hi: "वृद्धावस्था एवं विधवा पेंशन" },
+        desc: { en: "Monthly pension assistance for senior citizens & widows.", or: "ବରିଷ୍ଠ ନାଗରିକ ଏବଂ ବିଧବାଙ୍କ ପାଇଁ ମାସିକ ପେନସନ।", hi: "वरिष्ठ नागरिकों और विधवाओं के लिए मासिक पेंशन।" },
+        fee: 29, officialUrl: "https://nsap.nic.in"
+      },
+
+      // LABOR & WORKERS
+      {
+        id: "lab-eshram", category: "labour",
+        title: { en: "e-Shram Card & Unorganized Labor Insurance", or: "ଇ-ଶ୍ରମ କାର୍ଡ ପଞ୍ଜୀକରଣ", hi: "ई-श्रम कार्ड एवं दुर्घटना बीमा" },
+        desc: { en: "₹2 Lakh accident insurance & national database registration for workers.", or: "ଶ୍ରମିକଙ୍କ ପାଇଁ ₹୨ ଲକ୍ଷ ଦୁର୍ଘଟଣା ବୀମା କାର୍ଡ।", hi: "श्रमिकों के लिए ₹2 लाख दुर्घटना बीमा सह पंजीकरण।" },
+        fee: 29, officialUrl: "https://eshram.gov.in"
+      }
+    ];
+
+    function renderCategoryTabs() {
+      const container = document.getElementById('categoryTabs');
+      container.innerHTML = '';
+      categories.forEach(cat => {
+        const btn = document.createElement('button');
+        const activeClass = cat.id === currentCategory 
+          ? 'bg-indigo-900 text-white shadow-md' 
+          : 'bg-white text-gray-700 hover:bg-gray-100 border border-gray-200';
+        btn.className = `px-3.5 py-2 rounded-xl flex items-center gap-1.5 shrink-0 transition ${activeClass}`;
+        btn.onclick = () => filterByCategory(cat.id);
+        btn.innerHTML = `<i class="fa-solid ${cat.icon}"></i> <span>${cat.name[currentLang] || cat.name['en']}</span>`;
+        container.appendChild(btn);
+      });
+    }
+
+    function renderServices(list = servicesData) {
+      const container = document.getElementById('servicesGrid');
+      container.innerHTML = '';
+
+      const filtered = currentCategory === 'all' 
+        ? list 
+        : list.filter(s => s.category === currentCategory);
+
+      filtered.forEach(s => {
+        const title = s.title[currentLang] || s.title['en'];
+        const desc = s.desc[currentLang] || s.desc['en'];
+
+        const card = document.createElement('div');
+        card.className = "bg-white rounded-2xl shadow-md p-5 border border-gray-100 flex flex-col justify-between hover:shadow-lg transition";
+        card.innerHTML = `
+          <div>
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-[10px] font-bold uppercase bg-indigo-50 text-indigo-700 px-2.5 py-1 rounded-md">${s.category}</span>
+              <span class="text-xs font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded">Verified Source</span>
+            </div>
+            <h4 class="font-bold text-gray-900 text-base mb-1.5">${title}</h4>
+            <p class="text-xs text-gray-600 mb-4">${desc}</p>
+          </div>
+
+          <div class="pt-3 border-t space-y-2">
+            <button onclick="openServiceModal('${s.id}')" class="w-full text-xs bg-indigo-900 hover:bg-indigo-800 text-white font-bold py-2.5 rounded-xl flex items-center justify-center gap-2 shadow">
+              <i class="fa-solid fa-bolt text-amber-400"></i>
+              <span>Assisted Filing via WhatsApp (₹${s.fee})</span>
+            </button>
+            
+            <a href="${s.officialUrl}" target="_blank" class="block w-full text-center text-[11px] text-gray-500 hover:text-indigo-600 hover:underline pt-1">
+              Apply Free Directly on Official Portal <i class="fa-solid fa-arrow-up-right-from-square text-[9px] ml-0.5"></i>
+            </a>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function filterByCategory(catId) {
+      currentCategory = catId;
+      renderCategoryTabs();
+      renderServices();
+    }
+
+    function filterServices() {
+      const q = document.getElementById('searchInput').value.toLowerCase();
+      const matched = servicesData.filter(s => {
+        const title = (s.title[currentLang] || s.title['en']).toLowerCase();
+        const desc = (s.desc[currentLang] || s.desc['en']).toLowerCase();
+        return title.includes(q) || desc.includes(q) || s.category.includes(q);
+      });
+      renderServices(matched);
+    }
+
+    function changeLanguage(langKey) {
+      currentLang = langKey;
+      renderCategoryTabs();
+      renderServices();
+      updateAuthUI();
+    }
+
+    function toggleModal(modalId) {
+      document.getElementById(modalId).classList.toggle('hidden');
+    }
+
+    function openServiceModal(serviceId) {
+      if(!currentUser) {
+        alert(currentLang === 'or' ? "ଆଗକୁ ବଢିବା ପାଇଁ ପ୍ରଥମେ ନାଗରିକ ପଞ୍ଜୀକରଣ କରନ୍ତୁ।" : "Please complete citizen registration first.");
+        toggleModal('authModal');
+        return;
+      }
+      selectedService = servicesData.find(s => s.id === serviceId);
+      const title = selectedService.title[currentLang] || selectedService.title['en'];
+      document.getElementById('modalServiceTitle').innerText = title;
+      document.getElementById('modalFeeValue').innerText = `₹${selectedService.fee}.00`;
+      document.getElementById('modalTotalFee').innerText = `₹${selectedService.fee}.00`;
+      toggleModal('serviceModal');
+    }
+
+    function saveUserProfile(e) {
+      e.preventDefault();
+      currentUser = {
+        name: document.getElementById('reg_name').value,
+        phone: document.getElementById('reg_phone').value,
+        state: document.getElementById('reg_state').value
+      };
+      localStorage.setItem('jansetu_user', JSON.stringify(currentUser));
+      updateAuthUI();
+      toggleModal('authModal');
+    }
+
+    function updateAuthUI() {
+      const btn = document.getElementById('i18n-regBtn');
+      if (currentUser) {
+        btn.innerText = `Hi, ${currentUser.name.split(' ')[0]}`;
+      } else {
+        btn.innerText = "Citizen Registration";
+      }
+    }
+
+    function sendWhatsAppRequest() {
+      const refId = "JS-" + Math.floor(100000 + Math.random() * 900000);
+      const title = selectedService.title[currentLang] || selectedService.title['en'];
+
+      const text = `*New Service Application - JanSetu*%0A%0A` +
+                   `*Ref ID:* ${refId}%0A` +
+                   `*Service:* ${title}%0A` +
+                   `*Group:* ${selectedService.category.toUpperCase()}%0A` +
+                   `*Applicant:* ${currentUser.name}%0A` +
+                   `*Mobile:* ${currentUser.phone}%0A` +
+                   `*District/State:* ${currentUser.state}%0A` +
+                   `*Fee:* ₹${selectedService.fee}%0A%0A` +
+                   `_I want doorstep assistance & filing verification._`;
+
+      window.open(`https://wa.me/${ADMIN_WHATSAPP}?text=${text}`, '_blank');
+      toggleModal('serviceModal');
+    }
+
+    function checkTrackStatus() {
+      const ref = document.getElementById('trackRefInput').value.trim();
+      if(ref.length > 3) {
+        document.getElementById('trackResultBox').classList.remove('hidden');
+      } else {
+        alert("Please enter a valid Reference ID");
+      }
+    }
+
+    window.onload = () => {
+      renderCategoryTabs();
+      renderServices();
+      updateAuthUI();
+    };
+  </script>
+</body>
+</html>
