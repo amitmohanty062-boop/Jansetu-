@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>JanSetu - National Citizen Governance & Utility Bridge</title>
+  <meta name="description" content="Access free government schemes, legal rights guidance, e-FIRs, SAMS admissions, and utility tools directly from your phone." />
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+  <style>
+    /* Chatbot Floating Animation */
+    @keyframes pulse-ring {
+      0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.7); }
+      70% { transform: scale(1); box-shadow: 0 0 0 12px rgba(37, 99, 235, 0); }
+      100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(37, 99, 235, 0); }
+    }
+    .chat-btn { animation: pulse-ring 2s infinite; }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 flex flex-col min-h-screen">
+
+  <header class="bg-blue-900 text-white sticky top-0 z-40 shadow-md">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
+      <div class="flex items-center space-x-3">
+        <div class="bg-amber-500 text-blue-950 font-black text-xl px-3 py-1 rounded-lg">JS</div>
+        <div>
+          <h1 class="text-xl font-bold tracking-tight">JanSetu <span class="text-xs bg-blue-800 text-amber-300 px-2 py-0.5 rounded-full border border-amber-400">MVP</span></h1>
+          <p class="text-xs text-blue-200 hidden sm:block">National Citizen Governance & Utility Bridge</p>
+        </div>
+      </div>
+      
+      <div class="flex items-center space-x-2 text-sm bg-blue-800 px-3 py-1.5 rounded-lg border border-blue-700">
+        <i class="fa-solid fa-language text-amber-400"></i>
+        <span>English / ଓଡ଼ିଆ / हिंदी</span>
+      </div>
+    </div>
+  </header>
+
+  <section class="bg-gradient-to-b from-blue-900 to-blue-800 text-white py-8 px-4 text-center">
+    <div class="max-w-3xl mx-auto">
+      <h2 class="text-2xl sm:text-3xl font-extrabold mb-2">Access Public Services & Civic Tools in 1 Click</h2>
+      <p class="text-blue-100 text-sm mb-6">100% Free, Official Redirects & Browser-Based Document Utilities</p>
+      
+      <div class="relative max-w-xl mx-auto">
+        <input type="text" id="searchInput" onkeyup="searchServices()" placeholder="Search services (e.g., Subhadra, SAMS, Mandi, GST, e-FIR)..." 
+               class="w-full pl-10 pr-4 py-3 rounded-full text-slate-900 focus:outline-none focus:ring-4 focus:ring-amber-400 shadow-lg" />
+        <i class="fa-solid fa-magnifying-glass absolute left-4 top-3.5 text-slate-400"></i>
+      </div>
+    </div>
+  </section>
+
+  <main class="max-w-7xl mx-auto px-4 py-8 flex-grow">
+
+    <div class="flex flex-wrap gap-2 justify-center mb-8">
+      <button onclick="filterCategory('all')" class="cat-btn bg-blue-900 text-white px-4 py-2 rounded-full text-sm font-semibold hover:bg-blue-800 transition shadow-sm">🌐 All Services</button>
+      <button onclick="filterCategory('farmers')" class="cat-btn bg-white text-slate-700 border border-slate-300 px-4 py-2 rounded-full text-sm font-semibold hover:bg-slate-100 transition shadow-sm">🌾 Farmers & Agri</button>
+      <button onclick="filterCategory('women')" class="cat-btn bg-white text-slate-700 border border-slate-300 px-4 py-2 rounded-full text-sm font-semibold hover:bg-slate-100 transition shadow-sm">👩 Women Welfare</button>
+      <button onclick="filterCategory('students')" class="cat-btn bg-white text-slate-700 border border-slate-300 px-4 py-2 rounded-full text-sm font-semibold hover:bg-slate-100 transition shadow-sm">🎓 Students & Youth</button>
+      <button onclick="filterCategory('legal')" class="cat-btn bg-white text-slate-700 border border-slate-300 px-4 py-2 rounded-full text-sm font-semibold hover:bg-slate-100 transition shadow-sm">⚖️ Legal & Grievance</button>
+      <button onclick="filterCategory('tax')" class="cat-btn bg-white text-slate-700 border border-slate-300 px-4 py-2 rounded-full text-sm font-semibold hover:bg-slate-100 transition shadow-sm">💼 Business & GST</button>
+    </div>
+
+    <div id="servicesGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      </div>
+
+    <hr class="my-12 border-slate-200" />
+
+    <section class="max-w-3xl mx-auto">
+      <h2 class="text-2xl font-bold text-center text-blue-950 mb-6">❓ Frequently Asked Questions (FAQ)</h2>
+      <div class="space-y-4" id="faqAccordion">
+
+        <details class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm cursor-pointer group">
+          <summary class="font-bold text-slate-800 flex justify-between items-center group-hover:text-blue-900">
+            Is JanSetu free to use for all citizens?
+            <i class="fa-solid fa-chevron-down text-xs text-slate-400"></i>
+          </summary>
+          <p class="mt-3 text-sm text-slate-600 leading-relaxed">
+            Yes! JanSetu is a 100% free public civic bridge. We do not charge any fee for accessing government links, tracking scheme status, or using built-in utility tools.
+          </p>
+        </details>
+
+        <details class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm cursor-pointer group">
+          <summary class="font-bold text-slate-800 flex justify-between items-center group-hover:text-blue-900">
+            Is my personal data safe when using the Photo Resizer or Resume Builder?
+            <i class="fa-solid fa-chevron-down text-xs text-slate-400"></i>
+          </summary>
+          <p class="mt-3 text-sm text-slate-600 leading-relaxed">
+            Yes, completely. All image compression and document generation happen 100% locally inside your phone/computer browser memory. Nothing is stored or uploaded to any central server.
+          </p>
+        </details>
+
+        <details class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm cursor-pointer group">
+          <summary class="font-bold text-slate-800 flex justify-between items-center group-hover:text-blue-900">
+            Can I register GST or file returns without hiring a CA?
+            <i class="fa-solid fa-chevron-down text-xs text-slate-400"></i>
+          </summary>
+          <p class="mt-3 text-sm text-slate-600 leading-relaxed">
+            Yes. The Indian tax system allows self-assessment. Anyone with an Aadhaar-linked mobile number can register a new GSTIN and file monthly GSTR-1/GSTR-3B returns directly using free Aadhaar OTP verification.
+          </p>
+        </details>
+
+      </div>
+    </section>
+  </main>
+
+  <footer class="bg-slate-900 text-slate-400 text-center py-6 px-4 text-xs mt-auto">
+    <div class="max-w-7xl mx-auto space-y-2">
+      <p>JanSetu Platform — Built to bridge citizens with public governance & essential digital utilities.</p>
+      <p class="text-slate-500">Disclaimer: JanSetu is an independent public utility platform providing direct, verified redirection to official government portals.</p>
+    </div>
+  </footer>
+
+  <div class="fixed bottom-5 right-5 z-50">
+    <div id="chatWindow" class="hidden bg-white w-80 sm:w-96 rounded-2xl shadow-2xl border border-slate-200 overflow-hidden mb-3 transition-all">
+      <div class="bg-blue-900 text-white p-4 flex justify-between items-center">
+        <div class="flex items-center space-x-2">
+          <i class="fa-solid fa-robot text-amber-400 text-lg"></i>
+          <div>
+            <h3 class="font-bold text-sm">JanSetu AI Assistant</h3>
+            <p class="text-[10px] text-blue-200">Online | Ask in English, Odia, or Hindi</p>
+          </div>
+        </div>
+        <button onclick="toggleChat()" class="text-white hover:text-amber-300 text-lg"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      
+      <div id="chatMessages" class="p-4 h-64 overflow-y-auto space-y-3 text-xs bg-slate-50">
+        <div class="bg-blue-100 text-blue-950 p-3 rounded-lg max-w-[85%]">
+          👋 Namaskar! I am your JanSetu Assistant. How can I help you today?
+          <div class="mt-2 flex flex-wrap gap-1">
+            <button onclick="quickAsk('subhadra')" class="bg-white border border-blue-300 text-blue-900 px-2 py-1 rounded text-[10px]">Subhadra Status</button>
+            <button onclick="quickAsk('sams')" class="bg-white border border-blue-300 text-blue-900 px-2 py-1 rounded text-[10px]">SAMS Odisha</button>
+            <button onclick="quickAsk('mandi')" class="bg-white border border-blue-300 text-blue-900 px-2 py-1 rounded text-[10px]">Mandi Prices</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-2 border-t border-slate-200 flex gap-1 bg-white">
+        <input type="text" id="chatInput" placeholder="Type your query..." class="flex-grow px-3 py-2 text-xs border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600" onkeypress="if(event.key==='Enter') sendChatMessage()" />
+        <button onclick="sendChatMessage()" class="bg-blue-900 text-white px-3 py-2 rounded-lg text-xs hover:bg-blue-800"><i class="fa-solid fa-paper-plane"></i></button>
+      </div>
+    </div>
+
+    <button onclick="toggleChat()" class="chat-btn bg-blue-900 text-amber-400 p-4 rounded-full shadow-2xl flex items-center justify-center text-xl hover:bg-blue-800 transition float-right">
+      <i class="fa-solid fa-headset"></i>
+    </button>
+  </div>
+
+  <script>
+    // Services Database
+    const servicesData = [
+      {
+        id: "farm-mandi-msp",
+        category: "farmers",
+        title: "Daily Mandi Prices (APMC) & MSP Hub",
+        desc: "Check live crop rates across local Odisha mandis (Agmarknet) and track government MSP for Paddy, Pulses & Oilseeds.",
+        url: "https://agmarknet.gov.in",
+        badge: "Agri & Mandi"
+      },
+      {
+        id: "women-subhadra",
+        category: "women",
+        title: "Subhadra Yojana & Mission Shakti Portal",
+        desc: "Verify eligibility, apply for Subhadra Yojana, track DBT payment status, and access SHG loan assistance.",
+        url: "https://subhadra.odisha.gov.in",
+        badge: "Women Welfare"
+      },
+      {
+        id: "edu-sams",
+        category: "students",
+        title: "SAMS Odisha e-Admissions (+2, +3, ITI)",
+        desc: "Single portal for college admissions (CAF), merit selection lists, Medhabruti, and State Scholarships.",
+        url: "https://www.samsodisha.gov.in",
+        badge: "Admissions"
+      },
+      {
+        id: "legal-cpgrams",
+        category: "legal",
+        title: "CPGRAMS Central Public Grievance Portal",
+        desc: "File complaints directly to Central & State government departments and track real-time redressal.",
+        url: "https://pgportal.gov.in",
+        badge: "Grievance"
+      },
+      {
+        id: "legal-efir",
+        category: "legal",
+        title: "Online e-FIR & Cyber Crime Blocking",
+        desc: "Register online cyber crime complaints and block stolen mobile phones instantly via CEIR.",
+        url: "https://cybercrime.gov.in",
+        badge: "Rights & Safety"
+      },
+      {
+        id: "tax-gst-self",
+        category: "tax",
+        title: "Self GST Registration & Return Filing",
+        desc: "Apply for a new GSTIN and file monthly GSTR-1/GSTR-3B returns directly using Aadhaar OTP (No CA fee).",
+        url: "https://www.gst.gov.in",
+        badge: "Tax & MSME"
+      }
+    ];
+
+    // Render Cards Function
+    function renderServices(data) {
+      const grid = document.getElementById('servicesGrid');
+      grid.innerHTML = '';
+      
+      if (data.length === 0) {
+        grid.innerHTML = `<div class="col-span-full text-center py-10 text-slate-500">No matching services found.</div>`;
+        return;
+      }
+
+      data.forEach(item => {
+        const card = document.createElement('div');
+        card.className = "bg-white rounded-2xl p-6 border border-slate-200 shadow-sm hover:shadow-md transition flex flex-col justify-between";
+        card.innerHTML = `
+          <div>
+            <div class="flex justify-between items-start mb-3">
+              <span class="bg-blue-100 text-blue-900 text-xs font-bold px-2.5 py-1 rounded-full">${item.badge}</span>
+              <i class="fa-solid fa-arrow-up-right-from-square text-slate-400 text-xs"></i>
+            </div>
+            <h3 class="font-bold text-slate-900 text-lg mb-2">${item.title}</h3>
+            <p class="text-slate-600 text-xs leading-relaxed mb-4">${item.desc}</p>
+          </div>
+          <a href="${item.url}" target="_blank" class="block text-center bg-blue-900 hover:bg-blue-800 text-white font-semibold text-xs py-2.5 rounded-xl transition">
+            Access Portal Directly <i class="fa-solid fa-chevron-right ml-1 text-[10px]"></i>
+          </a>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    // Category Filtering
+    function filterCategory(cat) {
+      if (cat === 'all') {
+        renderServices(servicesData);
+      } else {
+        const filtered = servicesData.filter(s => s.category === cat);
+        renderServices(filtered);
+      }
+    }
+
+    // Live Search
+    function searchServices() {
+      const query = document.getElementById('searchInput').value.toLowerCase();
+      const filtered = servicesData.filter(s => 
+        s.title.toLowerCase().includes(query) || 
+        s.desc.toLowerCase().includes(query)
+      );
+      renderServices(filtered);
+    }
+
+    // Toggle Chatbot
+    function toggleChat() {
+      const win = document.getElementById('chatWindow');
+      win.classList.toggle('hidden');
+    }
+
+    // Chatbot logic
+    function sendChatMessage() {
+      const input = document.getElementById('chatInput');
+      const text = input.value.trim();
+      if (!text) return;
+
+      appendMessage('user', text);
+      input.value = '';
+
+      setTimeout(() => {
+        botReply(text.toLowerCase());
+      }, 500);
+    }
+
+    function quickAsk(key) {
+      if (key === 'subhadra') botReply('subhadra');
+      if (key === 'sams') botReply('sams');
+      if (key === 'mandi') botReply('mandi');
+    }
+
+    function appendMessage(sender, msg) {
+      const chatBox = document.getElementById('chatMessages');
+      const div = document.createElement('div');
+      if (sender === 'user') {
+        div.className = "bg-amber-100 text-slate-900 p-3 rounded-lg max-w-[85%] ml-auto text-right";
+      } else {
+        div.className = "bg-blue-100 text-blue-950 p-3 rounded-lg max-w-[85%]";
+      }
+      div.innerText = msg;
+      chatBox.appendChild(div);
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    function botReply(query) {
+      let reply = "I am here to guide you! You can filter services using the buttons above or search directly for your required scheme.";
+      
+      if (query.includes('subhadra')) {
+        reply = "For Subhadra Yojana, click on the 'Women Welfare' tab above to check eligibility and track your ₹5,000 DBT installment status directly on the official portal.";
+      } else if (query.includes('sams') || query.includes('college') || query.includes('admission')) {
+        reply = "SAMS Odisha e-Admissions for +2, +3, and ITI courses can be accessed under the 'Students & Youth' tab above.";
+      } else if (query.includes('mandi') || query.includes('crop') || query.includes('farmer')) {
+        reply = "Check live APMC mandi prices and government MSP rates under the 'Farmers & Agri' tab.";
+      } else if (query.includes('fir') || query.includes('police') || query.includes('complaint')) {
+        reply = "To register e-FIRs or public grievances, navigate to the 'Legal & Grievance' tab to access CPGRAMS and CEIR portals.";
+      }
+
+      appendMessage('bot', reply);
+    }
+
+    // Initial Render
+    renderServices(servicesData);
+  </script>
+</body>
+</html>
