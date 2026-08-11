@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JanSetu App - Universal Citizen & Opportunity Gateway</title>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#1a365d">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+    body { background-color: #f4f6f9; color: #333; padding-bottom: 30px; }
+    header { background: linear-gradient(135deg, #1a365d 0%, #2b6cb0 100%); color: white; padding: 20px 15px; text-align: center; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+    header h1 { font-size: 24px; margin-bottom: 4px; }
+    header p { font-size: 13px; opacity: 0.9; }
+    
+    .container { max-width: 900px; margin: 0 auto; padding: 15px; }
+    
+    /* Search & Wizard Bar */
+    .search-box { width: 100%; padding: 12px 15px; font-size: 15px; border: 2px solid #cbd5e0; border-radius: 8px; margin-bottom: 15px; outline: none; transition: 0.3s; }
+    .search-box:focus { border-color: #3182ce; box-shadow: 0 0 5px rgba(49,130,206,0.3); }
+
+    .wizard-card { background: #ebf8ff; border-left: 4px solid #3182ce; padding: 12px 15px; border-radius: 6px; margin-bottom: 20px; }
+    .wizard-card h3 { font-size: 14px; color: #2b6cb0; margin-bottom: 8px; }
+    .wizard-buttons { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 5px; }
+    .wizard-btn { background: #white; border: 1px solid #3182ce; color: #2b6cb0; padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: bold; cursor: pointer; white-space: nowrap; }
+    .wizard-btn.active, .wizard-btn:hover { background: #3182ce; color: white; }
+
+    /* Categories Tabs */
+    .cat-tabs { display: flex; gap: 8px; overflow-x: auto; margin-bottom: 20px; padding-bottom: 5px; }
+    .tab-btn { background: #e2e8f0; color: #4a5568; border: none; padding: 8px 14px; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; white-space: nowrap; }
+    .tab-btn.active { background: #1a365d; color: white; }
+
+    /* Services Grid */
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 15px; }
+    .card { background: white; border-radius: 10px; padding: 15px; border: 1px solid #e2e8f0; box-shadow: 0 2px 4px rgba(0,0,0,0.04); display: flex; flex-direction: column; justify-content: space-between; }
+    .card-tag { font-size: 10px; font-weight: bold; padding: 2px 6px; border-radius: 4px; display: inline-block; margin-bottom: 8px; width: fit-content; }
+    .tag-govt { background: #feebc8; color: #c05621; }
+    .tag-job { background: #ebf8ff; color: #2b6cb0; }
+    .tag-doc { background: #e6fffa; color: #234e52; }
+    .tag-edu { background: #faf5ff; color: #6b46c1; }
+
+    .card h4 { font-size: 16px; margin-bottom: 6px; color: #2d3748; }
+    .card p { font-size: 12px; color: #718096; margin-bottom: 12px; line-height: 1.4; }
+    .card a { text-decoration: none; background: #3182ce; color: white; text-align: center; padding: 8px; border-radius: 6px; font-size: 13px; font-weight: bold; display: block; }
+    .card a:hover { background: #2b6cb0; }
+
+    footer { text-align: center; margin-top: 30px; font-size: 12px; color: #a0aec0; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>JanSetu App</h1>
+    <p>Universal Citizen Portal & Opportunity Gateway</p>
+  </header>
+
+  <div class="container">
+
+    <input type="text" id="searchInput" class="search-box" placeholder="🔍 Search schemes, jobs, Aadhaar, SAMS, Subhadra, Mandi..." onkeyup="filterServices()">
+
+    <div class="wizard-card">
+      <h3>🎯 Find Services For Me:</h3>
+      <div class="wizard-buttons">
+        <button class="wizard-btn active" onclick="applyWizard('all')">Show All</button>
+        <button class="wizard-btn" onclick="applyWizard('jobseeker')">💼 Job Seekers</button>
+        <button class="wizard-btn" onclick="applyWizard('student')">🎓 Students</button>
+        <button class="wizard-btn" onclick="applyWizard('farmer')">🌾 Farmers</button>
+        <button class="wizard-btn" onclick="applyWizard('business')">🏢 MSME / Startup</button>
+        <button class="wizard-btn" onclick="applyWizard('citizen')">🪪 Documents & IDs</button>
+      </div>
+    </div>
+
+    <div class="cat-tabs">
+      <button class="tab-btn active" onclick="filterTab('all', this)">All Services</button>
+      <button class="tab-btn" onclick="filterTab('jobs', this)">💼 Jobs & Careers</button>
+      <button class="tab-btn" onclick="filterTab('schemes', this)">🏛️ Govt Schemes</button>
+      <button class="tab-btn" onclick="filterTab('docs', this)">🪪 IDs & Documents</button>
+      <button class="tab-btn" onclick="filterTab('edu', this)">🎓 Education & SAMS</button>
+      <button class="tab-btn" onclick="filterTab('msme', this)">🏢 Business & Grants</button>
+    </div>
+
+    <div class="grid" id="servicesGrid">
+
+      <div class="card" data-cat="jobs" data-wizard="jobseeker">
+        <div>
+          <span class="card-tag tag-job">PRIVATE RECRUITMENT</span>
+          <h4>Naukri.com Search</h4>
+          <p>Find private jobs in IT, Healthcare, Banking, and Management across Odisha & India.</p>
+        </div>
+        <a href="https://www.naukri.com/jobs-in-odisha" target="_blank">Search Jobs on Naukri ↗</a>
+      </div>
+
+      <div class="card" data-cat="jobs" data-wizard="jobseeker">
+        <div>
+          <span class="card-tag tag-job">GOVT OF INDIA</span>
+          <h4>National Career Service (NCS)</h4>
+          <p>Official job portal by Ministry of Labour & Employment for all skill levels.</p>
+        </div>
+        <a href="https://www.ncs.gov.in" target="_blank">Open NCS Portal ↗</a>
+      </div>
+
+      <div class="card" data-cat="jobs" data-wizard="jobseeker">
+        <div>
+          <span class="card-tag tag-govt">ODISHA GOVT</span>
+          <h4>OSSSC Recruitment</h4>
+          <p>Apply for Revenue Inspector, Amin, Forest Guard, Nursing Officer, and Class-III posts.</p>
+        </div>
+        <a href="https://www.osssc.gov.in" target="_blank">Visit OSSSC Portal ↗</a>
+      </div>
+
+      <div class="card" data-cat="jobs" data-wizard="jobseeker">
+        <div>
+          <span class="card-tag tag-govt">ODISHA GOVT</span>
+          <h4>OPSC Civil Services</h4>
+          <p>Official portal for OAS, OPS, and State Group A & B Civil Services vacancies.</p>
+        </div>
+        <a href="https://www.opsc.gov.in" target="_blank">Visit OPSC Portal ↗</a>
+      </div>
+
+      <div class="card" data-cat="schemes" data-wizard="citizen">
+        <div>
+          <span class="card-tag tag-govt">ODISHA GOVT</span>
+          <h4>Subhadra Yojana Portal</h4>
+          <p>Financial assistance and empowerment scheme for eligible women in Odisha.</p>
+        </div>
+        <a href="https://subhadra.odisha.gov.in" target="_blank">Check Subhadra Status ↗</a>
+      </div>
+
+      <div class="card" data-cat="schemes" data-wizard="farmer">
+        <div>
+          <span class="card-tag tag-govt">ODISHA GOVT</span>
+          <h4>KALIA Scheme</h4>
+          <p>Direct financial support, cultivation assistance, and livelihood grants for Odisha farmers.</p>
+        </div>
+        <a href="https://kalia.odisha.gov.in" target="_blank">Access KALIA Portal ↗</a>
+      </div>
+
+      <div class="card" data-cat="schemes" data-wizard="farmer">
+        <div>
+          <span class="card-tag tag-govt">CENTRAL GOVT</span>
+          <h4>PM-KISAN Samman Nidhi</h4>
+          <p>Income support of ₹6,000 per year for farmer families across India.</p>
+        </div>
+        <a href="https://pmkisan.gov.in" target="_blank">PM-KISAN Status ↗</a>
+      </div>
+
+      <div class="card" data-cat="schemes" data-wizard="citizen">
+        <div>
+          <span class="card-tag tag-govt">HOUSING</span>
+          <h4>PMAY Housing Scheme</h4>
+          <p>Pradhan Mantri Awas Yojana status check and housing sanction list.</p>
+        </div>
+        <a href="https://pmaymis.gov.in" target="_blank">Check PMAY Status ↗</a>
+      </div>
+
+      <div class="card" data-cat="docs" data-wizard="citizen">
+        <div>
+          <span class="card-tag tag-doc">IDENTITY</span>
+          <h4>Aadhaar Online Services</h4>
+          <p>Download e-Aadhaar, check linking status, update address, and locate centres.</p>
+        </div>
+        <a href="https://myaadhaar.uidai.gov.in" target="_blank">Open myAadhaar ↗</a>
+      </div>
+
+      <div class="card" data-cat="docs" data-wizard="citizen">
+        <div>
+          <span class="card-tag tag-doc">LAND RECORDS</span>
+          <h4>Bhulekh Odisha</h4>
+          <p>View online ROR land records, plot maps, and Khatiyan details in Odisha.</p>
+        </div>
+        <a href="http://bhulekh.ori.nic.in" target="_blank">View Bhulekh Land Records ↗</a>
+      </div>
+
+      <div class="card" data-cat="docs" data-wizard="citizen">
+        <div>
+          <span class="card-tag tag-doc">TAX & ID</span>
+          <h4>e-PAN Card Services</h4>
+          <p>Apply for new PAN card, instant e-PAN via Aadhaar, and correction services.</p>
+        </div>
+        <a href="https://www.incometax.gov.in" target="_blank">Income Tax / PAN Portal ↗</a>
+      </div>
+
+      <div class="card" data-cat="edu" data-wizard="student">
+        <div>
+          <span class="card-tag tag-edu">ODISHA ADMISSIONS</span>
+          <h4>SAMS Odisha Portal</h4>
+          <p>e-Admission portal for +2 Junior Colleges, +3 Degree, and ITI/Diploma courses.</p>
+        </div>
+        <a href="https://samsodisha.gov.in" target="_blank">Open SAMS Portal ↗</a>
+      </div>
+
+      <div class="card" data-cat="edu" data-wizard="student">
+        <div>
+          <span class="card-tag tag-edu">SCHOLARSHIPS</span>
+          <h4>National Scholarship Portal (NSP)</h4>
+          <p>Single platform for Central & State pre-matric and post-matric scholarship schemes.</p>
+        </div>
+        <a href="https://scholarships.gov.in" target="_blank">Apply on NSP ↗</a>
+      </div>
+
+      <div class="card" data-cat="msme" data-wizard="business">
+        <div>
+          <span class="card-tag tag-govt">MSME REGISTRATION</span>
+          <h4>Udyam Registration</h4>
+          <p>Free, instant zero-cost MSME government registration for business & startups.</p>
+        </div>
+        <a href="https://udyamregistration.gov.in" target="_blank">Register MSME (Free) ↗</a>
+      </div>
+
+      <div class="card" data-cat="msme" data-wizard="business">
+        <div>
+          <span class="card-tag tag-govt">STARTUP ODISHA</span>
+          <h4>Startup Odisha Portal</h4>
+          <p>Apply for monthly sustenance allowance (₹20,000/mo), product seed grants, and incubation.</p>
+        </div>
+        <a href="https://startup.odisha.gov.in" target="_blank">Startup Odisha Portal ↗</a>
+      </div>
+
+    </div>
+
+    <footer>
+      <p>JanSetu App © 2026 | Safe Citizen Gateway connecting users to official government & verified service portals.</p>
+    </footer>
+
+  </div>
+
+  <script>
+    // Search Functionality
+    function filterServices() {
+      let input = document.getElementById('searchInput').value.toLowerCase();
+      let cards = document.querySelectorAll('.card');
+      cards.forEach(card => {
+        let text = card.innerText.toLowerCase();
+        card.style.display = text.includes(input) ? "flex" : "none";
+      });
+    }
+
+    // Category Tab Filtering
+    function filterTab(category, btn) {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      let cards = document.querySelectorAll('.card');
+      cards.forEach(card => {
+        if (category === 'all' || card.getAttribute('data-cat') === category) {
+          card.style.display = "flex";
+        } else {
+          card.style.display = "none";
+        }
+      });
+    }
+
+    // Quick Wizard Filtering
+    function applyWizard(role) {
+      document.querySelectorAll('.wizard-btn').forEach(b => b.classList.remove('active'));
+      event.target.classList.add('active');
+
+      let cards = document.querySelectorAll('.card');
+      cards.forEach(card => {
+        if (role === 'all' || card.getAttribute('data-wizard') === role) {
+          card.style.display = "flex";
+        } else {
+          card.style.display = "none";
+        }
+      });
+    }
+  </script>
+</body>
+</html>
