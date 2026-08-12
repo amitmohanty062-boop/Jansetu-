@@ -116,7 +116,7 @@ function applyLanguage() {
       ? "or"
       : "en";
 }
-document.addEventListener("DOMContentLoaded", () => {
+applyLanguage();document.addEventListener("DOMContentLoaded", () => {
 
     const searchInput =
         document.querySelector("#searchInput") ||
