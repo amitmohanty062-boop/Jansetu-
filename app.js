@@ -23,7 +23,7 @@ const translations = {
     quickServices: "Quick Services",
     services: "JanSetu Services",
     noServices: "No services found.",
-    openService: "Open Service →"
+    openService:  →"${translations[currentLanguage].openService}
   },
 
   hi: {
