@@ -1,7 +1,121 @@
 // ==========================================
 // JanSetu App - Service Engine
 // ==========================================
+// ==========================================
+// JanSetu Multilingual System
+// English | Hindi | Odia
+// ==========================================
 
+const translations = {
+  en: {
+    tagline: "Citizen & Opportunity Gateway",
+    heroTitle: "Welcome to JanSetu App 🇮🇳",
+    heroText:
+      "One simple gateway to government schemes, jobs, education, business support, agriculture and essential online services across Bharat.",
+    askTitle: "Ask JanSetu",
+    askSubtitle:
+      "Tell me what you need and I will guide you to the appropriate JanSetu service.",
+    askPlaceholder: "Example: I need a government job...",
+    askButton: "Ask",
+    searchPlaceholder:
+      "Search jobs, schemes, scholarships, MSME...",
+    clear: "Clear",
+    quickServices: "Quick Services",
+    services: "JanSetu Services",
+    noServices: "No services found.",
+    openService: "Open Service →"
+  },
+
+  hi: {
+    tagline: "नागरिक एवं अवसर द्वार",
+    heroTitle: "जनसेतु ऐप में आपका स्वागत है 🇮🇳",
+    heroText:
+      "सरकारी योजनाओं, नौकरियों, शिक्षा, व्यवसाय सहायता, कृषि और आवश्यक ऑनलाइन सेवाओं के लिए भारत का एक सरल डिजिटल द्वार।",
+    askTitle: "जनसेतु से पूछें",
+    askSubtitle:
+      "अपनी आवश्यकता बताएं और मैं आपको उचित जनसेतु सेवा तक पहुंचने में मार्गदर्शन करूंगा।",
+    askPlaceholder: "उदाहरण: मुझे सरकारी नौकरी चाहिए...",
+    askButton: "पूछें",
+    searchPlaceholder:
+      "नौकरी, योजनाएं, छात्रवृत्ति, MSME खोजें...",
+    clear: "साफ करें",
+    quickServices: "त्वरित सेवाएं",
+    services: "जनसेतु सेवाएं",
+    noServices: "कोई सेवा नहीं मिली।",
+    openService: "सेवा खोलें →"
+  },
+
+  or: {
+    tagline: "ନାଗରିକ ଓ ସୁଯୋଗ ଦ୍ୱାର",
+    heroTitle: "ଜନସେତୁ ଆପ୍‌କୁ ସ୍ୱାଗତ 🇮🇳",
+    heroText:
+      "ସରକାରୀ ଯୋଜନା, ଚାକିରି, ଶିକ୍ଷା, ବ୍ୟବସାୟ ସହାୟତା, କୃଷି ଏବଂ ଆବଶ୍ୟକ ଅନଲାଇନ୍ ସେବା ପାଇଁ ଭାରତର ଏକ ସରଳ ଡିଜିଟାଲ୍ ଦ୍ୱାର।",
+    askTitle: "ଜନସେତୁକୁ ପଚାରନ୍ତୁ",
+    askSubtitle:
+      "ଆପଣଙ୍କ ଆବଶ୍ୟକତା କୁହନ୍ତୁ ଏବଂ ମୁଁ ଆପଣଙ୍କୁ ଉପଯୁକ୍ତ ଜନସେତୁ ସେବା ପାଇବାରେ ସାହାଯ୍ୟ କରିବି।",
+    askPlaceholder: "ଉଦାହରଣ: ମୋତେ ସରକାରୀ ଚାକିରି ଦରକାର...",
+    askButton: "ପଚାରନ୍ତୁ",
+    searchPlaceholder:
+      "ଚାକିରି, ଯୋଜନା, ଛାତ୍ରବୃତ୍ତି, MSME ଖୋଜନ୍ତୁ...",
+    clear: "ସଫା କରନ୍ତୁ",
+    quickServices: "ତ୍ୱରିତ ସେବା",
+    services: "ଜନସେତୁ ସେବା",
+    noServices: "କୌଣସି ସେବା ମିଳିଲା ନାହିଁ।",
+    openService: "ସେବା ଖୋଲନ୍ତୁ →"
+  }
+};
+
+let currentLanguage = localStorage.getItem("jansetuLanguage") || "en";
+
+function changeLanguage() {
+  const selector = document.getElementById("languageSelector");
+
+  if (selector) {
+    currentLanguage = selector.value;
+  }
+
+  localStorage.setItem("jansetuLanguage", currentLanguage);
+
+  applyLanguage();
+}
+
+function applyLanguage() {
+  const t = translations[currentLanguage] || translations.en;
+
+  const brandTagline = document.getElementById("brandTagline");
+  const heroTitle = document.getElementById("heroTitle");
+  const heroText = document.getElementById("heroText");
+  const askTitle = document.getElementById("askTitle");
+  const askSubtitle = document.getElementById("askSubtitle");
+  const chatInput = document.getElementById("chatInput");
+  const searchBox = document.getElementById("searchBox");
+  const languageSelector = document.getElementById("languageSelector");
+
+  if (brandTagline) brandTagline.textContent = t.tagline;
+  if (heroTitle) heroTitle.textContent = t.heroTitle;
+  if (heroText) heroText.textContent = t.heroText;
+  if (askTitle) askTitle.textContent = t.askTitle;
+  if (askSubtitle) askSubtitle.textContent = t.askSubtitle;
+
+  if (chatInput) {
+    chatInput.placeholder = t.askPlaceholder;
+  }
+
+  if (searchBox) {
+    searchBox.placeholder = t.searchPlaceholder;
+  }
+
+  if (languageSelector) {
+    languageSelector.value = currentLanguage;
+  }
+
+  document.documentElement.lang =
+    currentLanguage === "hi"
+      ? "hi"
+      : currentLanguage === "or"
+      ? "or"
+      : "en";
+}
 document.addEventListener("DOMContentLoaded", () => {
 
     const searchInput =
