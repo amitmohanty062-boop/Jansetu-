@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JanSetu App - Universal Citizen & Opportunity Gateway</title>
+  
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#004085">
+
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+    body { background-color: #f4f6f9; color: #333; padding-bottom: 40px; top: 0 !important; }
+    
+    header { background: linear-gradient(135deg, #003366, #0056b3); color: white; padding: 15px 20px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.15); }
+    .header-top { display: flex; justify-content: space-between; align-items: center; max-width: 1000px; margin: 0 auto 12px; }
+    .brand { display: flex; align-items: center; gap: 10px; }
+    .brand h1 { font-size: 22px; font-weight: 700; letter-spacing: 0.5px; }
+    .actions { display: flex; align-items: center; gap: 10px; }
+    .share-btn { background-color: #28a745; color: white; border: none; padding: 8px 14px; border-radius: 6px; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 6px; font-size: 14px; }
+    
+    .search-container { max-width: 600px; margin: 0 auto; }
+    .search-input { width: 100%; padding: 12px 16px; border-radius: 25px; border: none; font-size: 15px; outline: none; box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
+    
+    .goog-te-banner-frame { display: none !important; }
+    .goog-te-gadget-simple { background-color: #ffffff !important; border: 1px solid #cccccc !important; padding: 4px 8px !important; border-radius: 6px !important; font-size: 13px !important; }
+
+    .container { max-width: 1000px; margin: 20px auto; padding: 0 15px; }
+    
+    .filters { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 10px; margin-bottom: 20px; scrollbar-width: none; }
+    .filter-btn { background: #e9ecef; border: none; padding: 8px 16px; border-radius: 20px; font-weight: 600; color: #495057; cursor: pointer; white-space: nowrap; transition: 0.2s; }
+    .filter-btn.active { background: #0056b3; color: white; }
+
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+    .card { background: white; border-radius: 12px; padding: 18px; border: 1px solid #e0e0e0; box-shadow: 0 2px 6px rgba(0,0,0,0.05); display: flex; flex-direction: column; justify-content: space-between; }
+    .card-badge { align-self: flex-start; background: #e3f2fd; color: #0d47a1; font-size: 11px; font-weight: 700; padding: 4px 8px; border-radius: 4px; text-transform: uppercase; margin-bottom: 8px; }
+    .card-badge.complaint { background: #ffebee; color: #c62828; }
+    .card-badge.private-job { background: #e8f5e9; color: #1b5e20; }
+    .card-badge.freelance { background: #fff3e0; color: #e65100; }
+    .card-badge.startup { background: #f3e5f5; color: #4a148c; }
+    .card h3 { font-size: 17px; margin-bottom: 6px; color: #111; }
+    .card p { font-size: 13px; color: #666; margin-bottom: 15px; line-height: 1.4; }
+    .card-btn { background: #0056b3; color: white; text-decoration: none; text-align: center; padding: 10px; border-radius: 6px; font-weight: 600; font-size: 14px; display: block; }
+    .card-btn:hover { background: #004085; }
+
+    .install-banner { background: #fff3cd; border: 1px solid #ffeeba; color: #856404; padding: 12px 16px; border-radius: 8px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
+    .install-btn { background: #856404; color: white; border: none; padding: 6px 12px; border-radius: 4px; font-weight: bold; cursor: pointer; }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <div class="header-top">
+      <div class="brand">
+        <span style="font-size: 26px;">🇮🇳</span>
+        <h1>JanSetu App</h1>
+      </div>
+      <div class="actions">
+        <div id="google_translate_element"></div>
+        <button class="share-btn" onclick="shareApp()">📲 Share</button>
+      </div>
+    </div>
+    <div class="search-container">
+      <input type="text" id="searchInput" class="search-input" placeholder="Search Startup Odisha, CPGRAMS, Freelancer, Subhadra, GST..." onkeyup="filterServices()">
+    </div>
+  </header>
+
+  <div class="container">
+    
+    <div id="installBanner" class="install-banner" style="display: none;">
+      <span>📱 Install <b>JanSetu App</b> on your home screen for quick access!</span>
+      <button class="install-btn" onclick="installPWA()">Install</button>
+    </div>
+
+    <!-- Category Filters -->
+    <div class="filters">
+      <button class="filter-btn active" onclick="filterCategory('all', this)">All Services (35+)</button>
+      <button class="filter-btn" onclick="filterCategory('startup', this)">🚀 Startups & Patents</button>
+      <button class="filter-btn" onclick="filterCategory('freelance', this)">💻 Freelance & Gig</button>
+      <button class="filter-btn" onclick="filterCategory('jobs', this)">💼 Jobs & Recruitment</button>
+      <button class="filter-btn" onclick="filterCategory('complaint', this)">🚨 Complaints & Grievances</button>
+      <button class="filter-btn" onclick="filterCategory('odisha', this)">Odisha Schemes & Land</button>
+      <button class="filter-btn" onclick="filterCategory('health', this)">Healthcare</button>
+      <button class="filter-btn" onclick="filterCategory('business', this)">Business & Tax</button>
+      <button class="filter-btn" onclick="filterCategory('travel', this)">Travel & Transport</button>
+      <button class="filter-btn" onclick="filterCategory('identity', this)">Citizen Identity</button>
+      <button class="filter-btn" onclick="filterCategory('farmers', this)">Farmers & Agri</button>
+    </div>
+
+    <!-- Unified Services Grid -->
+    <div class="grid" id="servicesGrid">
+
+      <!-- Startup Odisha -->
+      <div class="card" data-category="startup odisha business" data-title="startup odisha grant funding patent support innovation ecosystem incubation state portal">
+        <div>
+          <span class="card-badge startup">Startup Odisha</span>
+          <h3>Startup Odisha Portal</h3>
+          <p>Access state innovation grants, monthly allowances, incubation support, and patent assistance.</p>
+        </div>
+        <a href="https://startup.odisha.gov.in/" target="_blank" class="card-btn">Open Portal ↗</a>
+      </div>
+
+      <!-- Startup India -->
+      <div class="card" data-category="startup business" data-title="startup india dpiit recognition tax exemption funding intellectual property ipr seed fund scheme">
+        <div>
+          <span class="card-badge startup">Startup India</span>
+          <h3>Startup India (DPIIT)</h3>
+          <p>Official portal for startup recognition, tax exemptions, IPR support, and national seed funding.</p>
+        </div>
+        <a href="https://www.startupindia.gov.in/" target="_blank" class="card-btn">Open Portal ↗</a>
+      </div>
+
+      <!-- Indian Patent Office (IP India) -->
+      <div class="card" data-category="startup business" data-title="ip india patent trademark design copyright ipr filing search portal government">
+        <div>
+          <span class="card-badge startup">Intellectual Property</span>
+          <h3>IP India Patent Portal</h3>
+          <p>File patents, search existing innovations, and track trademark or design applications in India.</p>
+        </div>
+        <a href="https://ipindia.gov.in/" target="_blank" class="card-btn">Open Portal ↗</a>
+      </div>
+
+      <!-- PMO Grievance Portal -->
+      <div class="card" data-category="complaint" data-title="pmo prime minister office grievance representation letter complaint portal central">
+        <div>
+          <span class="card-badge complaint">PMO Grievance</span>
+          <h3>PMO Grievance Portal</h3>
+          <p>Direct portal to submit petitions, representations, and grievances to the Prime Minister's Office.</p>
+        </div>
+        <a href="https://www.pmindia.gov.in/en/interact-with-pm/" target="_blank" class="card-btn">File Petition ↗</a>
+      </div>
+
+      <!-- CPGRAMS Central Grievances -->
+      <div class="card" data-category="complaint" data-title="cpgrams public grievance portal central government ministry complaint">
+        <div>
+          <span class="card-badge complaint">Central Grievance</span>
+          <h3>CPGRAMS Portal</h3>
+          <p>File official complaints regarding Central Ministries, Banking, MSME, Pensions, or Infrastructure.</p>
+        </div>
+        <a href="https://pgportal.gov.in/" target="_blank" class="card-btn">File Complaint ↗</a>
+      </div>
+
+      <!-- MSME SAMADHAAN / MSME Portal -->
+      <div class="card" data-category="business startup complaint" data-title="msme samadhaan delayed payment micro small enterprise grievance portal government">
+        <div>
+          <span class="card-badge startup">MSME Grievance</span>
+          <h3>MSME Samadhaan</h3>
+          <p>File online complaints regarding delayed payments for registered Micro and Small Enterprises.</p>
+        </div>
+        <a href="https://samadhaan.msme.gov.in/" target="_blank" class="card-btn">Open Portal ↗</a>
+      </div>
+
+      <!-- Freelancer.com -->
+      <div class="card" data-category="freelance jobs" data-title="freelancer freelance gig work projects remote online work coding writing design">
+        <div>
+          <span class="card-badge freelance">Gig & Freelance</span>
+          <h3>Freelancer.com</h3>
+          <p>Bid on international and Indian projects in software development, data entry, writing, and design.</p>
+        </div>
+        <a href="https://www.freelancer.com/" target="_blank" class="card-btn">Find Work ↗</a>
+      </div>
+
+      <!-- Upwork -->
+      <div class="card" data-category="freelance jobs" data-title="upwork freelance gig remote jobs clients work from home coding translation">
+        <div>
+          <span class="card-badge freelance">Gig & Freelance</span>
+          <h3>Upwork Global</h3>
+          <p>Connect with top global clients for contract, hourly, and long-term remote professional projects.</p>
+        </div>
+        <a href="https://www.upwork.com/" target="_blank" class="card-btn">Find Work ↗</a>
+      </div>
+
+      <!-- Fiverr -->
+      <div class="card" data-category="freelance jobs" data-title="fiverr gig marketplace freelance services digital marketing logo design video editing">
+        <div>
+          <span class="card-badge freelance">Gig Marketplace</span>
+          <h3>Fiverr Marketplace</h3>
+          <p>Offer your digital skills as services (gigs) starting from micro-tasks to professional creative services.</p>
+        </div>
+        <a href="https://www.fiverr.com/" target="_blank" class="card-btn">Offer Services ↗</a>
+      </div>
+
+      <!-- LinkedIn Jobs -->
+      <div class="card" data-category="jobs" data-title="linkedin jobs private recruitment professional networking careers">
+        <div>
+          <span class="card-badge private-job">Private Careers</span>
+          <h3>LinkedIn Jobs</h3>
+          <p>Search corporate openings, connect with hiring managers, and apply for professional careers.</p>
+        </div>
+        <a href="https://www.linkedin.com/jobs/" target="_blank" class="card-btn">Search Jobs ↗</a>
+      </div>
+
+      <!-- Indeed India -->
+      <div class="card" data-category="jobs" data-title="indeed jobs private recruitment vacancy fresher corporate work from home">
+        <div>
+          <span class="card-badge private-job">Private Careers</span>
+          <h3>Indeed Jobs</h3>
+          <p>Find private job openings, work-from-home opportunities, and local company vacancies across India.</p>
+        </div>
+        <a href="https://in.indeed.com/" target="_blank" class="card-btn">Search Jobs ↗</a>
+      </div>
+
+      <!-- Naukri.com -->
+      <div class="card" data-category="jobs" data-title="naukri job portal private recruitment resume upload vacancies">
+        <div>
+          <span class="card-badge private-job">Private Careers</span>
+          <h3>Naukri.com Portal</h3>
+          <p>India’s leading job search engine to upload resumes, apply to MNCs, and receive job alerts.</p>
+        </div>
+        <a href="https://www.naukri.com/" target="_blank" class="card-btn">Search Jobs ↗</a>
+      </div>
+
+      <!-- Freshersworld -->
+      <div class="card" data-category="jobs" data-title="freshersworld entry level jobs graduate internships campus recruitment">
+        <div>
+          <span class="card-badge private-job">Entry Level Jobs</span>
+          <h3>Freshersworld</h3>
+          <p>Ideal portal for new graduates, entry-level job seekers, IT trainees, and internship opportunities.</p>
+        </div>
+        <a href="https://www.freshersworld.com/" target="_blank" class="card-btn">Search Jobs ↗</a>
+      </div>
+
+      <!-- NCS National Career Service -->
+      <div class="card" data-category="jobs" data-title="ncs national career service jobs employment exchange central government">
+        <div>
+          <span class="card-badge">Govt Employment</span>
+          <h3>National Career Service (NCS)</h3>
+          <p>Central government job exchange for private/public sector jobs, apprenticeships, and career counseling.</p>
+        </div>
+        <a href="https://www.ncs.gov.in/" target="_blank" class="card-btn">Find Jobs ↗</a>
+      </div>
+
+      <!-- OPSC & OSSSC Recruitment -->
+      <div class="card" data-category="jobs odisha" data-title="opsc osssc odisha government jobs recruitment exam notification">
+        <div>
+          <span class="card-badge">Govt Jobs</span>
+          <h3>Odisha Govt Job Recruitment</h3>
+          <p>Direct portal to check latest recruitment notifications from OPSC, OSSSC, and State Selection Board.</p>
+        </div>
+        <a href="https://www.osssc.gov.in/" target="_blank" class="card-btn">Open Portal ↗</a>
+      </div>
+
+      <!-- Jana Sunani Odisha (Grievance) -->
+      <div class="card" data-category="complaint odisha" data-title="jana sunani odisha public grievance complaint cmo collector">
+        <div>
+          <span class="card-badge complaint">Grievance Portal</span>
+          <h3>Jana Sunani Odisha</h3>
+          <p>Submit public grievances directly to district collectors, departments, or Chief Minister Office.</p>
+        </div>
+        <a href="https://janasunani.odisha.gov.in/" target="_blank" class="card-btn">File Complaint ↗</a>
+      </div>
+
+      <!-- Consumer Grievance -->
+      <div class="card" data-category="complaint" data-title="national consumer helpline nch complaint consumer rights fraud">
+        <div>
+          <span class="card-badge complaint">Consumer Rights</span>
+          <h3>National Consumer Helpline</h3>
+          <p>File complaints against private companies, e-commerce platforms, or defective products.</p>
+        </div>
+        <a href="https://consumerhelpline.gov.in/" target="_blank" class="card-btn">File Complaint ↗</a>
+      </div>
+
+      <!-- Cybercrime Reporting Portal -->
+      <div class="card" data-category="complaint identity" data-title="cybercrime portal financial fraud online scam complaint police report government">
+        <div>
+          <span class="card-badge complaint">Cyber Security</span>
+          <h3>National Cybercrime Portal</h3>
+          <p>Report financial cyber frauds, online scams, identity theft, and digital security issues.</p>
+        </div>
+        <a href="https://cybercrime.gov.in/" target="_blank" class="card-btn">Report Fraud ↗</a>
+      </div>
+
+      <!-- eSanjeevani Doctor Consult -->
+      <div class="card" data-category="health" data-title="esanjeevani doctor consultation health telemedicine opd">
+        <div>
+          <span class="card-badge">Healthcare</span>
+          <h3>eSanjeevani OPD</h3>
+          <p>Free online tele-consultation with qualified government doctors directly from your smartphone.</p>
+        </div>
+        <a href="https://esanjeevani.mohfw.gov.in/" target="_blank" class="card-btn">Consult Doctor ↗</a>
+      </div>
+
+      <!-- ABHA Ayushman Bharat Card -->
+      <div class="card" data-category="health identity" data-title="abha ayushman bharat health account card digital health record government">
+        <div>
+          <span class="card-badge">Healthcare</span>
+          <h3>ABHA Health Card Portal</h3>
+          <p>Create and manage your Ayushman Bharat Digital Health Account and medical records.</p>
+        </div>
+        <a href="https://abha.abdm.gov.in/" target="_blank" class="card-btn">Open Portal ↗</a>
+      </div>
+
+      <!-- e-Pauoti Odisha -->
+      <div class="card" data-category="odisha" data-title="epauoti odisha land revenue tax rent payment khata">
+        <div>
+          <span class="card-badge">Land Tax</span>
+          <h3>e-Pauoti Odisha Land Tax</h3>
+          <p>Pay land revenue tax online and download official rent receipts across Odisha districts.</p>
+        </div>
+        <a href="https://odishalandrevenue.nic.in/" target="_blank" class="card-btn">Pay Land Tax ↗</a>
+      </div>
+
+      <!-- Bhulekh Odisha -->
+      <div class="card" data-category="odisha" data-title="bhulekh odisha land records ror khatiyan plot map">
+        <div>
+          <span class="card-badge">Land Records</span>
+          <h3>Bhulekh Odisha Portal</h3>
+          <p>View online Record of Rights (RoR), land ownership details, Khatiyan, and plot maps across Odisha.</p>
+        </div>
+        <a href="https://bhulekh.ori.nic.in/" target="_blank" class="card-btn">Open Portal ↗</a>
+      </div>
+
+      <!-- Subhadra Yojana -->
+      <div class="card" data-category="odisha" data-title="subhadra yojana women scheme odisha portal">
+        <div>
+          <span class="card-badge">Odisha State</span>
+          <h3>Subhadra Yojana Portal</h3>
+          <p>Check eligibility, application status, and beneficiary lists for financial support for women in Odisha.</p>
+        </div>
+        <a href="https://subhadra.odisha.gov.in/" target="_blank" class="card-btn">Open Portal ↗</a>
+      </div>
+
+      <!-- KALIA Scheme -->
+      <div class="card" data-category="odisha farmers" data-title="kalia scheme farmers assistance odisha">
+        <div>
+          <span class="card-badge">Agriculture</span>
+          <h3>KALIA Portal</h3>
+          <p>Krushak Assistance for Livelihood and Income Augmentation for Odisha farmers and landless laborers.</p>
+        </div>
+        <a href="https://kalia.odisha.gov.in/" target="_blank" class="card-btn">Open Portal ↗</a>
+      </div>
+
+      <!-- Odisha State Scholarship Portal -->
+      <div class="card" data-category="odisha startup" data-title="odisha state scholarship portal students post matric merit college higher education">
+        <div>
+          <span class="card-badge">Education</span>
+          <h3>Odisha State Scholarship</h3>
+          <p>Integrated portal for post-matric, pre-matric, and higher education scholarships in Odisha.</p>
+        </div>
+        <a href="https://scholarship.odisha.gov.in/" target="_blank" class="card-btn">Apply Now ↗</a>
+      </div>
+
+      <!-- GST Return Filing -->
+      <div class="card" data-category="business" data-title="gst portal return filing tax msme business">
+        <div>
+          <span class="card-badge">Business & Finance</span>
+          <h3>GST Services & Filing Portal</h3>
+          <p>Official portal for GST registration, GSTR-1, GSTR-3B return filing, and taxpayer services.</p>
+        </div>
+        <a href="https://www.gst.gov.in/" target="_blank" class="card-btn">Open Portal ↗</a>
+      </div>
+
+      <!-- Udyam Registration -->
+      <div class="card" data-category="business startup" data-title="udyam msme business registration startup india micro small medium enterprise">
+        <div>
+          <span class="card-badge">MSME & Startups</span>
+          <h3>Udyam MSME Registration</h3>
+          <p>Free official government portal for registering micro, small, and medium enterprises in India.</p>
+        </div>
+        <a href="https://udyamregistration.gov.in/" target="_blank" class="card-btn">Open Portal ↗</a>
+      </div>
+
+      <!-- Income Tax Portal -->
+      <div class="card" data-category="business identity" data-title="income tax e filing pan link itr refund portal govt">
+        <div>
+          <span class="card-badge">Taxation</span>
+          <h3>Income Tax e-Filing</h3>
+          <p>File income tax returns (ITR), link PAN with Aadhaar, and check tax refund status.</p>
+        </div>
+        <a href="https://www.incometax.gov.in/" target="_blank" class="card-btn">Open Portal ↗</a>
+      </div>
+
+      <!-- e-District Odisha -->
+      <div class="card" data-category="odisha identity" data-title="edistrict odisha caste income resident certificates">
+        <div>
+          <span class="card-badge">Odisha Services</span>
+          <h3>e-District Odisha</h3>
+          <p>Apply for Resident, Income, Caste certificates, and income-bound public service documents online.</p>
+        </div>
+        <a href="https://edistrict.odisha.gov.in/" target="_blank" class="card-btn">Open Portal ↗</a>
+      </div>
+
+      <!-- SAMS Odisha -->
+      <div class="card" data-category="odisha jobs" data-title="sams odisha higher education college admission junior degree">
+        <div>
+          <span class="card-badge">Education</span>
+          <h3>SAMS Odisha Admissions</h3>
+          <p>Student Academic Management System for Higher Secondary (+2) and Degree (+3) college admissions.</p>
+        </div>
+        <a href="https://samsodisha.gov.in/" target="_blank" class="card-btn">Open Portal ↗</a>
+      </div>
+
+      <!-- Aadhaar Portal -->
+      <div class="card" data-category="identity" data-title="aadhaar myaadhaar unique identification update download card">
+        <div>
+          <span class="card-badge">Identity & UIDAI</span>
+          <h3>myAadhaar Portal</h3>
+          <p>Download e-Aadhaar, check update status, update address, and verify mobile linking online.</p>
+        </div>
+        <a href="https://myaadhaar.uidai.gov.in/" target="_blank" class="card-btn">Open Portal ↗</a>
+      </div>
+
+      <!-- Voter Services Portal (ECI) -->
+      <div class="card" data-category="identity" data-title="voter portal eci election commission voter id epic card download apply status">
+        <div>
+          <span class="card-badge">Identity</span>
+          <h3>Voter Services Portal (ECI)</h3>
+          <p>Apply for new Voter ID card, download digital e-EPIC, and check electoral roll status.</p>
+        </div>
+        <a href="https://voters.eci.gov.in/" target="_blank" class="card-btn">Open Portal ↗</a>
+      </div>
+
+      <!-- IRCTC Railway Services -->
+      <div class="card" data-category="travel" data-title="irctc train ticket booking pnr status Indian railways">
+        <div>
+          <span class="card-badge">Travel & Utility</span>
+          <h3>IRCTC Official Portal</h3>
+          <p>Book train tickets, check live PNR status, seat availability, and train schedules online.</p>
+        </div>
+        <a href="https://www.irctc.co.in/nget/" target="_blank" class="card-btn">Open Portal ↗</a>
+      </div>
+
+      <!-- Parivahan Sewa -->
+      <div class="card" data-category="identity travel" data-title="parivahan driving license vehicle rc transport sarathi vahan">
+        <div>
+          <span class="card-badge">Transport</span>
+          <h3>Parivahan Sewa</h3>
+          <p>Apply for Driving License (Sarathi), vehicle registration (Vahan), and check pending e-Challans.</p>
+        </div>
+        <a href="https://parivahan.gov.in/" target="_blank" class="card-btn">Open Portal ↗</a>
+      </div>
+
+      <!-- e-NAM Mandi Rates -->
+      <div class="card" data-category="farmers" data-title="enam mandi crop prices agricultural market price">
+        <div>
+          <span class="card-badge">Farmers</span>
+          <h3>e-NAM National Agriculture Market</h3>
+          <p>Check live Mandi crop prices, daily agricultural market rates, and online trading facilities.</p>
+        </div>
+        <a href="https://www.enam.gov.in/" target="_blank" class="card-btn">Open Portal ↗</a>
+      </div>
+
+      <!-- PM-KISAN Portal -->
+      <div class="card" data-category="farmers" data-title="pm kisan samman nidhi installment status ekyc farmer portal central scheme">
+        <div>
+          <span class="card-badge">Farmers</span>
+          <h3>PM-KISAN Portal</h3>
+          <p>Check PM-Kisan installment status, complete mandatory e-KYC, and view beneficiary details.</p>
+        </div>
+        <a href="https://pmkisan.gov.in/" target="_blank" class="card-btn">Open Portal ↗</a>
+      </div>
+
+    </div>
+  </div>
+
+  <script type="text/javascript">
+    function googleTranslateElementInit() {
+      new google.translate.TranslateElement({
+        pageLanguage: 'en',
+        includedLanguages: 'or,hi,bn,te,ta,en',
+        layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+      }, 'google_translate_element');
+    }
+  </script>
+  <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+  <script>
+    function filterServices() {
+      const query = document.getElementById('searchInput').value.toLowerCase();
+      const cards = document.querySelectorAll('.card');
+      cards.forEach(card => {
+        const text = card.getAttribute('data-title').toLowerCase() + ' ' + card.innerText.toLowerCase();
+        card.style.display = text.includes(query) ? 'flex' : 'none';
+      });
+    }
+
+    function filterCategory(category, element) {
+      document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+      element.classList.add('active');
+
+      const cards = document.querySelectorAll('.card');
+      cards.forEach(card => {
+        if (category === 'all' || card.getAttribute('data-category').includes(category)) {
+          card.style.display = 'flex';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    }
+
+    async function shareApp() {
+      const shareData = {
+        title: 'JanSetu App',
+        text: 'Access Startup Odisha, Startup India, Patents, Freelancer, CPGRAMS, Subhadra, KALIA, and 35+ citizen services in one portal!',
+        url: window.location.href,
+      };
+      if (navigator.share) {
+        try { await navigator.share(shareData); } catch (e) {}
+      } else {
+        navigator.clipboard.writeText(window.location.href);
+        alert('App link copied to clipboard!');
+      }
+    }
+
+    // Auto-service worker updater script to bypass caching issues
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.getRegistrations().then(function(registrations) {
+        for(let registration of registrations) {
+          registration.update();
+        }
+      });
+    }
+
+    let deferredPrompt;
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      document.getElementById('installBanner').style.display = 'flex';
+    });
+
+    function installPWA() {
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        deferredPrompt.userChoice.then(() => {
+          document.getElementById('installBanner').style.display = 'none';
+          deferredPrompt = null;
+        });
+      }
+    }
+  </script>
+</body>
+</html>
