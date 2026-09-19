@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JanSetu App - Universal Citizen & Opportunity Gateway</title>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#004085">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+    body { background-color: #f4f6f9; color: #333; padding-bottom: 40px; -webkit-tap-highlight-color: transparent; }
+    header { background: linear-gradient(135deg, #003366, #0056b3); color: white; padding: 15px 20px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.15); }
+    .header-top { display: flex; justify-content: space-between; align-items: center; max-width: 1000px; margin: 0 auto 12px; flex-wrap: wrap; gap: 10px; }
+    .brand { display: flex; align-items: center; gap: 10px; }
+    .brand h1 { font-size: 22px; font-weight: 700; letter-spacing: 0.5px; }
+    .actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; justify-content: flex-end; width: 100%; }
+    @media (min-width: 600px) { .actions { width: auto; } }
+    .action-btn { background-color: #28a745; color: white; border: none; padding: 10px 14px; border-radius: 8px; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 6px; font-size: 13px; min-height: 40px; transition: background 0.2s; }
+    .action-btn:active { opacity: 0.8; }
+    .action-btn.secondary { background-color: #17a2b8; }
+    .action-btn.ai-btn { background-color: #ffc107; color: #333; }
+    .action-btn.vault-btn { background-color: #6f42c1; }
+    .lang-select { background: white; color: #333; border: 1px solid #ccc; padding: 8px 12px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; min-height: 40px; }
+    .search-container { max-width: 600px; margin: 10px auto 0; display: flex; gap: 8px; align-items: center; width: 100%; }
+    .search-input { width: 100%; padding: 12px 16px; border-radius: 25px; border: 1px solid transparent; font-size: 15px; outline: none; box-shadow: 0 2px 8px rgba(0,0,0,0.2); transition: all 0.2s; }
+    .search-input:focus { border-color: #ffc107; }
+    .mic-btn { background: white; border: none; width: 45px; height: 45px; border-radius: 50%; font-size: 18px; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.2); display: flex; align-items: center; justify-content: center; flex-shrink: 0; min-height: 45px; min-width: 45px; }
+    .mic-btn.listening { background: #dc3545; color: white; animation: pulse 1.5s infinite; }
+    @keyframes pulse {
+      0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.7); }
+      70% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(220, 53, 69, 0); }
+      100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(220, 53, 69, 0); }
+    }
+    .tts-toolbar { display: flex; justify-content: center; align-items: center; gap: 10px; background: #e9ecef; padding: 10px 15px; font-size: 13px; font-weight: 600; color: #333; border-bottom: 1px solid #dee2e6; flex-wrap: wrap; }
+    .container { max-width: 1000px; margin: 20px auto; padding: 0 15px; }
+    .filters { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 12px; margin-bottom: 20px; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+    .filters::-webkit-scrollbar { display: none; }
+    .filter-btn { background: #e9ecef; border: none; padding: 10px 18px; border-radius: 20px; font-weight: 600; color: #495057; cursor: pointer; white-space: nowrap; transition: 0.2s; min-height: 38px; }
+    .filter-btn.active { background: #0056b3; color: white; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+    .card { background: white; border-radius: 12px; padding: 18px; border: 1px solid #e0e0e0; box-shadow: 0 2px 6px rgba(0,0,0,0.05); display: flex; flex-direction: column; justify-content: space-between; }
+    .card-top-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+    .card-badge { align-self: flex-start; background: #e3f2fd; color: #0d47a1; font-size: 11px; font-weight: 700; padding: 4px 8px; border-radius: 4px; text-transform: uppercase; }
+    .card-badge.complaint { background: #ffebee; color: #c62828; }
+    .card-badge.private-job { background: #e8f5e9; color: #1b5e20; }
+    .card-badge.freelance { background: #fff3e0; color: #e65100; }
+    .card-badge.startup { background: #f3e5f5; color: #4a148c; }
+    .read-card-btn { background: none; border: none; cursor: pointer; font-size: 18px; color: #0056b3; padding: 6px; min-width: 35px; min-height: 35px; }
+    .card h3 { font-size: 17px; margin-bottom: 6px; color: #111; }
+    .card p { font-size: 13px; color: #666; margin-bottom: 15px; line-height: 1.4; flex-grow: 1; }
+    .card-actions { display: flex; flex-direction: column; gap: 8px; }
+    .card-btn { background: #0056b3; color: white !important; text-decoration: none; text-align: center; padding: 12px; border-radius: 8px; font-weight: 600; font-size: 14px; display: block; border: none; cursor: pointer; width: 100%; min-height: 44px; transition: background 0.2s; }
+    .card-btn.utility-btn { background: #6c757d; }
+    .card-btn:hover { background: #004085; }
+    .install-banner { background: #fff3cd; border: 1px solid #ffeeba; color: #856404; padding: 12px 16px; border-radius: 8px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+    .install-btn { background: #856404; color: white; border: none; padding: 8px 14px; border-radius: 6px; font-weight: bold; cursor: pointer; }
+    .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; justify-content: center; align-items: center; z-index: 1000; padding: 10px; }
+    .modal-content { background: white; width: 100%; max-width: 550px; border-radius: 12px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.3); display: flex; flex-direction: column; max-height: 85vh; }
+    .modal-header { background: #003366; color: white; padding: 15px; display: flex; justify-content: space-between; align-items: center; }
+    .modal-body { padding: 15px; overflow-y: auto; flex-grow: 1; font-size: 14px; line-height: 1.5; }
+    .modal-footer { padding: 12px 15px; background: #f1f3f5; display: flex; gap: 10px; flex-wrap: wrap; }
+    .modal-input { flex-grow: 1; padding: 12px; border: 1px solid #ccc; border-radius: 8px; font-size: 14px; outline: none; min-height: 44px; }
+    .close-modal { background: none; border: none; color: white; font-size: 26px; cursor: pointer; padding: 4px; }
+    .chat-bubble { margin-bottom: 10px; padding: 10px 14px; border-radius: 8px; max-width: 90%; word-wrap: break-word; }
+    .chat-bubble.user { background: #e3f2fd; margin-left: auto; text-align: right; color: #0d47a1; }
+    .chat-bubble.ai { background: #f1f3f5; margin-right: auto; color: #333; }
+    .vault-item { display: flex; justify-content: space-between; align-items: center; background: #f8f9fa; padding: 12px; border-radius: 8px; margin-bottom: 8px; border: 1px solid #e9ecef; }
+    .vault-item span { font-weight: 500; font-size: 13px; }
+    .upload-zone { border: 2px dashed #0056b3; padding: 25px 15px; text-align: center; border-radius: 8px; background: #f0f4f8; margin-bottom: 12px; cursor: pointer; }
+    .dossier-box { background: #e8f5e9; border: 1px solid #c8e6c9; border-radius: 8px; padding: 12px; margin-top: 10px; font-size: 13px; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-top">
+      <div class="brand">
+        <span style="font-size: 26px;" aria-hidden="true">🇮🇳</span>
+        <h1 id="txt-appTitle">JanSetu App</h1>
+      </div>
+      <div class="actions">
+        <select id="langPicker" class="lang-select" onchange="changeLanguage(this.value)">
+          <option value="en-IN">English (EN)</option>
+          <option value="or-IN">ଓଡ଼ିଆ (Odia)</option>
+          <option value="hi-IN">हिन्दी (Hindi)</option>
+        </select>
+        <button class="action-btn vault-btn" onclick="openVaultModal()"><span id="txt-btnVault">📁 My Vault</span></button>
+        <button class="action-btn ai-btn" onclick="openAIAssistant()"><span id="txt-btnAI">🤖 AI Guide</span></button>
+        <button class="action-btn" onclick="shareApp()"><span id="txt-btnShare">📱 Share</span></button>
+      </div>
+    </div>
+    <div class="search-container">
+      <input type="text" id="searchInput" class="search-input" placeholder="Search schemes, Startup Odisha, e-Pauoti..." onkeyup="filterServices()">
+      <button class="mic-btn" id="micBtn" onclick="toggleSpeechRecognition()" title="Voice Search">🎤</button>
+    </div>
+  </header>
+
+  <div class="tts-toolbar">
+    <span id="txt-voiceAssistant">🔊 Voice Assistant:</span>
+    <button class="action-btn secondary" style="padding:4px 10px; font-size:12px; min-height:30px;" onclick="speakPageSummary()" id="txt-readOverview">Read Overview</button>
+    <button class="action-btn secondary" style="padding:4px 10px; font-size:12px; background:#6c757d; min-height:30px;" onclick="stopSpeech()" id="txt-stopAudio">Stop Audio ⏹️</button>
+  </div>
+
+  <div class="container">
+    <div id="installBanner" class="install-banner" style="display: none;">
+      <span id="txt-installMsg">📱 Install JanSetu App on your home screen for quick access!</span>
+      <button class="install-btn" onclick="installPWA()" id="txt-installBtn">Install</button>
+    </div>
+
+    <div class="filters" id="categoriesBar">
+      <!-- Generated via JS for exact translations -->
+    </div>
+
+    <div class="grid" id="servicesGrid">
+      <!-- Cards generated dynamically via JavaScript below to ensure instant language translation switching -->
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="aiModal">
+    <div class="modal-content">
+      <div class="modal-header">
