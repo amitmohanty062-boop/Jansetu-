@@ -1,0 +1,3248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JanSetu App - Universal Citizen & Opportunity Gateway</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#004085">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+body { background-color: #f4f6f9; color: #333; padding-bottom: 40px; -webkit-tap-highlight-color: transparent; }
+header { background: linear-gradient(135deg, #003366, #0056b3); color: white; padding: 15px 20px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.15); }
+.header-top { display: flex; justify-content: space-between; align-items: center; max-width: 1000px; margin: 0 auto 10px; flex-wrap: wrap; gap: 10px; }
+.brand { display: flex; align-items: center; gap: 10px; }
+.brand h1 { font-size: 22px; font-weight: 700; letter-spacing: 0.5px; }
+.privacy-pill { display: inline-flex; align-items: center; gap: 6px; background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.35); color: #eafff0; font-size: 11px; font-weight: 600; padding: 6px 12px; border-radius: 20px; max-width: 1000px; margin: 0 auto 12px; }
+.actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; justify-content: flex-end; width: 100%; }
+@media (min-width: 600px) { .actions { width: auto; } }
+.action-btn { background-color: #28a745; color: white; border: none; padding: 10px 14px; border-radius: 8px; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 6px; font-size: 13px; min-height: 40px; transition: background 0.2s; }
+.action-btn:active { opacity: 0.8; }
+.action-btn.secondary { background-color: #17a2b8; }
+.action-btn.ai-btn { background-color: #ffc107; color: #333; }
+.action-btn.vault-btn { background-color: #6f42c1; }
+.lang-select { background: white; color: #333; border: 1px solid #ccc; padding: 8px 12px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; min-height: 40px; }
+.search-container { max-width: 600px; margin: 10px auto 0; display: flex; gap: 8px; align-items: center; width: 100%; }
+.search-input { width: 100%; padding: 12px 16px; border-radius: 25px; border: 1px solid transparent; font-size: 15px; outline: none; box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
+.search-input:focus { border-color: #ffc107; }
+.search-suggestions { display:none; position:absolute; top:48px; left:0; right:0; background:white; border-radius:10px; box-shadow:0 4px 14px rgba(0,0,0,0.2); z-index:50; overflow:hidden; text-align:left; }
+.suggestion-item { padding:10px 16px; font-size:14px; color:#333; cursor:pointer; border-bottom:1px solid #f0f0f0; }
+.suggestion-item:last-child { border-bottom:none; }
+.suggestion-item:active { background:#f4f6f9; }
+.mic-btn { background: white; border: none; width: 45px; height: 45px; border-radius: 50%; font-size: 18px; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.2); display: flex; align-items: center; justify-content: center; flex-shrink: 0; min-height: 45px; min-width: 45px; }
+.mic-btn.listening { background: #dc3545; color: white; animation: pulse 1.5s infinite; }
+@keyframes pulse { 0%{transform:scale(1);box-shadow:0 0 0 0 rgba(220,53,69,.7)} 70%{transform:scale(1.05);box-shadow:0 0 0 10px rgba(220,53,69,0)} 100%{transform:scale(1);box-shadow:0 0 0 0 rgba(220,53,69,0)} }
+.tts-toolbar { display: flex; justify-content: center; align-items: center; gap: 10px; background: #e9ecef; padding: 10px 15px; font-size: 13px; font-weight: 600; color: #333; border-bottom: 1px solid #dee2e6; flex-wrap: wrap; }
+.container { max-width: 1000px; margin: 20px auto; padding: 0 15px; }
+.filters { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 12px; margin-bottom: 20px; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+.filters::-webkit-scrollbar { display: none; }
+.filter-btn { background: #e9ecef; border: none; padding: 10px 18px; border-radius: 20px; font-weight: 600; color: #495057; cursor: pointer; white-space: nowrap; min-height: 38px; }
+.filter-btn.active { background: #0056b3; color: white; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+.card { background: white; border-radius: 12px; padding: 18px; border: 1px solid #e0e0e0; box-shadow: 0 2px 6px rgba(0,0,0,0.05); display: flex; flex-direction: column; justify-content: space-between; }
+.card-top-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.card-badge { align-self: flex-start; background: #e3f2fd; color: #0d47a1; font-size: 11px; font-weight: 700; padding: 4px 8px; border-radius: 4px; text-transform: uppercase; }
+.card-badge.private { background: #e8f5e9; color: #1b5e20; }
+.card h3 { font-size: 17px; margin-bottom: 6px; color: #111; }
+.card p { font-size: 13px; color: #666; margin-bottom: 15px; line-height: 1.4; flex-grow: 1; }
+.card-actions { display: flex; flex-direction: column; gap: 8px; }
+.card-btn { background: #0056b3; color: white !important; text-decoration: none; text-align: center; padding: 12px; border-radius: 8px; font-weight: 600; font-size: 13px; display: block; border: none; cursor: pointer; width: 100%; min-height: 44px; }
+.card-btn:hover { background: #004085; }
+.read-card-btn { background: none; border: none; cursor: pointer; font-size: 16px; color: #0056b3; padding: 4px 8px; }
+.install-banner { background: #fff3cd; border: 1px solid #ffeeba; color: #856404; padding: 12px 16px; border-radius: 8px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+.install-btn { background: #856404; color: white; border: none; padding: 8px 14px; border-radius: 6px; font-weight: bold; cursor: pointer; }
+.modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; justify-content: center; align-items: center; z-index: 1000; padding: 10px; }
+.modal-overlay.open { display: flex; }
+.modal-content { background: white; width: 100%; max-width: 550px; border-radius: 12px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.3); display: flex; flex-direction: column; max-height: 85vh; }
+.modal-header { background: #003366; color: white; padding: 15px; display: flex; justify-content: space-between; align-items: center; }
+.modal-body { padding: 15px; overflow-y: auto; flex-grow: 1; font-size: 14px; line-height: 1.5; }
+.modal-footer { padding: 12px 15px; background: #f1f3f5; display: flex; gap: 10px; flex-wrap: wrap; }
+.modal-input { flex-grow: 1; padding: 12px; border: 1px solid #ccc; border-radius: 8px; font-size: 14px; outline: none; min-height: 44px; }
+.close-modal { background: none; border: none; color: white; font-size: 26px; cursor: pointer; padding: 4px; line-height: 1; }
+.chat-bubble { margin-bottom: 10px; padding: 10px 14px; border-radius: 8px; max-width: 90%; word-wrap: break-word; }
+.chat-bubble.user { background: #e3f2fd; margin-left: auto; text-align: right; color: #0d47a1; }
+.chat-bubble.ai { background: #f1f3f5; margin-right: auto; color: #333; }
+.vault-item { display: flex; justify-content: space-between; align-items: center; background: #f8f9fa; padding: 12px; border-radius: 8px; margin-bottom: 8px; border: 1px solid #e9ecef; }
+.vault-item span { font-weight: 500; font-size: 13px; flex-grow: 1; padding-right: 10px; }
+.vault-item button { background: #dc3545; color: white; border: none; border-radius: 6px; padding: 8px 10px; min-height: 36px; }
+.upload-zone { border: 2px dashed #0056b3; padding: 18px 15px; text-align: center; border-radius: 8px; background: #f0f4f8; margin-bottom: 12px; cursor: pointer; font-size: 13px; color: #0056b3; }
+.loading-msg, .no-results { text-align: center; padding: 40px 15px; color: #777; grid-column: 1 / -1; }
+.btn-send { background: #0056b3; color: white; border: none; border-radius: 8px; padding: 0 18px; font-weight: 600; min-height: 44px; }
+.dossier-box { background: #e8f5e9; border: 1px solid #c8e6c9; border-radius: 8px; padding: 12px; margin-top: 10px; font-size: 13px; }
+#printDossier { display: none; }
+@media print {
+  body * { visibility: hidden; }
+  header, .tts-toolbar, .filters, .grid, .install-banner, .modal-footer, .close-modal, #searchInput, .mic-btn { display: none !important; }
+  #printDossier, #printDossier * { visibility: visible; }
+  #printDossier { display: block !important; position: absolute; top: 0; left: 0; width: 100%; padding: 30px; font-family: Georgia, serif; color: #000; }
+  #printDossier h2 { border-bottom: 2px solid #000; padding-bottom: 8px; margin-bottom: 14px; }
+  #printDossier .dossier-meta { font-size: 12px; color: #444; margin-bottom: 16px; }
+  #printDossier .dossier-footer { margin-top: 30px; font-size: 11px; color: #555; border-top: 1px solid #999; padding-top: 10px; }
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="header-top">
+    <div class="brand">
+      <span style="font-size: 26px;" aria-hidden="true">🇮🇳</span>
+      <h1 data-i18n-id="appTitle">JanSetu App</h1>
+    </div>
+    <div class="actions">
+      <select id="langPicker" class="lang-select" onchange="changeLanguage(this.value)">
+        <option value="en">English (EN)</option>
+        <option value="or">ଓଡ଼ିଆ (Odia)</option>
+        <option value="hi">हिन्दी (Hindi)</option>
+      </select>
+      <button class="action-btn vault-btn" onclick="openVaultModal()">📁 <span data-i18n-id="btnVault">My Vault</span></button>
+      <button class="action-btn" style="background:#e67e22;" onclick="openProfileModal()">🙋 <span data-i18n-id="btnProfile">My Details</span></button>
+      <button class="action-btn ai-btn" onclick="openAIAssistant()">🤖 <span data-i18n-id="btnAI">AI Guide</span></button>
+      <button class="action-btn" onclick="shareApp()">📱 <span data-i18n-id="btnShare">Share</span></button>
+    </div>
+  </div>
+  <div class="privacy-pill">🔒 <span data-i18n-id="privacyPill">Local-First Privacy: Zero server upload (DPDP-aligned)</span></div>
+  <div class="search-container" style="position:relative;">
+    <div style="position:relative; flex-grow:1;">
+      <input type="text" id="searchInput" class="search-input" data-i18n-id="searchPlaceholder" placeholder="Search jobs, schemes, scholarships..." oninput="filterServices()" autocomplete="off">
+      <div id="searchSuggestions" class="search-suggestions"></div>
+    </div>
+    <button class="mic-btn" id="micBtn" onclick="toggleSpeechRecognition()" title="Voice Search">🎤</button>
+  </div>
+  <div id="voiceStatus" style="display:none; text-align:center; font-size:12px; color:#fff3cd; margin-top:6px;"></div>
+</header>
+
+<div class="tts-toolbar">
+  <span>🔊 <span data-i18n-id="voiceAssistant">Voice Assistant:</span></span>
+  <button class="action-btn secondary" style="padding:4px 10px; font-size:12px; min-height:30px;" onclick="speakPageSummary()"><span data-i18n-id="readOverview">Read Overview</span></button>
+  <button class="action-btn secondary" style="padding:4px 10px; font-size:12px; background:#6c757d; min-height:30px;" onclick="stopSpeech()"><span data-i18n-id="stopAudio">Stop Audio ⏹️</span></button>
+</div>
+
+<div class="container">
+  <div id="installBanner" class="install-banner" style="display: none;">
+    <span data-i18n-id="installMsg">📱 Install JanSetu App on your home screen for quick access!</span>
+    <button class="install-btn" onclick="installPWA()" data-i18n-id="installBtn">Install</button>
+  </div>
+
+  <div id="newWeekSection" style="display:none; margin-bottom:20px;">
+    <h2 style="font-size:16px; margin-bottom:10px; color:#003366;">🔔 <span data-i18n-id="newThisWeek">New This Week</span></h2>
+    <div class="filters" id="newWeekStrip" style="margin-bottom:0;"></div>
+  </div>
+
+  <div class="filters" id="categoriesBar"></div>
+
+  <div class="grid" id="servicesGrid">
+    <div class="loading-msg" data-i18n-id="loading">Loading services...</div>
+  </div>
+</div>
+
+<!-- My Details Profile Modal -->
+<div class="modal-overlay" id="profileModal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>🙋 <span data-i18n-id="profileTitle">My Details</span></h3>
+      <button class="close-modal" onclick="closeModal('profileModal')">&times;</button>
+    </div>
+    <div class="modal-body">
+      <p style="margin-bottom:10px; color:#666;" data-i18n-id="profileDesc">Save your details once. They'll auto-fill every "Get Help" request so you never retype them. Saved only on this phone, never uploaded. We never store Aadhaar, PAN, or other ID numbers here.</p>
+      <input type="text" id="profName" class="modal-input" data-i18n-id="profNamePh" placeholder="Full name" style="width:100%; margin-bottom:10px;">
+      <input type="tel" id="profPhone" class="modal-input" data-i18n-id="profPhonePh" placeholder="Phone / WhatsApp number" style="width:100%; margin-bottom:10px;">
+      <input type="text" id="profCity" class="modal-input" data-i18n-id="profCityPh" placeholder="City / District" style="width:100%; margin-bottom:10px;">
+      <select id="profCategory" class="modal-input" style="width:100%; margin-bottom:10px;">
+        <option value="citizen" data-i18n-id="audCitizen">General Citizen</option>
+        <option value="student" data-i18n-id="audStudent">Student</option>
+        <option value="jobseeker" data-i18n-id="audJobseeker">Job Seeker</option>
+        <option value="farmer" data-i18n-id="audFarmer">Farmer</option>
+        <option value="business" data-i18n-id="audBusiness">Business Owner</option>
+      </select>
+      <button class="btn-send" style="width:100%;" onclick="saveProfile()" data-i18n-id="profSave">Save My Details</button>
+    </div>
+  </div>
+</div>
+
+<!-- AI Assistant Modal -->
+<div class="modal-overlay" id="aiModal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>🤖 <span data-i18n-id="askTitle">Ask JanSetu</span></h3>
+      <button class="close-modal" onclick="closeModal('aiModal')">&times;</button>
+    </div>
+    <div class="modal-body" id="aiChatBody">
+      <div class="chat-bubble ai" data-i18n-id="askGreeting">Namaste! Tell me what you need — job, scheme, scholarship, farmer help, business support — and I'll point you to the right service.</div>
+    </div>
+    <div class="modal-footer">
+      <input type="text" id="aiChatInput" class="modal-input" data-i18n-id="askPlaceholder" placeholder="Example: I need a government job...">
+      <button class="btn-send" onclick="sendAIMessage()" data-i18n-id="askButton">Ask</button>
+    </div>
+  </div>
+</div>
+
+<!-- Lawyer Directory Modal (neutral, unpaid, alphabetical) -->
+<div class="modal-overlay" id="lawyerModal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>⚖️ <span data-i18n-id="lawyerDirTitle">Find a Lawyer</span></h3>
+      <button class="close-modal" onclick="closeModal('lawyerModal')">&times;</button>
+    </div>
+    <div class="modal-body">
+      <p style="margin-bottom:10px; color:#666; font-size:12px;" data-i18n-id="lawyerDirDisclaimer">
+        This is a plain, unpaid information listing shown in alphabetical order. JanSetu does not rank, recommend, endorse, or accept payment for placement. Please verify enrollment and credentials independently before engaging any advocate.
+      </p>
+      <div id="lawyerList"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Vault Modal -->
+<div class="modal-overlay" id="vaultModal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>📁 <span data-i18n-id="vaultTitle">My Vault</span></h3>
+      <button class="close-modal" onclick="closeModal('vaultModal')">&times;</button>
+    </div>
+    <div class="modal-body">
+      <p style="margin-bottom:10px; color:#666;" data-i18n-id="vaultDesc">Save quick notes or attach documents here. Everything stays only on this phone, nothing is uploaded.</p>
+      <div class="upload-zone" onclick="document.getElementById('vaultFile').click()">
+        📎 <span data-i18n-id="vaultUpload">Tap to attach a document (stored on this device only)</span>
+      </div>
+      <input type="file" id="vaultFile" style="display:none" onchange="attachVaultFile(this)">
+      <input type="text" id="vaultInput" class="modal-input" data-i18n-id="vaultNotePh" placeholder="e.g. Aadhaar update pending" style="width:100%; margin-bottom:10px;">
+      <button class="btn-send" style="width:100%; margin-bottom:15px;" onclick="saveVaultItem()" data-i18n-id="vaultSave">Save to Vault</button>
+      <div id="vaultList"></div>
+      <div class="dossier-box" id="dossierBox" style="display:none;"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Printable Compliance Dossier (hidden on screen, shown only via window.print) -->
+<div id="printDossier">
+  <h2>JanSetu — Compliance Dossier</h2>
+  <div class="dossier-meta" id="dossierMeta"></div>
+  <div id="dossierContent"></div>
+  <div class="dossier-footer">
+    Generated locally on this device by JanSetu App. No data was transmitted to any server.
+    This dossier is DPDP-aligned: local-first, zero server upload. Not an official government document —
+    verify all details on the respective scheme's official portal before submission.
+  </div>
+</div>
+
+<script>
+const SERVICES = [
+{
+"id": "ncs",
+"name": "National Career Service",
+"category": "jobs",
+"audience": [
+"jobseeker",
+"student"
+],
+"state": "all",
+"type": "government",
+"description": "Government employment and career services.",
+"keywords": [
+"government jobs",
+"jobs",
+"employment",
+"career",
+"rozgar",
+"naukri",
+"नौकरी"
+],
+"url": "https://www.ncs.gov.in/",
+"official": true
+},
+{
+"id": "naukri",
+"name": "Naukri.com",
+"category": "jobs",
+"audience": [
+"jobseeker",
+"student"
+],
+"state": "all",
+"type": "private",
+"description": "Private-sector job search and recruitment platform.",
+"keywords": [
+"private jobs",
+"jobs",
+"freshers",
+"career",
+"naukri"
+],
+"url": "https://www.naukri.com/",
+"official": false
+},
+{
+"id": "indeed",
+"name": "Indeed India",
+"category": "jobs",
+"audience": [
+"jobseeker"
+],
+"state": "all",
+"type": "private",
+"description": "Search employment opportunities by job, skill and location.",
+"keywords": [
+"jobs",
+"private jobs",
+"work from home",
+"career"
+],
+"url": "https://in.indeed.com/",
+"official": false
+},
+{
+"id": "foundit",
+"name": "Foundit",
+"category": "jobs",
+"audience": [
+"jobseeker"
+],
+"state": "all",
+"type": "private",
+"description": "Private recruitment and career opportunities.",
+"keywords": [
+"jobs",
+"private jobs",
+"career"
+],
+"url": "https://www.foundit.in/",
+"official": false
+},
+{
+"id": "linkedin-jobs",
+"name": "LinkedIn Jobs",
+"category": "jobs",
+"audience": [
+"jobseeker",
+"student"
+],
+"state": "all",
+"type": "private",
+"description": "Professional networking and job opportunities.",
+"keywords": [
+"professional jobs",
+"jobs",
+"career",
+"networking"
+],
+"url": "https://www.linkedin.com/jobs/",
+"official": false
+},
+{
+"id": "upsc",
+"name": "UPSC",
+"category": "jobs",
+"audience": [
+"jobseeker",
+"student"
+],
+"state": "all",
+"type": "government",
+"description": "Union Public Service Commission recruitment information.",
+"keywords": [
+"UPSC",
+"government jobs",
+"civil services",
+"IAS",
+"sarkari naukri"
+],
+"url": "https://upsc.gov.in/",
+"official": true
+},
+{
+"id": "opsc",
+"name": "OPSC",
+"category": "jobs",
+"audience": [
+"jobseeker",
+"student"
+],
+"state": "odisha",
+"type": "government",
+"description": "Odisha Public Service Commission recruitment.",
+"keywords": [
+"OPSC",
+"Odisha jobs",
+"government jobs",
+"OCS"
+],
+"url": "https://www.opsc.gov.in/",
+"official": true
+},
+{
+"id": "osssc",
+"name": "OSSSC",
+"category": "jobs",
+"audience": [
+"jobseeker",
+"student"
+],
+"state": "odisha",
+"type": "government",
+"description": "Odisha Sub-Ordinate Staff Selection Commission recruitment.",
+"keywords": [
+"OSSSC",
+"Odisha jobs",
+"government jobs"
+],
+"url": "https://www.osssc.gov.in/",
+"official": true
+},
+{
+"id": "myscheme",
+"name": "myScheme",
+"category": "schemes",
+"audience": [
+"citizen",
+"farmer",
+"student",
+"jobseeker",
+"business"
+],
+"state": "all",
+"type": "government",
+"description": "Discover government schemes and eligibility information.",
+"keywords": [
+"government schemes",
+"benefits",
+"eligibility",
+"subsidy",
+"yojana",
+"योजना"
+],
+"url": "https://www.myscheme.gov.in/",
+"official": true
+},
+{
+"id": "umang",
+"name": "UMANG",
+"category": "citizen",
+"audience": [
+"citizen"
+],
+"state": "all",
+"type": "government",
+"description": "Access many central and state government services.",
+"keywords": [
+"government services",
+"online services",
+"documents"
+],
+"url": "https://web.umang.gov.in/",
+"official": true
+},
+{
+"id": "subhadra",
+"name": "Subhadra",
+"category": "schemes",
+"audience": [
+"citizen"
+],
+"state": "odisha",
+"type": "government",
+"description": "Official Odisha Subhadra scheme information and services.",
+"keywords": [
+"Subhadra",
+"Odisha",
+"women",
+"scheme",
+"सुभद्रा"
+],
+"url": "https://subhadra.odisha.gov.in/",
+"official": true
+},
+{
+"id": "pm-kisan",
+"name": "PM-KISAN",
+"category": "agriculture",
+"audience": [
+"farmer"
+],
+"state": "all",
+"type": "government",
+"description": "Farmer income support services.",
+"keywords": [
+"farmer",
+"PM KISAN",
+"agriculture",
+"income support",
+"kisan",
+"किसान"
+],
+"url": "https://pmkisan.gov.in/",
+"official": true
+},
+{
+"id": "pmay",
+"name": "Pradhan Mantri Awas Yojana",
+"category": "schemes",
+"audience": [
+"citizen"
+],
+"state": "all",
+"type": "government",
+"description": "Housing-related government services and information.",
+"keywords": [
+"housing",
+"home",
+"PMAY",
+"house",
+"awas",
+"आवास"
+],
+"url": "https://pmaymis.gov.in/",
+"official": true
+},
+{
+"id": "kalia",
+"name": "KALIA",
+"category": "agriculture",
+"audience": [
+"farmer"
+],
+"state": "odisha",
+"type": "government",
+"description": "Odisha farmer support services.",
+"keywords": [
+"KALIA",
+"farmer",
+"Odisha",
+"agriculture"
+],
+"url": "https://kaliaportal.odisha.gov.in/",
+"official": true
+},
+{
+"id": "aadhaar",
+"name": "myAadhaar",
+"category": "documents",
+"audience": [
+"citizen"
+],
+"state": "all",
+"type": "government",
+"description": "Official UIDAI Aadhaar services.",
+"keywords": [
+"Aadhaar",
+"UIDAI",
+"identity",
+"document",
+"आधार"
+],
+"url": "https://myaadhaar.uidai.gov.in/",
+"official": true
+},
+{
+"id": "digilocker",
+"name": "DigiLocker",
+"category": "documents",
+"audience": [
+"citizen",
+"student"
+],
+"state": "all",
+"type": "government",
+"description": "Access and manage digital government documents.",
+"keywords": [
+"documents",
+"DigiLocker",
+"certificate",
+"digital documents"
+],
+"url": "https://www.digilocker.gov.in/",
+"official": true
+},
+{
+"id": "income-tax",
+"name": "Income Tax Portal",
+"category": "documents",
+"audience": [
+"citizen",
+"business"
+],
+"state": "all",
+"type": "government",
+"description": "Income tax and PAN-related services.",
+"keywords": [
+"PAN",
+"income tax",
+"tax",
+"ITR",
+"pan card"
+],
+"url": "https://www.incometax.gov.in/",
+"official": true
+},
+{
+"id": "voter",
+"name": "Voter Services",
+"category": "documents",
+"audience": [
+"citizen"
+],
+"state": "all",
+"type": "government",
+"description": "Election Commission voter services.",
+"keywords": [
+"voter ID",
+"election",
+"EPIC",
+"voter",
+"votar",
+"मतदाता"
+],
+"url": "https://voters.eci.gov.in/",
+"official": true
+},
+{
+"id": "passport",
+"name": "Passport Seva",
+"category": "documents",
+"audience": [
+"citizen"
+],
+"state": "all",
+"type": "government",
+"description": "Passport applications and related services.",
+"keywords": [
+"passport",
+"travel",
+"document"
+],
+"url": "https://www.passportindia.gov.in/",
+"official": true
+},
+{
+"id": "parivahan",
+"name": "Parivahan",
+"category": "citizen",
+"audience": [
+"citizen"
+],
+"state": "all",
+"type": "government",
+"description": "Driving licence and vehicle-related services.",
+"keywords": [
+"driving licence",
+"vehicle",
+"RC",
+"transport",
+"DL"
+],
+"url": "https://parivahan.gov.in/",
+"official": true
+},
+{
+"id": "nsp",
+"name": "National Scholarship Portal",
+"category": "education",
+"audience": [
+"student"
+],
+"state": "all",
+"type": "government",
+"description": "Central and state scholarship services.",
+"keywords": [
+"scholarship",
+"student",
+"education",
+"financial assistance",
+"chhatravritti",
+"छात्रवृत्ति"
+],
+"url": "https://scholarships.gov.in/",
+"official": true
+},
+{
+"id": "sams-odisha",
+"name": "SAMS Odisha",
+"category": "education",
+"audience": [
+"student"
+],
+"state": "odisha",
+"type": "government",
+"description": "Odisha admissions and student services.",
+"keywords": [
+"SAMS",
+"Odisha",
+"admission",
+"college"
+],
+"url": "https://samsodisha.gov.in/",
+"official": true
+},
+{
+"id": "skill-india",
+"name": "Skill India",
+"category": "education",
+"audience": [
+"student",
+"jobseeker"
+],
+"state": "all",
+"type": "government",
+"description": "Skill development and training opportunities.",
+"keywords": [
+"skills",
+"training",
+"skill development",
+"courses"
+],
+"url": "https://www.skillindia.gov.in/",
+"official": true
+},
+{
+"id": "swayam",
+"name": "SWAYAM",
+"category": "education",
+"audience": [
+"student",
+"jobseeker"
+],
+"state": "all",
+"type": "government",
+"description": "Government-supported online learning platform.",
+"keywords": [
+"online courses",
+"education",
+"learning",
+"courses"
+],
+"url": "https://swayam.gov.in/",
+"official": true
+},
+{
+"id": "udyam",
+"name": "Udyam Registration",
+"category": "business",
+"audience": [
+"business"
+],
+"state": "all",
+"type": "government",
+"description": "Official MSME registration portal.",
+"keywords": [
+"MSME",
+"Udyam",
+"business",
+"registration"
+],
+"url": "https://udyamregistration.gov.in/",
+"official": true
+},
+{
+"id": "startup-india",
+"name": "Startup India",
+"category": "business",
+"audience": [
+"business",
+"student"
+],
+"state": "all",
+"type": "government",
+"description": "Startup recognition and support programmes.",
+"keywords": [
+"startup",
+"business",
+"entrepreneur",
+"funding"
+],
+"url": "https://www.startupindia.gov.in/",
+"official": true
+},
+{
+"id": "startup-odisha",
+"name": "Startup Odisha",
+"category": "business",
+"audience": [
+"business"
+],
+"state": "odisha",
+"type": "government",
+"description": "Odisha startup support and incubation ecosystem.",
+"keywords": [
+"Startup Odisha",
+"startup",
+"Odisha",
+"incubation"
+],
+"url": "https://startupodisha.gov.in/",
+"official": true
+},
+{
+"id": "gst",
+"name": "GST Portal",
+"category": "business",
+"audience": [
+"business"
+],
+"state": "all",
+"type": "government",
+"description": "GST registration and taxpayer services.",
+"keywords": [
+"GST",
+"business",
+"tax",
+"registration"
+],
+"url": "https://www.gst.gov.in/",
+"official": true
+},
+{
+"id": "gem",
+"name": "Government e-Marketplace",
+"category": "business",
+"audience": [
+"business"
+],
+"state": "all",
+"type": "government",
+"description": "Government procurement marketplace.",
+"keywords": [
+"GeM",
+"government procurement",
+"business",
+"tender"
+],
+"url": "https://gem.gov.in/",
+"official": true
+},
+{
+"id": "bhulekh-odisha",
+"name": "Bhulekh Odisha",
+"category": "documents",
+"audience": [
+"citizen",
+"farmer"
+],
+"state": "odisha",
+"type": "government",
+"description": "Odisha land records and ROR services.",
+"keywords": [
+"land records",
+"ROR",
+"Bhulekh",
+"Odisha",
+"land",
+"jamabandi"
+],
+"url": "https://bhulekh.ori.nic.in/",
+"official": true
+},
+{
+"id": "odisha-services",
+"name": "Odisha Citizen Services",
+"category": "citizen",
+"audience": [
+"citizen"
+],
+"state": "odisha",
+"type": "government",
+"description": "Official Odisha citizen e-services directory.",
+"keywords": [
+"Odisha",
+"citizen services",
+"e-services"
+],
+"url": "https://odisha.gov.in/",
+"official": true
+},
+{
+"id": "odisha-one",
+"name": "Odisha One",
+"category": "citizen",
+"audience": [
+"citizen"
+],
+"state": "odisha",
+"type": "government",
+"description": "Integrated Odisha digital service initiative.",
+"keywords": [
+"Odisha One",
+"Odisha",
+"online services"
+],
+"url": "https://odishaone.gov.in/",
+"official": true
+},
+{
+"id": "cpgrams",
+"name": "CPGRAMS",
+"category": "citizen",
+"audience": [
+"citizen"
+],
+"state": "all",
+"type": "government",
+"description": "Government grievance redress mechanism.",
+"keywords": [
+"complaint",
+"grievance",
+"government complaint"
+],
+"url": "https://pgportal.gov.in/",
+"official": true
+},
+{
+"id": "irctc",
+"name": "IRCTC",
+"category": "citizen",
+"audience": [
+"citizen"
+],
+"state": "all",
+"type": "government",
+"description": "Official railway ticketing and related services.",
+"keywords": [
+"train",
+"railway",
+"ticket",
+"IRCTC"
+],
+"url": "https://www.irctc.co.in/",
+"official": true
+},
+{
+"id": "enam",
+"name": "e-NAM",
+"category": "agriculture",
+"audience": [
+"farmer"
+],
+"state": "all",
+"type": "government",
+"description": "National Agriculture Market services.",
+"keywords": [
+"farmer",
+"agriculture market",
+"mandi",
+"e-NAM"
+],
+"url": "https://www.enam.gov.in/",
+"official": true
+},
+{
+"id": "agristack",
+"name": "AgriStack",
+"category": "agriculture",
+"audience": [
+"farmer"
+],
+"state": "all",
+"type": "government",
+"description": "Digital agriculture initiatives and farmer services.",
+"keywords": [
+"agriculture",
+"farmer",
+"digital agriculture"
+],
+"url": "https://agristack.gov.in/",
+"official": true
+},
+{
+"id": "ssc",
+"name": "Staff Selection Commission (SSC)",
+"category": "jobs",
+"audience": [
+"jobseeker",
+"student"
+],
+"state": "all",
+"type": "government",
+"description": "Central government exam notifications and results.",
+"keywords": [
+"SSC",
+"CGL",
+"CHSL",
+"MTS",
+"government jobs",
+"sarkari naukri",
+"सरकारी नौकरी"
+],
+"url": "https://ssc.gov.in/",
+"official": true
+},
+{
+"id": "ibps",
+"name": "IBPS",
+"category": "jobs",
+"audience": [
+"jobseeker",
+"student"
+],
+"state": "all",
+"type": "government",
+"description": "Bank recruitment exams (PO, Clerk, RRB).",
+"keywords": [
+"bank jobs",
+"IBPS",
+"PO",
+"clerk",
+"RRB",
+"banking"
+],
+"url": "https://www.ibps.in/",
+"official": true
+},
+{
+"id": "ossc",
+"name": "OSSC",
+"category": "jobs",
+"audience": [
+"jobseeker",
+"student"
+],
+"state": "odisha",
+"type": "government",
+"description": "Odisha Staff Selection Commission recruitment.",
+"keywords": [
+"OSSC",
+"Odisha jobs",
+"CGL",
+"government jobs"
+],
+"url": "https://www.ossc.gov.in/",
+"official": true
+},
+{
+"id": "employment-news",
+"name": "Employment News",
+"category": "jobs",
+"audience": [
+"jobseeker",
+"student"
+],
+"state": "all",
+"type": "government",
+"description": "Government job notifications and career guidance.",
+"keywords": [
+"employment news",
+"government jobs",
+"vacancy",
+"sarkari naukri"
+],
+"url": "https://www.employmentnews.gov.in/",
+"official": true
+},
+{
+"id": "apprenticeship-india",
+"name": "Apprenticeship India",
+"category": "jobs",
+"audience": [
+"student",
+"jobseeker"
+],
+"state": "all",
+"type": "government",
+"description": "Apprenticeship training opportunities with employers.",
+"keywords": [
+"apprenticeship",
+"training",
+"ITI",
+"stipend"
+],
+"url": "https://www.apprenticeshipindia.gov.in/",
+"official": true
+},
+{
+"id": "shine",
+"name": "Shine.com",
+"category": "jobs",
+"audience": [
+"jobseeker",
+"student"
+],
+"state": "all",
+"type": "private",
+"description": "Private job search platform for freshers and experienced people.",
+"keywords": [
+"private jobs",
+"jobs",
+"freshers",
+"career"
+],
+"url": "https://www.shine.com/",
+"official": false
+},
+{
+"id": "apna",
+"name": "Apna",
+"category": "jobs",
+"audience": [
+"jobseeker"
+],
+"state": "all",
+"type": "private",
+"description": "Job search for local and entry-level jobs.",
+"keywords": [
+"local jobs",
+"jobs near me",
+"freshers",
+"private jobs"
+],
+"url": "https://apna.co/",
+"official": false
+},
+{
+"id": "internshala",
+"name": "Internshala",
+"category": "jobs",
+"audience": [
+"student",
+"jobseeker"
+],
+"state": "all",
+"type": "private",
+"description": "Internships and training opportunities for students.",
+"keywords": [
+"internship",
+"freshers",
+"student",
+"training"
+],
+"url": "https://internshala.com/",
+"official": false
+},
+{
+"id": "upwork",
+"name": "Upwork",
+"category": "jobs",
+"audience": [
+"jobseeker"
+],
+"state": "all",
+"type": "private",
+"description": "Freelance work and remote projects.",
+"keywords": [
+"freelance",
+"work from home",
+"online work",
+"remote"
+],
+"url": "https://www.upwork.com/",
+"official": false
+},
+{
+"id": "fiverr",
+"name": "Fiverr",
+"category": "jobs",
+"audience": [
+"jobseeker"
+],
+"state": "all",
+"type": "private",
+"description": "Sell freelance services online.",
+"keywords": [
+"freelance",
+"work from home",
+"online work",
+"gig"
+],
+"url": "https://www.fiverr.com/",
+"official": false
+},
+{
+"id": "pmjay",
+"name": "Ayushman Bharat PM-JAY",
+"category": "schemes",
+"audience": [
+"citizen"
+],
+"state": "all",
+"type": "government",
+"description": "Health insurance cover for eligible families.",
+"keywords": [
+"health",
+"insurance",
+"hospital",
+"Ayushman",
+"treatment",
+"आयुष्मान"
+],
+"url": "https://pmjay.gov.in/",
+"official": true
+},
+{
+"id": "pmuy",
+"name": "PM Ujjwala Yojana",
+"category": "schemes",
+"audience": [
+"citizen"
+],
+"state": "all",
+"type": "government",
+"description": "LPG connection support for eligible households.",
+"keywords": [
+"LPG",
+"gas connection",
+"Ujjwala",
+"cylinder",
+"उज्ज्वला"
+],
+"url": "https://www.pmuy.gov.in/",
+"official": true
+},
+{
+"id": "pmjdy",
+"name": "PM Jan Dhan Yojana",
+"category": "schemes",
+"audience": [
+"citizen"
+],
+"state": "all",
+"type": "government",
+"description": "Basic bank account for every household.",
+"keywords": [
+"bank account",
+"Jan Dhan",
+"zero balance",
+"savings"
+],
+"url": "https://pmjdy.gov.in/",
+"official": true
+},
+{
+"id": "jansuraksha",
+"name": "PM Suraksha Bima & Jeevan Jyoti",
+"category": "schemes",
+"audience": [
+"citizen"
+],
+"state": "all",
+"type": "government",
+"description": "Low-cost accident and life insurance schemes.",
+"keywords": [
+"insurance",
+"PMSBY",
+"PMJJBY",
+"accident cover",
+"life insurance"
+],
+"url": "https://jansuraksha.gov.in/",
+"official": true
+},
+{
+"id": "nps-apy",
+"name": "NPS & Atal Pension Yojana (PFRDA)",
+"category": "schemes",
+"audience": [
+"citizen"
+],
+"state": "all",
+"type": "government",
+"description": "Pension schemes regulated by PFRDA.",
+"keywords": [
+"pension",
+"APY",
+"NPS",
+"retirement",
+"Atal Pension"
+],
+"url": "https://www.pfrda.org.in/",
+"official": true
+},
+{
+"id": "nsap",
+"name": "National Social Assistance Programme",
+"category": "schemes",
+"audience": [
+"citizen"
+],
+"state": "all",
+"type": "government",
+"description": "Pension support for elderly, widows and disabled persons.",
+"keywords": [
+"old age pension",
+"widow pension",
+"disability pension",
+"NSAP"
+],
+"url": "https://nsap.nic.in/",
+"official": true
+},
+{
+"id": "nfsa",
+"name": "National Food Security Act (Ration)",
+"category": "schemes",
+"audience": [
+"citizen"
+],
+"state": "all",
+"type": "government",
+"description": "Information on ration cards and food security.",
+"keywords": [
+"ration card",
+"food",
+"NFSA",
+"rice",
+"राशन कार्ड"
+],
+"url": "https://nfsa.gov.in/",
+"official": true
+},
+{
+"id": "food-odisha",
+"name": "Food Supplies Odisha",
+"category": "schemes",
+"audience": [
+"citizen"
+],
+"state": "odisha",
+"type": "government",
+"description": "Odisha food supplies and ration card services.",
+"keywords": [
+"ration card",
+"Odisha",
+"food supplies",
+"PDS"
+],
+"url": "https://foododisha.in/",
+"official": true
+},
+{
+"id": "pm-vishwakarma",
+"name": "PM Vishwakarma",
+"category": "schemes",
+"audience": [
+"business",
+"citizen"
+],
+"state": "all",
+"type": "government",
+"description": "Support for traditional artisans and craftspeople.",
+"keywords": [
+"artisan",
+"craftsman",
+"Vishwakarma",
+"tools",
+"skill training"
+],
+"url": "https://pmvishwakarma.gov.in/",
+"official": true
+},
+{
+"id": "pm-svanidhi",
+"name": "PM SVANidhi",
+"category": "schemes",
+"audience": [
+"business"
+],
+"state": "all",
+"type": "government",
+"description": "Working capital loans for street vendors.",
+"keywords": [
+"street vendor",
+"loan",
+"SVANidhi",
+"hawker"
+],
+"url": "https://pmsvanidhi.mohua.gov.in/",
+"official": true
+},
+{
+"id": "eshram",
+"name": "e-Shram",
+"category": "schemes",
+"audience": [
+"citizen",
+"jobseeker"
+],
+"state": "all",
+"type": "government",
+"description": "Registration portal for unorganised workers.",
+"keywords": [
+"e-Shram",
+"labour card",
+"unorganised workers",
+"worker registration"
+],
+"url": "https://eshram.gov.in/",
+"official": true
+},
+{
+"id": "india-gov",
+"name": "National Portal of India",
+"category": "citizen",
+"audience": [
+"citizen"
+],
+"state": "all",
+"type": "government",
+"description": "Official gateway to Government of India information and services.",
+"keywords": [
+"government",
+"india.gov.in",
+"services",
+"information"
+],
+"url": "https://www.india.gov.in/",
+"official": true
+},
+{
+"id": "mygov",
+"name": "MyGov",
+"category": "citizen",
+"audience": [
+"citizen"
+],
+"state": "all",
+"type": "government",
+"description": "Citizen engagement platform of the Government of India.",
+"keywords": [
+"MyGov",
+"government",
+"citizen",
+"suggestions"
+],
+"url": "https://www.mygov.in/",
+"official": true
+},
+{
+"id": "rti",
+"name": "RTI Online",
+"category": "citizen",
+"audience": [
+"citizen"
+],
+"state": "all",
+"type": "government",
+"description": "File Right to Information requests online.",
+"keywords": [
+"RTI",
+"right to information",
+"information request"
+],
+"url": "https://rtionline.gov.in/",
+"official": true
+},
+{
+"id": "ecourts",
+"name": "eCourts Services",
+"category": "citizen",
+"audience": [
+"citizen"
+],
+"state": "all",
+"type": "government",
+"description": "Check court case status and orders.",
+"keywords": [
+"court",
+"case status",
+"eCourts",
+"CNR",
+"judgement"
+],
+"url": "https://ecourts.gov.in/",
+"official": true
+},
+{
+"id": "nalsa",
+"name": "NALSA Legal Aid",
+"category": "citizen",
+"audience": [
+"citizen"
+],
+"state": "all",
+"type": "government",
+"description": "Free legal services for eligible citizens.",
+"keywords": [
+"free legal aid",
+"lawyer",
+"legal services"
+],
+"url": "https://nalsa.gov.in/",
+"official": true
+},
+{
+"id": "consumer-helpline",
+"name": "National Consumer Helpline",
+"category": "citizen",
+"audience": [
+"citizen"
+],
+"state": "all",
+"type": "government",
+"description": "Consumer complaints and dispute support.",
+"keywords": [
+"consumer",
+"complaint",
+"refund",
+"fraud",
+"helpline"
+],
+"url": "https://consumerhelpline.gov.in/",
+"official": true
+},
+{
+"id": "cybercrime",
+"name": "National Cyber Crime Portal",
+"category": "citizen",
+"audience": [
+"citizen"
+],
+"state": "all",
+"type": "government",
+"description": "Report online fraud and cyber crimes.",
+"keywords": [
+"cyber crime",
+"online fraud",
+"UPI fraud",
+"complaint",
+"scam"
+],
+"url": "https://cybercrime.gov.in/",
+"official": true
+},
+{
+"id": "sanchar-saathi",
+"name": "Sanchar Saathi",
+"category": "citizen",
+"audience": [
+"citizen"
+],
+"state": "all",
+"type": "government",
+"description": "Report lost phones and check mobile connections in your name.",
+"keywords": [
+"lost phone",
+"IMEI",
+"SIM",
+"block phone",
+"mobile connections"
+],
+"url": "https://sancharsaathi.gov.in/",
+"official": true
+},
+{
+"id": "abdm",
+"name": "Ayushman Bharat Health Account (ABHA)",
+"category": "citizen",
+"audience": [
+"citizen"
+],
+"state": "all",
+"type": "government",
+"description": "Create a digital health ID and manage health records.",
+"keywords": [
+"ABHA",
+"health ID",
+"health records",
+"digital health"
+],
+"url": "https://abdm.gov.in/",
+"official": true
+},
+{
+"id": "esanjeevani",
+"name": "e-Sanjeevani",
+"category": "citizen",
+"audience": [
+"citizen"
+],
+"state": "all",
+"type": "government",
+"description": "Free online doctor consultation service.",
+"keywords": [
+"doctor",
+"telemedicine",
+"online consultation",
+"health"
+],
+"url": "https://esanjeevani.mohfw.gov.in/",
+"official": true
+},
+{
+"id": "rbi-cms",
+"name": "RBI Complaint Portal",
+"category": "citizen",
+"audience": [
+"citizen"
+],
+"state": "all",
+"type": "government",
+"description": "Complaints against banks and financial institutions.",
+"keywords": [
+"bank complaint",
+"RBI",
+"ombudsman",
+"fraud"
+],
+"url": "https://cms.rbi.org.in/",
+"official": true
+},
+{
+"id": "esic",
+"name": "ESIC",
+"category": "citizen",
+"audience": [
+"citizen",
+"jobseeker"
+],
+"state": "all",
+"type": "government",
+"description": "Employee state insurance and medical benefits.",
+"keywords": [
+"ESIC",
+"insurance",
+"medical benefit",
+"employee"
+],
+"url": "https://www.esic.gov.in/",
+"official": true
+},
+{
+"id": "epfo",
+"name": "EPFO Member Portal",
+"category": "citizen",
+"audience": [
+"citizen",
+"jobseeker"
+],
+"state": "all",
+"type": "government",
+"description": "PF balance, UAN and claim services.",
+"keywords": [
+"PF",
+"provident fund",
+"UAN",
+"EPFO",
+"withdrawal"
+],
+"url": "https://unifiedportal-mem.epfindia.gov.in/",
+"official": true
+},
+{
+"id": "india-post",
+"name": "India Post",
+"category": "citizen",
+"audience": [
+"citizen"
+],
+"state": "all",
+"type": "government",
+"description": "Post office savings, Sukanya Samriddhi and postal services.",
+"keywords": [
+"post office",
+"Sukanya Samriddhi",
+"savings",
+"speed post",
+"tracking"
+],
+"url": "https://www.indiapost.gov.in/",
+"official": true
+},
+{
+"id": "odisha-police",
+"name": "Odisha Police",
+"category": "citizen",
+"audience": [
+"citizen",
+"jobseeker"
+],
+"state": "odisha",
+"type": "government",
+"description": "Odisha Police citizen services and recruitment information.",
+"keywords": [
+"police",
+"FIR",
+"recruitment",
+"Odisha police",
+"complaint"
+],
+"url": "https://odishapolice.gov.in/",
+"official": true
+},
+{
+"id": "crs",
+"name": "Birth & Death Registration (CRS)",
+"category": "documents",
+"audience": [
+"citizen"
+],
+"state": "all",
+"type": "government",
+"description": "Birth and death registration services.",
+"keywords": [
+"birth certificate",
+"death certificate",
+"CRS",
+"registration"
+],
+"url": "https://crsorgi.gov.in/",
+"official": true
+},
+{
+"id": "jeevan-pramaan",
+"name": "Jeevan Pramaan",
+"category": "documents",
+"audience": [
+"citizen"
+],
+"state": "all",
+"type": "government",
+"description": "Digital life certificate for pensioners.",
+"keywords": [
+"life certificate",
+"pensioner",
+"Jeevan Pramaan",
+"pension"
+],
+"url": "https://jeevanpramaan.gov.in/",
+"official": true
+},
+{
+"id": "pmfby",
+"name": "PM Fasal Bima Yojana",
+"category": "agriculture",
+"audience": [
+"farmer"
+],
+"state": "all",
+"type": "government",
+"description": "Crop insurance for farmers.",
+"keywords": [
+"crop insurance",
+"farmer",
+"fasal bima",
+"agriculture",
+"फसल बीमा"
+],
+"url": "https://pmfby.gov.in/",
+"official": true
+},
+{
+"id": "soil-health",
+"name": "Soil Health Card",
+"category": "agriculture",
+"audience": [
+"farmer"
+],
+"state": "all",
+"type": "government",
+"description": "Soil testing reports and crop nutrient advice.",
+"keywords": [
+"soil",
+"soil testing",
+"fertilizer",
+"soil health card"
+],
+"url": "https://soilhealth.dac.gov.in/",
+"official": true
+},
+{
+"id": "mkisan",
+"name": "mKisan",
+"category": "agriculture",
+"audience": [
+"farmer"
+],
+"state": "all",
+"type": "government",
+"description": "Farming advisories and SMS services.",
+"keywords": [
+"advisory",
+"farming tips",
+"SMS",
+"crop"
+],
+"url": "https://mkisan.gov.in/",
+"official": true
+},
+{
+"id": "dafw",
+"name": "Dept. of Agriculture & Farmers Welfare",
+"category": "agriculture",
+"audience": [
+"farmer"
+],
+"state": "all",
+"type": "government",
+"description": "Central agriculture schemes and information.",
+"keywords": [
+"agriculture",
+"farmer",
+"schemes",
+"subsidy"
+],
+"url": "https://agriculture.gov.in/",
+"official": true
+},
+{
+"id": "agri-odisha",
+"name": "Agriculture Odisha",
+"category": "agriculture",
+"audience": [
+"farmer"
+],
+"state": "odisha",
+"type": "government",
+"description": "Odisha agriculture department services and schemes.",
+"keywords": [
+"Odisha agriculture",
+"farmer",
+"subsidy",
+"seeds"
+],
+"url": "https://agriodisha.nic.in/",
+"official": true
+},
+{
+"id": "pm-kusum",
+"name": "PM-KUSUM",
+"category": "agriculture",
+"audience": [
+"farmer"
+],
+"state": "all",
+"type": "government",
+"description": "Solar pumps and solar power support for farmers.",
+"keywords": [
+"solar pump",
+"KUSUM",
+"farmer",
+"irrigation"
+],
+"url": "https://pmkusum.mnre.gov.in/",
+"official": true
+},
+{
+"id": "pmmsy",
+"name": "PM Matsya Sampada Yojana",
+"category": "agriculture",
+"audience": [
+"farmer"
+],
+"state": "all",
+"type": "government",
+"description": "Support for fisheries and fish farmers.",
+"keywords": [
+"fisheries",
+"fish farming",
+"PMMSY",
+"fisherman"
+],
+"url": "https://pmmsy.dof.gov.in/",
+"official": true
+},
+{
+"id": "imd",
+"name": "India Meteorological Department",
+"category": "agriculture",
+"audience": [
+"farmer",
+"citizen"
+],
+"state": "all",
+"type": "government",
+"description": "Weather forecasts and warnings.",
+"keywords": [
+"weather",
+"rain",
+"cyclone",
+"forecast",
+"mausam",
+"मौसम"
+],
+"url": "https://mausam.imd.gov.in/",
+"official": true
+},
+{
+"id": "nptel",
+"name": "NPTEL",
+"category": "education",
+"audience": [
+"student",
+"jobseeker"
+],
+"state": "all",
+"type": "government",
+"description": "Free online engineering and science courses from IITs.",
+"keywords": [
+"online courses",
+"NPTEL",
+"IIT",
+"engineering",
+"free courses"
+],
+"url": "https://nptel.ac.in/",
+"official": true
+},
+{
+"id": "diksha",
+"name": "DIKSHA",
+"category": "education",
+"audience": [
+"student"
+],
+"state": "all",
+"type": "government",
+"description": "Digital learning content for students and teachers.",
+"keywords": [
+"school",
+"study material",
+"NCERT",
+"learning"
+],
+"url": "https://diksha.gov.in/",
+"official": true
+},
+{
+"id": "cbse",
+"name": "CBSE",
+"category": "education",
+"audience": [
+"student"
+],
+"state": "all",
+"type": "government",
+"description": "CBSE results, circulars and services.",
+"keywords": [
+"CBSE",
+"result",
+"board exam",
+"admit card"
+],
+"url": "https://www.cbse.gov.in/",
+"official": true
+},
+{
+"id": "chse-odisha",
+"name": "CHSE Odisha",
+"category": "education",
+"audience": [
+"student"
+],
+"state": "odisha",
+"type": "government",
+"description": "Council of Higher Secondary Education, Odisha (+2 results and services).",
+"keywords": [
+"CHSE",
+"plus two",
+"+2",
+"Odisha",
+"result"
+],
+"url": "https://chseodisha.nic.in/",
+"official": true
+},
+{
+"id": "bse-odisha",
+"name": "BSE Odisha",
+"category": "education",
+"audience": [
+"student"
+],
+"state": "odisha",
+"type": "government",
+"description": "Board of Secondary Education, Odisha (matric results and services).",
+"keywords": [
+"BSE Odisha",
+"matric",
+"10th",
+"result",
+"Odisha"
+],
+"url": "https://bseodisha.ac.in/",
+"official": true
+},
+{
+"id": "nta",
+"name": "NTA",
+"category": "education",
+"audience": [
+"student"
+],
+"state": "all",
+"type": "government",
+"description": "Entrance exams such as JEE Main, NEET and CUET.",
+"keywords": [
+"NTA",
+"JEE",
+"NEET",
+"CUET",
+"entrance exam"
+],
+"url": "https://nta.ac.in/",
+"official": true
+},
+{
+"id": "ugc",
+"name": "UGC",
+"category": "education",
+"audience": [
+"student"
+],
+"state": "all",
+"type": "government",
+"description": "University Grants Commission information.",
+"keywords": [
+"UGC",
+"university",
+"college",
+"higher education"
+],
+"url": "https://www.ugc.gov.in/",
+"official": true
+},
+{
+"id": "aicte",
+"name": "AICTE",
+"category": "education",
+"audience": [
+"student"
+],
+"state": "all",
+"type": "government",
+"description": "Technical education and approved institutions.",
+"keywords": [
+"AICTE",
+"engineering",
+"technical education",
+"diploma"
+],
+"url": "https://www.aicte-india.org/",
+"official": true
+},
+{
+"id": "abc",
+"name": "Academic Bank of Credits",
+"category": "education",
+"audience": [
+"student"
+],
+"state": "all",
+"type": "government",
+"description": "Store and transfer your academic credits.",
+"keywords": [
+"credits",
+"ABC",
+"academic bank",
+"university"
+],
+"url": "https://www.abc.gov.in/",
+"official": true
+},
+{
+"id": "scholarship-odisha",
+"name": "Odisha Scholarship Portal",
+"category": "education",
+"audience": [
+"student"
+],
+"state": "odisha",
+"type": "government",
+"description": "Odisha state scholarship applications.",
+"keywords": [
+"scholarship",
+"Odisha",
+"post matric",
+"e-Pass"
+],
+"url": "https://scholarship.odisha.gov.in/",
+"official": true
+},
+{
+"id": "pm-vidyalaxmi",
+"name": "PM Vidyalaxmi",
+"category": "education",
+"audience": [
+"student"
+],
+"state": "all",
+"type": "government",
+"description": "Education loan information for higher studies.",
+"keywords": [
+"education loan",
+"student loan",
+"PM Vidyalaxmi"
+],
+"url": "https://pmvidyalaxmi.co.in/",
+"official": true
+},
+{
+"id": "nsdc",
+"name": "NSDC",
+"category": "education",
+"audience": [
+"student",
+"jobseeker"
+],
+"state": "all",
+"type": "government",
+"description": "National Skill Development Corporation training programmes.",
+"keywords": [
+"skills",
+"training",
+"NSDC",
+"certification"
+],
+"url": "https://nsdcindia.org/",
+"official": true
+},
+{
+"id": "nios",
+"name": "NIOS",
+"category": "education",
+"audience": [
+"student"
+],
+"state": "all",
+"type": "government",
+"description": "Open schooling for 10th and 12th.",
+"keywords": [
+"NIOS",
+"open school",
+"10th",
+"12th",
+"dropout"
+],
+"url": "https://www.nios.ac.in/",
+"official": true
+},
+{
+"id": "ignou",
+"name": "IGNOU",
+"category": "education",
+"audience": [
+"student",
+"jobseeker"
+],
+"state": "all",
+"type": "government",
+"description": "Distance education university.",
+"keywords": [
+"IGNOU",
+"distance education",
+"degree",
+"open university"
+],
+"url": "https://www.ignou.ac.in/",
+"official": true
+},
+{
+"id": "dgt",
+"name": "DGT (ITI & Vocational Training)",
+"category": "education",
+"audience": [
+"student",
+"jobseeker"
+],
+"state": "all",
+"type": "government",
+"description": "ITI and vocational training under DGT.",
+"keywords": [
+"ITI",
+"vocational",
+"training",
+"trade"
+],
+"url": "https://dgt.gov.in/",
+"official": true
+},
+{
+"id": "mudra",
+"name": "Mudra Loan",
+"category": "business",
+"audience": [
+"business"
+],
+"state": "all",
+"type": "government",
+"description": "Loans for small businesses under the Mudra scheme.",
+"keywords": [
+"Mudra loan",
+"business loan",
+"small business",
+"Pradhan Mantri Mudra"
+],
+"url": "https://www.mudra.org.in/",
+"official": true
+},
+{
+"id": "pmegp",
+"name": "PMEGP",
+"category": "business",
+"audience": [
+"business",
+"jobseeker"
+],
+"state": "all",
+"type": "government",
+"description": "Subsidy-linked loans to start new micro enterprises.",
+"keywords": [
+"PMEGP",
+"subsidy",
+"loan",
+"self employment",
+"new business"
+],
+"url": "https://www.kviconline.gov.in/pmegpeportal/",
+"official": true
+},
+{
+"id": "standup-india",
+"name": "Stand-Up India",
+"category": "business",
+"audience": [
+"business"
+],
+"state": "all",
+"type": "government",
+"description": "Loans for SC/ST and women entrepreneurs.",
+"keywords": [
+"Stand-Up India",
+"women entrepreneur",
+"SC ST",
+"loan"
+],
+"url": "https://www.standupmitra.in/",
+"official": true
+},
+{
+"id": "msme",
+"name": "Ministry of MSME",
+"category": "business",
+"audience": [
+"business"
+],
+"state": "all",
+"type": "government",
+"description": "MSME schemes and information.",
+"keywords": [
+"MSME",
+"small business",
+"schemes",
+"industry"
+],
+"url": "https://msme.gov.in/",
+"official": true
+},
+{
+"id": "invest-odisha",
+"name": "Invest Odisha",
+"category": "business",
+"audience": [
+"business"
+],
+"state": "odisha",
+"type": "government",
+"description": "Odisha industrial investment portal.",
+"keywords": [
+"Invest Odisha",
+"industry",
+"investment",
+"Odisha business"
+],
+"url": "https://investodisha.gov.in/",
+"official": true
+},
+{
+"id": "mca",
+"name": "Ministry of Corporate Affairs",
+"category": "business",
+"audience": [
+"business"
+],
+"state": "all",
+"type": "government",
+"description": "Company registration and filings.",
+"keywords": [
+"company registration",
+"MCA",
+"LLP",
+"ROC"
+],
+"url": "https://www.mca.gov.in/",
+"official": true
+},
+{
+"id": "ipindia",
+"name": "IP India",
+"category": "business",
+"audience": [
+"business"
+],
+"state": "all",
+"type": "government",
+"description": "Trademark, patent and copyright services.",
+"keywords": [
+"trademark",
+"patent",
+"copyright",
+"brand"
+],
+"url": "https://ipindia.gov.in/",
+"official": true
+},
+{
+"id": "fssai",
+"name": "FSSAI FoSCoS",
+"category": "business",
+"audience": [
+"business"
+],
+"state": "all",
+"type": "government",
+"description": "Food business licence and registration.",
+"keywords": [
+"FSSAI",
+"food licence",
+"food business",
+"registration"
+],
+"url": "https://foscos.fssai.gov.in/",
+"official": true
+},
+{
+"id": "dgft",
+"name": "DGFT",
+"category": "business",
+"audience": [
+"business"
+],
+"state": "all",
+"type": "government",
+"description": "Import-export code and trade services.",
+"keywords": [
+"IEC",
+"export",
+"import",
+"trade"
+],
+"url": "https://www.dgft.gov.in/",
+"official": true
+},
+{
+"id": "sidbi",
+"name": "SIDBI",
+"category": "business",
+"audience": [
+"business"
+],
+"state": "all",
+"type": "government",
+"description": "Small business financing.",
+"keywords": [
+"SIDBI",
+"loan",
+"small business",
+"finance"
+],
+"url": "https://www.sidbi.in/",
+"official": true
+},
+{
+"id": "jansamarth",
+"name": "Jan Samarth Portal",
+"category": "business",
+"audience": [
+"business",
+"student",
+"farmer"
+],
+"state": "all",
+"type": "government",
+"description": "Credit-linked government schemes on one portal.",
+"keywords": [
+"loan",
+"credit linked",
+"subsidy",
+"Jan Samarth"
+],
+"url": "https://www.jansamarth.in/",
+"official": true
+},
+{
+"id": "nalsa2",
+"dateAdded": "2026-09-25",
+"name": "NALSA Free Legal Aid",
+"category": "legal",
+"audience": ["citizen"],
+"state": "all",
+"type": "government",
+"description": "Apply for free legal aid, a lawyer, or help drafting a petition if you're eligible.",
+"keywords": ["free lawyer", "legal aid", "petition", "case", "NALSA", "कानूनी सहायता"],
+"url": "https://nalsa.gov.in/",
+"official": true
+},
+{
+"id": "oslsa",
+"dateAdded": "2026-09-25",
+"name": "Odisha State Legal Services Authority",
+"category": "legal",
+"audience": ["citizen"],
+"state": "odisha",
+"type": "government",
+"description": "Free legal aid, lok adalat and lawyer support within Odisha.",
+"keywords": ["OSLSA", "Odisha legal aid", "lawyer", "lok adalat", "free lawyer"],
+"url": "https://www.oslsa.nic.in/",
+"official": true
+},
+{
+"id": "efiling-courts",
+"dateAdded": "2026-09-25",
+"name": "e-Filing (eCourts)",
+"category": "legal",
+"audience": ["citizen", "business"],
+"state": "all",
+"type": "government",
+"description": "File a case, petition or application in court online.",
+"keywords": ["e-filing", "file a case", "court case", "petition filing", "case status"],
+"url": "https://efiling.ecourts.gov.in/",
+"official": true
+},
+{
+"id": "njdg",
+"dateAdded": "2026-09-25",
+"name": "National Judicial Data Grid",
+"category": "legal",
+"audience": ["citizen"],
+"state": "all",
+"type": "government",
+"description": "Track pending court cases and judgments across India.",
+"keywords": ["case tracking", "court status", "judgment", "NJDG"],
+"url": "https://njdg.ecourts.gov.in/",
+"official": true
+},
+{
+"id": "edaakhil",
+"dateAdded": "2026-09-25",
+"name": "e-Daakhil (Consumer Case Filing)",
+"category": "legal",
+"audience": ["citizen"],
+"state": "all",
+"type": "government",
+"description": "File a consumer complaint case online without visiting court.",
+"keywords": ["consumer case", "e-daakhil", "consumer court", "complaint filing"],
+"url": "https://edaakhil.nic.in/",
+"official": true
+},
+{
+"id": "lawrato",
+"dateAdded": "2026-09-25",
+"name": "LawRato (Find a Lawyer)",
+"category": "legal",
+"audience": ["citizen", "business"],
+"state": "all",
+"type": "private",
+"description": "Connect with verified private lawyers by area of law and city.",
+"keywords": ["find a lawyer", "private lawyer", "legal advice", "consultation"],
+"url": "https://lawrato.com/",
+"official": false
+},
+{
+"id": "vakilsearch",
+"dateAdded": "2026-09-25",
+"name": "Vakilsearch (Legal Drafting)",
+"category": "legal",
+"audience": ["citizen", "business"],
+"state": "all",
+"type": "private",
+"description": "Paid help drafting petitions, agreements, notices and legal documents.",
+"keywords": ["draft petition", "legal drafting", "agreement drafting", "legal notice"],
+"url": "https://vakilsearch.com/",
+"official": false
+},
+{
+"id": "shcil-estamp",
+"dateAdded": "2026-09-25",
+"name": "e-Stamp (SHCIL)",
+"category": "legal",
+"audience": ["citizen", "business"],
+"state": "all",
+"type": "government",
+"description": "Pay stamp duty and generate e-stamp certificates online.",
+"keywords": ["e-stamp", "stamp duty", "SHCIL", "stamp paper"],
+"url": "https://www.shcilestamp.com/",
+"official": true
+},
+{
+"id": "lawyer-directory",
+"dateAdded": "2026-09-25",
+"name": "Find a Lawyer (Directory)",
+"category": "legal",
+"audience": ["citizen", "business"],
+"state": "all",
+"type": "directory",
+"description": "A neutral, unpaid directory of lawyers by name, qualification, and practice area, listed alphabetically. JanSetu does not rank, endorse, or charge for placement.",
+"keywords": ["find a lawyer", "advocate", "legal directory", "vakil", "attorney"],
+"url": "#",
+"official": true
+}
+];
+// ===== Lawyer Directory: neutral, unpaid, alphabetical. No ranking, no paid placement. =====
+// To add a lawyer, copy the block below, edit the details, and add a comma after the closing }.
+// This is a plain information listing only (name, qualification, practice area, contact),
+// which is what Indian courts have confirmed is permissible under Bar Council Rule 36.
+// Do not add photos, taglines, "featured" badges, star ratings, or any promotional wording.
+const LAWYERS = [
+  // EXAMPLE — replace or delete this entry:
+  // { name: "Adv. Example Name", qualification: "LL.B., Enrolled with Odisha State Bar Council", practiceArea: "Civil, Property Disputes", city: "Bhubaneswar", phone: "9XXXXXXXXX" }
+];
+
+const CARD_I18N = {
+"ncs": {
+"hi": [
+"राष्ट्रीय करियर सेवा",
+"सरकारी रोजगार एवं करियर सेवाएं।"
+],
+"or": [
+"ଜାତୀୟ କ୍ୟାରିୟର ସେବା",
+"ସରକାରୀ ନିଯୁକ୍ତି ଓ କ୍ୟାରିୟର ସେବା।"
+]
+},
+"naukri": {
+"hi": [
+"नौकरी.कॉम",
+"निजी क्षेत्र की नौकरी खोज एवं भर्ती मंच।"
+],
+"or": [
+"ନାଉକରୀ.କମ୍",
+"ଘରୋଇ କ୍ଷେତ୍ର ଚାକିରି ଖୋଜ ଓ ନିଯୁକ୍ତି ପ୍ଲାଟଫର୍ମ।"
+]
+},
+"myscheme": {
+"hi": [
+"माय स्कीम",
+"सरकारी योजनाओं एवं पात्रता की जानकारी पाएं।"
+],
+"or": [
+"ମାଏ ସ୍କିମ୍",
+"ସରକାରୀ ଯୋଜନା ଓ ପାତ୍ରତା ସୂଚନା।"
+]
+},
+"subhadra": {
+"hi": [
+"सुभद्रा योजना",
+"ओडिशा सुभद्रा योजना की आधिकारिक जानकारी एवं सेवाएं।"
+],
+"or": [
+"ସୁଭଦ୍ରା ଯୋଜନା",
+"ଓଡ଼ିଶା ସୁଭଦ୍ରା ଯୋଜନା ସରକାରୀ ସୂଚନା ଓ ସେବା।"
+]
+},
+"pm-kisan": {
+"hi": [
+"पीएम-किसान",
+"किसानों के लिए आय सहायता सेवाएं।"
+],
+"or": [
+"ପିଏମ୍-କିଷାନ୍",
+"କୃଷକ ଆୟ ସହାୟତା ସେବା।"
+]
+},
+"kalia": {
+"hi": [
+"कालिया योजना",
+"ओडिशा किसान सहायता सेवाएं।"
+],
+"or": [
+"କାଳିଆ ଯୋଜନା",
+"ଓଡ଼ିଶା କୃଷକ ସହାୟତା ସେବା।"
+]
+},
+"aadhaar": {
+"hi": [
+"मेरा आधार",
+"आधिकारिक UIDAI आधार सेवाएं।"
+],
+"or": [
+"ମୋର ଆଧାର",
+"ସରକାରୀ UIDAI ଆଧାର ସେବା।"
+]
+},
+"digilocker": {
+"hi": [
+"डिजीलॉकर",
+"डिजिटल सरकारी दस्तावेज़ों तक पहुंच एवं प्रबंधन।"
+],
+"or": [
+"ଡିଜିଲକର",
+"ଡିଜିଟାଲ୍ ସରକାରୀ ଦଲିଲ ପ୍ରବେଶ ଓ ପରିଚାଳନା।"
+]
+},
+"voter": {
+"hi": [
+"मतदाता सेवाएं",
+"चुनाव आयोग की मतदाता सेवाएं।"
+],
+"or": [
+"ମତଦାତା ସେବା",
+"ନିର୍ବାଚନ ଆୟୋଗ ମତଦାତା ସେବା।"
+]
+},
+"parivahan": {
+"hi": [
+"परिवहन",
+"ड्राइविंग लाइसेंस एवं वाहन संबंधी सेवाएं।"
+],
+"or": [
+"ପରିବହନ",
+"ଡ୍ରାଇଭିଂ ଲାଇସେନ୍ସ ଓ ଯାନ ସମ୍ବନ୍ଧୀୟ ସେବା।"
+]
+},
+"nsp": {
+"hi": [
+"राष्ट्रीय छात्रवृत्ति पोर्टल",
+"केंद्र एवं राज्य छात्रवृत्ति सेवाएं।"
+],
+"or": [
+"ଜାତୀୟ ଛାତ୍ରବୃତ୍ତି ପୋର୍ଟାଲ୍",
+"କେନ୍ଦ୍ର ଓ ରାଜ୍ୟ ଛାତ୍ରବୃତ୍ତି ସେବା।"
+]
+},
+"startup-odisha": {
+"hi": [
+"स्टार्टअप ओडिशा",
+"ओडिशा स्टार्टअप सहायता एवं इनक्यूबेशन तंत्र।"
+],
+"or": [
+"ଷ୍ଟାର୍ଟଅପ୍ ଓଡ଼ିଶା",
+"ଓଡ଼ିଶା ଷ୍ଟାର୍ଟଅପ୍ ସହାୟତା ଓ ଇନକ୍ୟୁବେସନ୍।"
+]
+},
+"bhulekh-odisha": {
+"hi": [
+"भूलेख ओडिशा",
+"ओडिशा भूमि रिकॉर्ड एवं आरओआर सेवाएं।"
+],
+"or": [
+"ଭୂଲେଖ ଓଡ଼ିଶା",
+"ଓଡ଼ିଶା ଜମି ରେକର୍ଡ ଓ ROR ସେବା।"
+]
+},
+"cpgrams": {
+"hi": [
+"सीपीग्राम्स",
+"सरकारी शिकायत निवारण तंत्र।"
+],
+"or": [
+"ସିପିଗ୍ରାମ୍ସ",
+"ସରକାରୀ ଅଭିଯୋଗ ନିରାକରଣ ବ୍ୟବସ୍ଥା।"
+]
+},
+"pmjay": {
+"hi": [
+"आयुष्मान भारत पीएम-जय",
+"पात्र परिवारों के लिए स्वास्थ्य बीमा कवर।"
+],
+"or": [
+"ଆୟୁଷ୍ମାନ ଭାରତ ପିଏମ୍-ଜୟ",
+"ଯୋଗ୍ୟ ପରିବାର ପାଇଁ ସ୍ୱାସ୍ଥ୍ୟ ବୀମା।"
+]
+},
+"eshram": {
+"hi": [
+"ई-श्रम",
+"असंगठित श्रमिकों के लिए पंजीकरण पोर्टल।"
+],
+"or": [
+"ଇ-ଶ୍ରମ",
+"ଅସଂଗଠିତ ଶ୍ରମିକ ପାଇଁ ପଞ୍ଜିକରଣ ପୋର୍ଟାଲ୍।"
+]
+},
+"rti": {
+"hi": [
+"आरटीआई ऑनलाइन",
+"सूचना के अधिकार के तहत ऑनलाइन आवेदन।"
+],
+"or": [
+"ଆରଟିଆଇ ଅନଲାଇନ୍",
+"ସୂଚନା ଅଧିକାର ଅନ୍ତର୍ଗତ ଅନଲାଇନ୍ ଆବେଦନ।"
+]
+},
+"cybercrime": {
+"hi": [
+"साइबर क्राइम पोर्टल",
+"ऑनलाइन धोखाधड़ी एवं साइबर अपराध की शिकायत करें।"
+],
+"or": [
+"ସାଇବର କ୍ରାଇମ୍ ପୋର୍ଟାଲ୍",
+"ଅନଲାଇନ୍ ଠକେଇ ଓ ସାଇବର ଅପରାଧ ରିପୋର୍ଟ କରନ୍ତୁ।"
+]
+},
+"mudra": {
+"hi": [
+"मुद्रा लोन",
+"छोटे व्यवसायों के लिए मुद्रा योजना के तहत ऋण।"
+],
+"or": [
+"ମୁଦ୍ରା ଲୋନ୍",
+"ଛୋଟ ବ୍ୟବସାୟ ପାଇଁ ମୁଦ୍ରା ଯୋଜନା ଋଣ।"
+]
+},
+"udyam": {
+"hi": [
+"उद्यम पंजीकरण",
+"आधिकारिक एमएसएमई पंजीकरण पोर्टल।"
+],
+"or": [
+"ଉଦ୍ୟମ ପଞ୍ଜିକରଣ",
+"ସରକାରୀ MSME ପଞ୍ଜିକରଣ ପୋର୍ଟାଲ୍।"
+]
+}
+};
+
+const i18nDict = {
+  en: {
+    appTitle:"JanSetu App", btnVault:"My Vault", btnAI:"AI Guide", btnShare:"Share",
+    privacyPill:"Local-First Privacy: Zero server upload (DPDP-aligned)",
+    voiceAssistant:"Voice Assistant:", readOverview:"Read Overview", stopAudio:"Stop Audio ⏹️",
+    searchPlaceholder:"Search jobs, schemes, scholarships...", loading:"Loading services...",
+    noResults:"No services found. Try a different word.", openService:"Prepare Checklist & Open Portal ↗",
+    installMsg:"📱 Install JanSetu App on your home screen for quick access!", installBtn:"Install",
+    askTitle:"Ask JanSetu", askGreeting:"Namaste! Tell me what you need — job, scheme, scholarship, farmer help, business support — and I'll point you to the right service.",
+    askPlaceholder:"Example: I need a government job...", askButton:"Ask",
+    vaultTitle:"My Vault", vaultDesc:"Save quick notes or attach documents here. Everything stays only on this phone, nothing is uploaded.",
+    vaultUpload:"Tap to attach a document (stored on this device only)", vaultNotePh:"e.g. Aadhaar update pending",
+    vaultSave:"Save to Vault", vaultEmpty:"No saved notes or documents yet.", printDossier:"🖨️ Print Compliance Dossier PDF",
+    dossierMatched:"matched document(s) in your Vault:", getHelp:"Get Help (Optional, paid)",
+    btnProfile:"My Details", profileTitle:"My Details",
+    profileDesc:"Save your details once. They'll auto-fill every \"Get Help\" request so you never retype them. Saved only on this phone, never uploaded. We never store Aadhaar, PAN, or other ID numbers here.",
+    profNamePh:"Full name", profPhonePh:"Phone / WhatsApp number", profCityPh:"City / District", profSave:"Save My Details",
+    audCitizen:"General Citizen", audStudent:"Student", audJobseeker:"Job Seeker", audFarmer:"Farmer", audBusiness:"Business Owner",
+    openDirectory:"View Directory", lawyerDirTitle:"Find a Lawyer",
+    lawyerDirDisclaimer:"This is a plain, unpaid information listing shown in alphabetical order. JanSetu does not rank, recommend, endorse, or accept payment for placement. Please verify enrollment and credentials independently before engaging any advocate.",
+    newThisWeek:"New This Week", askAIGuide:"Ask AI Guide instead"
+  },
+  hi: {
+    appTitle:"जनसेतु ऐप", btnVault:"मेरा वॉल्ट", btnAI:"एआई गाइड", btnShare:"शेयर करें",
+    privacyPill:"स्थानीय-प्रथम गोपनीयता: कोई सर्वर अपलोड नहीं (DPDP-अनुरूप)",
+    voiceAssistant:"आवाज़ सहायक:", readOverview:"सारांश सुनें", stopAudio:"ऑडियो रोकें ⏹️",
+    searchPlaceholder:"नौकरी, योजना, छात्रवृत्ति खोजें...", loading:"सेवाएं लोड हो रही हैं...",
+    noResults:"कोई सेवा नहीं मिली। कोई और शब्द आज़माएं।", openService:"चेकलिस्ट तैयार करें व पोर्टल खोलें ↗",
+    installMsg:"📱 त्वरित पहुंच के लिए जनसेतु ऐप को होम स्क्रीन पर इंस्टॉल करें!", installBtn:"इंस्टॉल करें",
+    askTitle:"जनसेतु से पूछें", askGreeting:"नमस्ते! अपनी आवश्यकता बताएं — नौकरी, योजना, छात्रवृत्ति, किसान सहायता, व्यवसाय सहायता — और मैं आपको सही सेवा तक पहुंचने में मदद करूंगा।",
+    askPlaceholder:"उदाहरण: मुझे सरकारी नौकरी चाहिए...", askButton:"पूछें",
+    vaultTitle:"मेरा वॉल्ट", vaultDesc:"यहां त्वरित नोट्स सहेजें या दस्तावेज़ संलग्न करें। सब कुछ केवल इस फोन पर रहता है, कुछ भी अपलोड नहीं होता।",
+    vaultUpload:"दस्तावेज़ संलग्न करने के लिए टैप करें (केवल इसी डिवाइस पर सहेजा जाएगा)", vaultNotePh:"उदाहरण: आधार अपडेट लंबित",
+    vaultSave:"वॉल्ट में सहेजें", vaultEmpty:"अभी तक कोई नोट या दस्तावेज़ सहेजा नहीं गया है।", printDossier:"🖨️ अनुपालन दस्तावेज़ PDF प्रिंट करें",
+    dossierMatched:"आपके वॉल्ट में मिलान किए गए दस्तावेज़:", getHelp:"सहायता लें (वैकल्पिक, सशुल्क)",
+    btnProfile:"मेरी जानकारी", profileTitle:"मेरी जानकारी",
+    profileDesc:"अपनी जानकारी एक बार सहेजें। यह हर 'सहायता लें' अनुरोध में अपने आप भर जाएगी। केवल इस फोन पर सहेजी जाती है, कभी अपलोड नहीं होती। हम यहां आधार, पैन या कोई भी आईडी नंबर कभी नहीं सहेजते।",
+    profNamePh:"पूरा नाम", profPhonePh:"फोन / व्हाट्सएप नंबर", profCityPh:"शहर / जिला", profSave:"मेरी जानकारी सहेजें",
+    audCitizen:"सामान्य नागरिक", audStudent:"छात्र", audJobseeker:"नौकरी खोजने वाला", audFarmer:"किसान", audBusiness:"व्यवसायी",
+    openDirectory:"सूची देखें", lawyerDirTitle:"वकील खोजें",
+    lawyerDirDisclaimer:"यह एक सामान्य, निःशुल्क जानकारी सूची है जो वर्णानुक्रम में दिखाई गई है। जनसेतु किसी को रैंक, अनुशंसित, समर्थित नहीं करता या स्थान के लिए भुगतान स्वीकार नहीं करता। किसी भी वकील से संपर्क करने से पहले कृपया उनकी पंजीकरण एवं योग्यता स्वयं सत्यापित करें।",
+    newThisWeek:"इस सप्ताह नया", askAIGuide:"इसके बजाय एआई गाइड से पूछें"
+  },
+  or: {
+    appTitle:"ଜନସେତୁ ଆପ୍", btnVault:"ମୋର ଭଲ୍ଟ", btnAI:"ଏଆଇ ଗାଇଡ୍", btnShare:"ସେୟାର୍",
+    privacyPill:"ଲୋକାଲ-ଫର୍ଷ୍ଟ ଗୋପନୀୟତା: କୌଣସି ସର୍ଭର ଅପଲୋଡ୍ ନାହିଁ (DPDP-ଅନୁରୂପ)",
+    voiceAssistant:"ଭଏସ୍ ସହାୟକ:", readOverview:"ସାରାଂଶ ଶୁଣନ୍ତୁ", stopAudio:"ଅଡିଓ ବନ୍ଦ କରନ୍ତୁ ⏹️",
+    searchPlaceholder:"ଚାକିରି, ଯୋଜନା, ଛାତ୍ରବୃତ୍ତି ଖୋଜନ୍ତୁ...", loading:"ସେବା ଲୋଡ୍ ହେଉଛି...",
+    noResults:"କୌଣସି ସେବା ମିଳିଲା ନାହିଁ। ଅନ୍ୟ ଶବ୍ଦ ଚେଷ୍ଟା କରନ୍ତୁ।", openService:"ଚେକଲିଷ୍ଟ ପ୍ରସ୍ତୁତ କରି ପୋର୍ଟାଲ୍ ଖୋଲନ୍ତୁ ↗",
+    installMsg:"📱 ଶୀଘ୍ର ପ୍ରବେଶ ପାଇଁ ଜନସେତୁ ଆପ୍‌କୁ ହୋମ୍ ସ୍କ୍ରିନ୍‌ରେ ଇନଷ୍ଟଲ୍ କରନ୍ତୁ!", installBtn:"ଇନଷ୍ଟଲ୍",
+    askTitle:"ଜନସେତୁକୁ ପଚାରନ୍ତୁ", askGreeting:"ନମସ୍କାର! ଆପଣଙ୍କ ଆବଶ୍ୟକତା କୁହନ୍ତୁ — ଚାକିରି, ଯୋଜନା, ଛାତ୍ରବୃତ୍ତି, କୃଷକ ସହାୟତା, ବ୍ୟବସାୟ ସହାୟତା — ଏବଂ ମୁଁ ଆପଣଙ୍କୁ ସଠିକ୍ ସେବାରେ ପହଞ୍ଚାଇବି।",
+    askPlaceholder:"ଉଦାହରଣ: ମୋତେ ସରକାରୀ ଚାକିରି ଦରକାର...", askButton:"ପଚାରନ୍ତୁ",
+    vaultTitle:"ମୋର ଭଲ୍ଟ", vaultDesc:"ଏଠାରେ ଛୋଟ ନୋଟ୍ ସେଭ୍ କରନ୍ତୁ କିମ୍ବା ଦଲିଲ ସଂଲଗ୍ନ କରନ୍ତୁ। ସବୁକିଛି କେବଳ ଏହି ଫୋନ୍‌ରେ ରୁହେ, କିଛି ଅପଲୋଡ୍ ହୁଏ ନାହିଁ।",
+    vaultUpload:"ଦଲିଲ ସଂଲଗ୍ନ କରିବାକୁ ଟାପ୍ କରନ୍ତୁ (କେବଳ ଏହି ଡିଭାଇସ୍‌ରେ ସେଭ୍ ହେବ)", vaultNotePh:"ଉଦାହରଣ: ଆଧାର ଅପଡେଟ୍ ବାକି",
+    vaultSave:"ଭଲ୍ଟରେ ସେଭ୍ କରନ୍ତୁ", vaultEmpty:"ଏପର୍ଯ୍ୟନ୍ତ କୌଣସି ନୋଟ୍ କିମ୍ବା ଦଲିଲ ସେଭ୍ ହୋଇନାହିଁ।", printDossier:"🖨️ ଅନୁପାଳନ ଡୋସିଏର୍ PDF ପ୍ରିଣ୍ଟ କରନ୍ତୁ",
+    dossierMatched:"ଆପଣଙ୍କ ଭଲ୍ଟରେ ମେଳ ହୋଇଥିବା ଦଲିଲ:", getHelp:"ସହାୟତା ନିଅନ୍ତୁ (ଇଚ୍ଛାଧୀନ, ଦେୟଯୁକ୍ତ)",
+    btnProfile:"ମୋର ବିବରଣୀ", profileTitle:"ମୋର ବିବରଣୀ",
+    profileDesc:"ଆପଣଙ୍କ ବିବରଣୀ ଥରେ ସେଭ୍ କରନ୍ତୁ। ଏହା ପ୍ରତ୍ୟେକ 'ସହାୟତା ନିଅନ୍ତୁ' ଅନୁରୋଧରେ ସ୍ୱୟଂଚାଳିତ ଭାବେ ପୂରଣ ହେବ। କେବଳ ଏହି ଫୋନ୍‌ରେ ସେଭ୍ ହୁଏ, କେବେ ଅପଲୋଡ୍ ହୁଏ ନାହିଁ। ଆମେ ଏଠାରେ ଆଧାର, ପାନ୍ କିମ୍ବା ଅନ୍ୟ କୌଣସି ଆଇଡି ନମ୍ବର ସେଭ୍ କରୁନାହୁଁ।",
+    profNamePh:"ପୂରା ନାମ", profPhonePh:"ଫୋନ୍ / ହ୍ୱାଟସଆପ୍ ନମ୍ବର", profCityPh:"ସହର / ଜିଲ୍ଲା", profSave:"ମୋର ବିବରଣୀ ସେଭ୍ କରନ୍ତୁ",
+    audCitizen:"ସାଧାରଣ ନାଗରିକ", audStudent:"ଛାତ୍ର", audJobseeker:"ଚାକିରି ଖୋଜୁଥିବା", audFarmer:"କୃଷକ", audBusiness:"ବ୍ୟବସାୟୀ",
+    openDirectory:"ତାଲିକା ଦେଖନ୍ତୁ", lawyerDirTitle:"ଓକିଲ ଖୋଜନ୍ତୁ",
+    lawyerDirDisclaimer:"ଏହା ଏକ ସରଳ, ମାଗଣା ସୂଚନା ତାଲିକା ଯାହା ବର୍ଣ୍ଣାନୁକ୍ରମରେ ଦେଖାଯାଏ। ଜନସେତୁ କାହାକୁ ରାଙ୍କ, ସୁପାରିସ, ସମର୍ଥନ କରେ ନାହିଁ କିମ୍ବା ସ୍ଥାନ ପାଇଁ ଦେୟ ଗ୍ରହଣ କରେ ନାହିଁ। ଯେକୌଣସି ଓକିଲଙ୍କ ସହ ଯୋଗାଯୋଗ କରିବା ପୂର୍ବରୁ ଦୟାକରି ସେମାନଙ୍କ ପଞ୍ଜିକରଣ ଓ ଯୋଗ୍ୟତା ନିଜେ ଯାଞ୍ଚ କରନ୍ତୁ।",
+    newThisWeek:"ଏହି ସପ୍ତାହର ନୂତନ", askAIGuide:"ବଦଳରେ ଏଆଇ ଗାଇଡ୍‌କୁ ପଚାରନ୍ତୁ"
+  }
+};
+
+let currentLang = localStorage.getItem("jansetuLanguage") || "en";
+let activeCategory = "all";
+const ICONS = { jobs:"💼", schemes:"🏛️", citizen:"🔗", agriculture:"🌾", documents:"📄", education:"🎓", business:"🚀", legal:"⚖️" };
+
+function changeLanguage(lang) {
+  if (lang) currentLang = lang;
+  localStorage.setItem("jansetuLanguage", currentLang);
+  document.getElementById("langPicker").value = currentLang;
+  document.documentElement.lang = currentLang;
+  applyI18n();
+  renderServices(currentFilteredList());
+  renderNewThisWeek();
+}
+
+function applyI18n() {
+  const t = i18nDict[currentLang] || i18nDict.en;
+  document.querySelectorAll("[data-i18n-id]").forEach(el => {
+    const key = el.getAttribute("data-i18n-id");
+    if (t[key] === undefined) return;
+    if (el.tagName === "INPUT") el.setAttribute("placeholder", t[key]);
+    else el.textContent = t[key];
+  });
+}
+
+function localizedCard(service) {
+  const t = i18nDict[currentLang] || i18nDict.en;
+  const override = CARD_I18N[service.id];
+  if (currentLang !== "en" && override && override[currentLang]) {
+    return { name: override[currentLang][0], description: override[currentLang][1] };
+  }
+  return { name: service.name, description: service.description };
+}
+
+// ================= Load + Render (data is inline, no fetch needed) =================
+function boot() {
+  buildCategoryFilters(SERVICES);
+  applyI18n();
+  document.getElementById("langPicker").value = currentLang;
+  renderServices(SERVICES);
+  renderNewThisWeek();
+}
+
+function renderNewThisWeek() {
+  const now = new Date();
+  const cutoff = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+  const recent = SERVICES
+    .filter(s => s.dateAdded && new Date(s.dateAdded) >= cutoff)
+    .sort((a, b) => new Date(b.dateAdded) - new Date(a.dateAdded));
+
+  const section = document.getElementById("newWeekSection");
+  const strip = document.getElementById("newWeekStrip");
+
+  if (!recent.length) { section.style.display = "none"; return; }
+
+  section.style.display = "block";
+  strip.innerHTML = recent.map(s => {
+    const loc = localizedCard(s);
+    const icon = ICONS[s.category] || "🔗";
+    const action = s.id === 'lawyer-directory' ? "openLawyerDirectory()" : "window.open('" + s.url + "','_blank')";
+    return '<button class="filter-btn" style="background:#fff3cd; color:#856404;" onclick="' + action + '">' +
+      icon + ' ' + esc(loc.name) + '</button>';
+  }).join("");
+}
+
+function buildCategoryFilters(services) {
+  const cats = ["all", ...new Set(services.map(s => s.category))];
+  const bar = document.getElementById("categoriesBar");
+  bar.innerHTML = cats.map(c =>
+    '<button class="filter-btn ' + (c==='all' ? 'active' : '') + '" data-cat="' + c + '" onclick="setCategory(\'' + c + '\')">' +
+    (c==='all' ? 'All' : c.charAt(0).toUpperCase()+c.slice(1)) + '</button>'
+  ).join("");
+}
+
+function setCategory(cat) {
+  activeCategory = cat;
+  document.querySelectorAll(".filter-btn").forEach(b => b.classList.toggle("active", b.dataset.cat === cat));
+  filterServices();
+}
+function filterCategory(cat) { setCategory(cat); }
+
+// ================= Search Engine: synonyms, fuzzy matching, ranking =================
+// To teach the search new local terms, add a line here: "your phrase": "keyword to search for"
+const SYNONYMS = {
+  "sarkari naukri": "government jobs", "naukri": "jobs", "rozgar": "jobs employment",
+  "admission": "education college school", "padhai": "education", "chatravriti": "scholarship",
+  "khet": "agriculture farmer", "kisan": "farmer", "kheti": "agriculture",
+  "vakil": "lawyer legal", "adalat": "court legal case", "case": "legal court petition",
+  "dukan": "business shop msme", "vyapar": "business",
+  "gharbari": "housing pmay", "jamin": "land property bhulekh",
+  "bimari": "health medical hospital", "ilaj": "health medical",
+  "loan": "credit finance business", "paisa": "finance money loan"
+};
+
+function expandQuery(q) {
+  let expanded = q;
+  Object.keys(SYNONYMS).forEach(key => {
+    if (q.includes(key)) expanded += " " + SYNONYMS[key];
+  });
+  return expanded;
+}
+
+// Small edit-distance check, capped short so it stays fast on old phones
+function closeMatch(word, target) {
+  if (target.includes(word)) return true;
+  if (word.length < 4) return false; // skip fuzzy matching on very short words, too many false hits
+  if (Math.abs(word.length - target.length) > 2) return false;
+  let diffs = 0;
+  const len = Math.min(word.length, target.length);
+  for (let i = 0; i < len; i++) { if (word[i] !== target[i]) diffs++; if (diffs > 2) return false; }
+  return diffs <= 2;
+}
+
+function scoreService(service, rawQuery) {
+  const loc = localizedCard(service);
+  const name = (loc.name || "").toLowerCase();
+  const desc = (loc.description || "").toLowerCase();
+  const keywords = (service.keywords || []).join(" ").toLowerCase();
+  const category = (service.category || "").toLowerCase();
+  const audience = (service.audience || []).join(" ").toLowerCase();
+
+  const tokens = expandQuery(rawQuery).toLowerCase().split(/\s+/).filter(Boolean);
+  let score = 0;
+  tokens.forEach(tok => {
+    if (name === tok) score += 12;
+    else if (name.includes(tok)) score += 8;
+    else if (keywords.includes(tok)) score += 5;
+    else if (category.includes(tok) || audience.includes(tok)) score += 3;
+    else if (desc.includes(tok)) score += 2;
+    else if (closeMatch(tok, name) || closeMatch(tok, keywords)) score += 1; // fuzzy fallback
+  });
+  return score;
+}
+
+function currentFilteredList() {
+  const q = (document.getElementById("searchInput").value || "").toLowerCase().trim();
+  let pool = SERVICES.filter(s => activeCategory === "all" || s.category === activeCategory);
+  if (!q) return pool;
+
+  const scored = pool
+    .map(s => ({ s, score: scoreService(s, q) }))
+    .filter(x => x.score > 0)
+    .sort((a, b) => b.score - a.score);
+
+  if (!scored.length) logMissedSearch(q);
+  return scored.map(x => x.s);
+}
+
+function filterServices() {
+  renderServices(currentFilteredList());
+  renderSuggestions();
+}
+
+// ================= Type-ahead suggestions =================
+function renderSuggestions() {
+  const box = document.getElementById("searchSuggestions");
+  if (!box) return;
+  const q = (document.getElementById("searchInput").value || "").toLowerCase().trim();
+  if (!q) { box.style.display = "none"; box.innerHTML = ""; return; }
+
+  const top = SERVICES
+    .map(s => ({ s, score: scoreService(s, q) }))
+    .filter(x => x.score > 0)
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 4);
+
+  if (!top.length) { box.style.display = "none"; box.innerHTML = ""; return; }
+
+  box.style.display = "block";
+  box.innerHTML = top.map(x => {
+    const loc = localizedCard(x.s);
+    const icon = ICONS[x.s.category] || "🔗";
+    return '<div class="suggestion-item" onclick="pickSuggestion(\'' + esc(loc.name).replace(/'/g,"\\'") + '\')">' +
+      icon + ' ' + esc(loc.name) + '</div>';
+  }).join("");
+}
+
+function pickSuggestion(name) {
+  document.getElementById("searchInput").value = name;
+  document.getElementById("searchSuggestions").style.display = "none";
+  filterServices();
+}
+
+// ================= Missed-search logging (local only, for Amit to review) =================
+// To view what people searched for and didn't find, type: admin:missed  into the search box
+function logMissedSearch(query) {
+  const log = JSON.parse(localStorage.getItem("janSetuMissedSearches") || "{}");
+  log[query] = (log[query] || 0) + 1;
+  const entries = Object.entries(log);
+  if (entries.length > 300) {
+    entries.sort((a, b) => a[1] - b[1]);
+    entries.slice(0, 50).forEach(([k]) => delete log[k]);
+  }
+  localStorage.setItem("janSetuMissedSearches", JSON.stringify(log));
+}
+
+function renderMissedSearchAdmin() {
+  const grid = document.getElementById("servicesGrid");
+  const log = JSON.parse(localStorage.getItem("janSetuMissedSearches") || "{}");
+  const entries = Object.entries(log).sort((a, b) => b[1] - a[1]);
+  if (!entries.length) { grid.innerHTML = '<div class="no-results">No missed searches logged yet on this device.</div>'; return; }
+  grid.innerHTML = '<div class="no-results" style="text-align:left;"><h3 style="margin-bottom:10px;">Missed searches on this device</h3>' +
+    entries.map(([q, count]) => '<div class="vault-item"><span>' + esc(q) + '</span><strong>' + count + '</strong></div>').join("") +
+    '</div>';
+}
+
+function renderServices(list) {
+  const grid = document.getElementById("servicesGrid");
+  const t = i18nDict[currentLang] || i18nDict.en;
+  const q = (document.getElementById("searchInput").value || "").toLowerCase().trim();
+
+  if (q === "admin:missed") { renderMissedSearchAdmin(); return; }
+
+  if (!list.length) {
+    grid.innerHTML = '<div class="no-results">' + t.noResults +
+      '<br><button class="action-btn ai-btn" style="margin-top:12px;" onclick="askAIWithQuery()">🤖 ' + t.askAIGuide + '</button></div>';
+    return;
+  }
+  grid.innerHTML = list.map(s => {
+    const loc = localizedCard(s);
+    const badgeClass = s.type === 'private' ? 'private' : '';
+    const badgeText = s.type === 'private' ? 'Private' : 'Official';
+    const icon = ICONS[s.category] || '🔗';
+    return '<div class="card">' +
+      '<div class="card-top-row">' +
+        '<span class="card-badge ' + badgeClass + '">' + badgeText + '</span>' +
+        '<div>' +
+          '<button class="read-card-btn" onclick="readCard(\'' + s.id + '\')" title="Read aloud">🔊</button>' +
+          '<span style="font-size:20px;">' + icon + '</span>' +
+        '</div>' +
+      '</div>' +
+      '<h3>' + esc(loc.name) + '</h3>' +
+      '<p>' + esc(loc.description) + '</p>' +
+      '<div class="card-actions">' +
+        (s.id === 'lawyer-directory'
+          ? '<button class="card-btn" onclick="openLawyerDirectory()">' + t.openDirectory + '</button>'
+          : '<a class="card-btn" href="' + s.url + '" target="_blank" rel="noopener noreferrer">' + t.openService + '</a>' +
+            '<button class="card-btn" style="background:#25d366;" onclick="requestHelp(\'' + s.id + '\')">🙋 ' + t.getHelp + '</button>') +
+      '</div>' +
+    '</div>';
+  }).join("");
+}
+
+function askAIWithQuery() {
+  const q = document.getElementById("searchInput").value;
+  openAIAssistant();
+  document.getElementById("aiChatInput").value = q;
+}
+
+function esc(str) { const d = document.createElement("div"); d.textContent = str || ""; return d.innerHTML; }
+
+// ================= Voice Search (STT) =================
+let recognition = null, listening = false;
+function toggleSpeechRecognition() {
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SR) { alert("Voice search is not supported on this browser."); return; }
+  const micBtn = document.getElementById("micBtn");
+  const status = document.getElementById("voiceStatus");
+  if (listening) { recognition && recognition.stop(); listening = false; micBtn.classList.remove("listening"); if (status) status.style.display = "none"; return; }
+
+  recognition = startRecognition(currentLang === "hi" ? "hi-IN" : currentLang === "or" ? "or-IN" : "en-IN", micBtn, status);
+}
+
+function startRecognition(lang, micBtn, status, isFallback) {
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  const rec = new SR();
+  rec.lang = lang;
+  rec.onstart = () => {
+    listening = true;
+    micBtn.classList.add("listening");
+    if (status) { status.style.display = "block"; status.textContent = "🎤 Listening... speak now" + (isFallback ? " (Odia voice not available on this phone, using Hindi)" : ""); }
+  };
+  rec.onend = () => { listening = false; micBtn.classList.remove("listening"); if (status) status.style.display = "none"; };
+  rec.onerror = (e) => {
+    // If Odia isn't supported on this device, fall back to Hindi once, with a clear message
+    if (lang === "or-IN" && !isFallback) {
+      recognition = startRecognition("hi-IN", micBtn, status, true);
+      return;
+    }
+  };
+  rec.onresult = (e) => { document.getElementById("searchInput").value = e.results[0][0].transcript; filterServices(); };
+  rec.start();
+  return rec;
+}
+
+// ================= Voice Assistant (TTS) =================
+function speakText(text) {
+  stopSpeech();
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = currentLang === "hi" ? "hi-IN" : currentLang === "or" ? "or-IN" : "en-IN";
+  window.speechSynthesis.speak(u);
+}
+function speakPageSummary() {
+  speakText("Welcome to JanSetu App. Use the search bar to find jobs, government schemes, scholarships, farmer and business services. You can also tap the microphone to search by voice.");
+}
+function readCard(id) {
+  const s = SERVICES.find(x => x.id === id);
+  if (!s) return;
+  const loc = localizedCard(s);
+  speakText(loc.name + ". " + loc.description);
+}
+function stopSpeech() { window.speechSynthesis.cancel(); }
+
+// ================= Modals =================
+function openModal(id) { document.getElementById(id).classList.add("open"); }
+function closeModal(id) { document.getElementById(id).classList.remove("open"); }
+function openAIAssistant() { openModal("aiModal"); }
+function openVaultModal() { renderVault(); openModal("vaultModal"); }
+
+function openLawyerDirectory() {
+  renderLawyerDirectory();
+  openModal("lawyerModal");
+}
+
+function renderLawyerDirectory() {
+  const list = document.getElementById("lawyerList");
+  if (!LAWYERS.length) {
+    list.innerHTML = '<p style="color:#999; text-align:center; padding:20px 0;">No lawyers listed yet.</p>';
+    return;
+  }
+  const sorted = [...LAWYERS].sort((a, b) => a.name.localeCompare(b.name));
+  list.innerHTML = sorted.map(l =>
+    '<div class="vault-item" style="flex-direction:column; align-items:flex-start;">' +
+      '<strong style="font-size:14px;">' + esc(l.name) + '</strong>' +
+      '<span style="font-size:12px; color:#666;">' + esc(l.qualification || "") + '</span>' +
+      '<span style="font-size:12px; color:#666;">' + esc(l.practiceArea || "") + (l.city ? " • " + esc(l.city) : "") + '</span>' +
+      (l.phone ? '<a href="tel:' + esc(l.phone) + '" style="font-size:13px; color:#0056b3; margin-top:4px;">📞 ' + esc(l.phone) + '</a>' : '') +
+    '</div>'
+  ).join("");
+}
+
+// ================= AI Guide =================
+function sendAIMessage() {
+  const input = document.getElementById("aiChatInput");
+  const msg = input.value.trim();
+  if (!msg) return;
+  const body = document.getElementById("aiChatBody");
+  body.innerHTML += '<div class="chat-bubble user">' + esc(msg) + '</div>';
+  input.value = "";
+  const q = msg.toLowerCase();
+  const matches = SERVICES.filter(s => {
+    const text = [s.name, s.category, s.description, ...(s.keywords||[]), ...(s.audience||[])].join(" ").toLowerCase();
+    return q.split(" ").some(w => w.length > 2 && text.includes(w));
+  }).slice(0, 3);
+  let reply;
+  if (matches.length) {
+    reply = "Here's what I found:<br>" + matches.map(m => '• <a href="' + m.url + '" target="_blank">' + esc(localizedCard(m).name) + '</a>').join("<br>");
+    reply += '<br><br><button class="action-btn secondary" onclick="prepareDossier([\'' + matches.map(m=>m.id).join("','") + '\'])">📋 Prepare Checklist</button>';
+  } else {
+    reply = "I couldn't find an exact match. Try searching for the main service above, like 'job', 'scheme', or 'scholarship'.";
+  }
+  body.innerHTML += '<div class="chat-bubble ai">' + reply + '</div>';
+  body.scrollTop = body.scrollHeight;
+}
+
+function prepareDossier(ids) {
+  const vault = getVault();
+  const t = i18nDict[currentLang] || i18nDict.en;
+  const matchedVaultDocs = vault.filter(v => v.file);
+  const meta = document.getElementById("dossierMeta");
+  const content = document.getElementById("dossierContent");
+  meta.innerHTML = "Generated: " + new Date().toLocaleString();
+  content.innerHTML = "<h3>Requested Services:</h3><ul>" +
+    ids.map(id => { const s = SERVICES.find(x=>x.id===id); return s ? "<li>" + esc(localizedCard(s).name) + "</li>" : ""; }).join("") +
+    "</ul><h3 style='margin-top:14px;'>" + t.dossierMatched + " (" + matchedVaultDocs.length + ")</h3><ul>" +
+    matchedVaultDocs.map(v => "<li>" + esc(v.file) + " (" + v.date + ")</li>").join("") + "</ul>";
+  const body = document.getElementById("aiChatBody");
+  body.innerHTML += '<div class="chat-bubble ai">Dossier ready — ' + matchedVaultDocs.length + ' ' + t.dossierMatched + '<br>' +
+    '<button class="action-btn secondary" onclick="window.print()">🖨️ ' + t.printDossier.replace("🖨️ ","") + '</button></div>';
+  body.scrollTop = body.scrollHeight;
+}
+
+// ================= My Details Profile (local only) =================
+// TODO: replace with your own WhatsApp number, country code, no + or spaces. Example: 919437123456
+const HELP_NUMBER = "919437572429";
+
+function getProfile() { return JSON.parse(localStorage.getItem("janSetuProfile") || "null"); }
+
+function openProfileModal() {
+  const p = getProfile();
+  if (p) {
+    document.getElementById("profName").value = p.name || "";
+    document.getElementById("profPhone").value = p.phone || "";
+    document.getElementById("profCity").value = p.city || "";
+    document.getElementById("profCategory").value = p.category || "citizen";
+  }
+  openModal("profileModal");
+}
+
+function saveProfile() {
+  const name = document.getElementById("profName").value.trim();
+  const phone = document.getElementById("profPhone").value.trim();
+  const city = document.getElementById("profCity").value.trim();
+  const category = document.getElementById("profCategory").value;
+  if (!name || !phone) { alert("Please enter at least your name and phone number."); return; }
+  localStorage.setItem("janSetuProfile", JSON.stringify({ name, phone, city, category }));
+  closeModal("profileModal");
+  alert("Saved! Your details will now auto-fill every 'Get Help' request.");
+}
+
+function requestHelp(serviceId) {
+  const s = SERVICES.find(x => x.id === serviceId);
+  if (!s) return;
+  const p = getProfile();
+  if (!p) {
+    alert("Please save 'My Details' first, so we know who to contact and where to send updates.");
+    openProfileModal();
+    return;
+  }
+  const loc = localizedCard(s);
+  const msg = "Hello JanSetu, I need help with: " + loc.name +
+    "\n\nMy details:\nName: " + p.name +
+    "\nPhone: " + p.phone +
+    "\nCity: " + (p.city || "-") +
+    "\nCategory: " + p.category +
+    "\n\n(This is an optional paid assistance request via JanSetu App, handled by Amit Mohanty. Fee, if any, will be confirmed before starting.)";
+  const waUrl = "https://wa.me/" + HELP_NUMBER + "?text=" + encodeURIComponent(msg);
+  window.open(waUrl, "_blank");
+}
+
+// ================= Vault (local only) =================
+function getVault() { return JSON.parse(localStorage.getItem("janSetuVault") || "[]"); }
+function setVault(v) { localStorage.setItem("janSetuVault", JSON.stringify(v)); }
+
+function saveVaultItem() {
+  const input = document.getElementById("vaultInput");
+  const text = input.value.trim();
+  if (!text) return;
+  const vault = getVault();
+  vault.push({ text: text, date: new Date().toLocaleDateString() });
+  setVault(vault);
+  input.value = "";
+  renderVault();
+}
+
+function attachVaultFile(inputEl) {
+  const file = inputEl.files[0];
+  if (!file) return;
+  const vault = getVault();
+  vault.push({ text: "Attached: " + file.name, file: file.name, date: new Date().toLocaleDateString() });
+  setVault(vault);
+  inputEl.value = "";
+  renderVault();
+}
+
+function deleteVaultItem(index) {
+  const vault = getVault();
+  vault.splice(index, 1);
+  setVault(vault);
+  renderVault();
+}
+
+function renderVault() {
+  const vault = getVault();
+  const t = i18nDict[currentLang] || i18nDict.en;
+  const list = document.getElementById("vaultList");
+  if (!vault.length) { list.innerHTML = '<p style="color:#999; text-align:center;">' + t.vaultEmpty + '</p>'; return; }
+  list.innerHTML = vault.map((v, i) =>
+    '<div class="vault-item"><span>' + esc(v.text) + '<br><small style="color:#999;">' + v.date + '</small></span>' +
+    '<button onclick="deleteVaultItem(' + i + ')">✕</button></div>'
+  ).join("");
+}
+
+// ================= Share =================
+function shareApp() {
+  const url = window.location.href;
+  if (navigator.share) {
+    navigator.share({ title: "JanSetu App", text: "Check out JanSetu — one gateway to government schemes, jobs and more.", url: url });
+  } else {
+    navigator.clipboard.writeText(url).then(() => alert("Link copied! Share it with your friends."));
+  }
+}
+
+// ================= Install (PWA) =================
+let deferredPrompt = null;
+window.addEventListener("beforeinstallprompt", (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  document.getElementById("installBanner").style.display = "flex";
+});
+function installPWA() {
+  if (!deferredPrompt) return;
+  deferredPrompt.prompt();
+  deferredPrompt.userChoice.then(() => { deferredPrompt = null; document.getElementById("installBanner").style.display = "none"; });
+}
+
+// ================= Service Worker =================
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("sw.js").catch(err => console.log("SW registration failed:", err));
+  });
+}
+
+boot();
+</script>
+</body>
+</html>
