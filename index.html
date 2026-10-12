@@ -1164,5 +1164,79 @@ function toggleSpeechRecognition() {
   }
 }
 </script>
+  <script>
+(function () {
+  var WA = "919437572429";
+  var FIXES = [
+    ["Zero server upload (DPDP-aligned)", "Your personal details stay on your phone"],
+    ["AI Guide", "Smart Guide"]
+  ];
+
+  function fixText() {
+    var w = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, {
+      acceptNode: function (n) {
+        var p = n.parentNode && n.parentNode.nodeName;
+        return (p === "SCRIPT" || p === "STYLE") ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT;
+      }
+    });
+    var n;
+    while ((n = w.nextNode())) {
+      var t = n.nodeValue;
+      for (var i = 0; i < FIXES.length; i++) {
+        if (t.indexOf(FIXES[i][0]) > -1) t = t.split(FIXES[i][0]).join(FIXES[i][1]);
+      }
+      if (t !== n.nodeValue) n.nodeValue = t;
+    }
+  }
+
+  function addPriceCard() {
+    if (document.getElementById("js-price-card")) return;
+    var items = [
+      ["📄 Document check (photo, PDF, size)", "₹20", "Document check"],
+      ["📝 Form filling help", "₹49", "Form filling help"],
+      ["🎓 Scholarship / scheme application", "₹79", "Scholarship or scheme application"]
+    ];
+    var rows = "";
+    items.forEach(function (it) {
+      var msg = "Namaste JanSetu, I need help with: " + it[2] + " (" + it[1] + ")";
+      rows += '<a href="https://wa.me/' + WA + '?text=' + encodeURIComponent(msg) +
+        '" target="_blank" rel="noopener" style="display:flex;justify-content:space-between;align-items:center;' +
+        'padding:12px;margin:8px 0;border:1px solid #cfe0f5;border-radius:10px;background:#f4f9ff;' +
+        'color:#004085;text-decoration:none;font-weight:600;">' +
+        '<span>' + it[0] + '</span><span>' + it[1] + '</span></a>';
+    });
+    var card = document.createElement("div");
+    card.id = "js-price-card";
+    card.style.cssText = "margin:16px;padding:14px;border:1px solid #cfe0f5;border-radius:14px;background:#fff;color:#222;";
+    card.innerHTML =
+      '<div style="font-size:17px;font-weight:700;color:#004085;">🙋 Get Help (Price List)</div>' +
+      '<div style="font-size:13px;margin:6px 0 4px;">Tap a service to message us on WhatsApp.</div>' +
+      rows +
+      '<div style="font-size:13px;line-height:1.5;margin-top:8px;">' +
+      '✅ First small help is free<br>✅ Pay only after the work is done<br>' +
+      '💚 Can\'t afford it? Tell us, we\'ll still help.<br>' +
+      '🔒 Never share your password or OTP with anyone, including us.</div>';
+
+    var anchor = null;
+    var bold = document.querySelectorAll("strong,b");
+    for (var i = 0; i < bold.length; i++) {
+      if (bold[i].textContent.trim() === "About JanSetu") { anchor = bold[i].parentElement; break; }
+    }
+    if (anchor && anchor.parentNode) anchor.parentNode.insertBefore(card, anchor);
+    else document.body.appendChild(card);
+  }
+
+  var timer;
+  function run() { fixText(); addPriceCard(); }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", run);
+  else run();
+  window.addEventListener("load", run);
+  setTimeout(run, 1500);
+  new MutationObserver(function () {
+    clearTimeout(timer);
+    timer = setTimeout(fixText, 300);
+  }).observe(document.body, { childList: true, subtree: true, characterData: true });
+})();
+</script>
 </body>
 </html>
