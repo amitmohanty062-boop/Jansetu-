@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>JanSetu App - Universal Citizen &amp; Opportunity Gateway</title>
+<meta name="description" content="JanSetu is a free guide to government schemes, jobs, scholarships, farmer help, business support and everyday citizen tools in English, Hindi and Odia. Your personal details stay on your phone.">
+<meta name="theme-color" content="#004085">
+<meta property="og:type" content="website">
+<meta property="og:title" content="JanSetu App - Free guide to schemes, jobs and citizen services">
+<meta property="og:description" content="Find government schemes, jobs, scholarships and tools like photo resizer, resume builder and RTI draft. English, Hindi, Odia.">
+<meta property="og:url" content="https://amitmohanty062-boop.github.io/Jansetu-/">
+<meta property="og:image" content="https://amitmohanty062-boop.github.io/Jansetu-/icon-512.png">
+<meta name="twitter:card" content="summary">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon-192.png" type="image/png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans", "Noto Sans Devanagari", "Noto Sans Oriya", "Nirmala UI", Helvetica, Arial, sans-serif;
+  background: #f4f6f9; color: #222; padding-bottom: 40px; -webkit-tap-highlight-color: transparent; line-height: 1.4;
+}
+body.modal-open { overflow: hidden; }
+button, input, select, textarea { font-family: inherit; font-size: 16px; }
+button { cursor: pointer; }
+:focus-visible { outline: 3px solid #ffbf00; outline-offset: 2px; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+header { background: linear-gradient(135deg, #003366, #0056b3); color: #fff; padding: 12px 14px 16px; box-shadow: 0 4px 10px rgba(0,0,0,.15); }
+.header-inner { max-width: 1000px; margin: 0 auto; }
+.header-top { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 10px; }
+.brand { display: flex; align-items: center; gap: 10px; }
+.brand h1 { font-size: 22px; font-weight: 700; letter-spacing: .3px; }
+.top-tools { display: flex; align-items: center; gap: 8px; }
+.lang-select { background: #fff; color: #222; border: 1px solid #ccc; padding: 8px 10px; border-radius: 8px; font-size: 14px; font-weight: 600; min-height: 40px; }
+.install-btn { background: #ffc107; color: #222; border: none; border-radius: 8px; padding: 8px 12px; font-weight: 700; font-size: 13px; min-height: 40px; }
+.privacy-pill { display: inline-block; background: rgba(255,255,255,.15); border: 1px solid rgba(255,255,255,.35); color: #eafff0; font-size: 12px; font-weight: 600; padding: 6px 12px; border-radius: 20px; margin-bottom: 10px; }
+.quick-actions { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 12px; }
+@media (min-width: 700px) { .quick-actions { grid-template-columns: repeat(6, 1fr); } }
+.action-btn { color: #fff; border: none; padding: 8px 6px; border-radius: 10px; font-weight: 700; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; font-size: 12px; min-height: 52px; line-height: 1.2; text-align: center; }
+.action-btn .ic { font-size: 18px; }
+.action-btn:active { opacity: .8; }
+.a-blue { background: #0069d9; } .a-purple { background: #6f42c1; } .a-orange { background: #c85f0a; }
+.a-teal { background: #138a72; } .a-yellow { background: #ffc107; color: #222; } .a-green { background: #1e7e34; }
+.search-row { display: flex; gap: 8px; align-items: center; position: relative; }
+.search-wrap { position: relative; flex-grow: 1; }
+.search-input { width: 100%; padding: 12px 16px; border-radius: 25px; border: 2px solid transparent; outline: none; box-shadow: 0 2px 8px rgba(0,0,0,.2); min-height: 46px; }
+.search-input:focus { border-color: #ffc107; }
+.mic-btn { background: #fff; border: none; width: 46px; height: 46px; border-radius: 50%; font-size: 19px; box-shadow: 0 2px 8px rgba(0,0,0,.2); flex-shrink: 0; }
+.mic-btn.listening { background: #dc3545; animation: pulse 1.2s infinite; }
+@keyframes pulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.1); } }
+@media (prefers-reduced-motion: reduce) { .mic-btn.listening { animation: none; } }
+.suggest-box { position: absolute; left: 0; right: 0; top: 52px; background: #fff; color: #222; border-radius: 12px; box-shadow: 0 6px 18px rgba(0,0,0,.25); z-index: 50; overflow: hidden; display: none; }
+.suggest-box.open { display: block; }
+.suggest-box button { display: block; width: 100%; text-align: left; background: #fff; border: none; border-bottom: 1px solid #eee; padding: 12px 16px; font-size: 14px; color: #222; min-height: 44px; }
+.suggest-box button:last-child { border-bottom: none; }
+.suggest-box button:hover, .suggest-box button:focus { background: #eef5ff; }
+.listen-status { min-height: 18px; font-size: 12px; margin-top: 6px; color: #fff3cd; text-align: center; }
+
+.offline-banner { display: none; background: #fff3cd; color: #664d03; text-align: center; font-size: 13px; font-weight: 600; padding: 8px 12px; }
+.offline-banner.show { display: block; }
+.tts-toolbar { display: flex; justify-content: center; align-items: center; gap: 10px; background: #e9ecef; padding: 8px 12px; font-size: 13px; font-weight: 600; border-bottom: 1px solid #dee2e6; flex-wrap: wrap; }
+.mini-btn { background: #17606e; color: #fff; border: none; padding: 6px 12px; border-radius: 8px; font-size: 13px; font-weight: 600; min-height: 36px; }
+.mini-btn.grey { background: #5a6268; }
+
+.container { max-width: 1000px; margin: 16px auto; padding: 0 14px; }
+.filters { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 10px; margin-bottom: 14px; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+.filters::-webkit-scrollbar { display: none; }
+.filter-btn { background: #e3e7ec; border: none; padding: 10px 16px; border-radius: 20px; font-weight: 600; color: #3d444b; white-space: nowrap; min-height: 40px; font-size: 14px; }
+.filter-btn.active { background: #0056b3; color: #fff; }
+.filter-btn.new-chip { background: #fff3cd; color: #664d03; }
+.status-line { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; font-size: 13px; color: #555; margin-bottom: 12px; min-height: 24px; }
+.chip-clear { background: #dbe7f7; color: #0b3d86; border: none; border-radius: 14px; padding: 5px 12px; font-size: 13px; font-weight: 600; min-height: 32px; }
+
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; }
+.card { background: #fff; border-radius: 12px; padding: 16px; border: 1px solid #e0e0e0; box-shadow: 0 2px 6px rgba(0,0,0,.05); display: flex; flex-direction: column; justify-content: space-between; }
+.card-top-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.card-badge { background: #e3f2fd; color: #0d47a1; font-size: 11px; font-weight: 700; padding: 4px 8px; border-radius: 4px; }
+.card-badge.private { background: #e8f5e9; color: #1b5e20; }
+.card-badge.tool { background: #fff3cd; color: #664d03; }
+.card-icons { display: flex; align-items: center; gap: 6px; font-size: 18px; }
+.fav-star { background: none; border: none; font-size: 24px; color: #bbb; line-height: 1; min-width: 40px; min-height: 40px; }
+.fav-star.active { color: #e6a700; }
+.card h3 { font-size: 17px; margin-bottom: 6px; color: #111; }
+.card p { font-size: 13px; color: #555; margin-bottom: 14px; line-height: 1.45; flex-grow: 1; }
+.card-actions { display: flex; flex-direction: column; gap: 8px; }
+.card-btn { background: #0056b3; color: #fff !important; text-decoration: none; text-align: center; padding: 12px; border-radius: 8px; font-weight: 600; font-size: 14px; display: block; border: none; width: 100%; min-height: 44px; }
+.card-btn:hover { background: #004085; }
+.card-btn.green { background: #1e7e34; }
+.card-btn.grey { background: #5a6268; }
+.share-btn { background: #e8f5e9; color: #14532d; border: 1px solid #b7e1c1; border-radius: 8px; padding: 10px; font-weight: 600; font-size: 13px; width: 100%; min-height: 42px; }
+.loading-msg, .no-results { text-align: center; padding: 36px 15px; color: #666; grid-column: 1 / -1; }
+
+.help-card { margin: 22px 0 0; padding: 14px; border: 1px solid #cfe0f5; border-radius: 14px; background: #fff; }
+.help-card h2 { font-size: 17px; color: #004085; }
+.help-card .sub { font-size: 13px; margin: 6px 0; color: #444; }
+.help-row { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 12px; margin: 8px 0; border: 1px solid #cfe0f5; border-radius: 10px; background: #f4f9ff; color: #004085; text-decoration: none; font-weight: 600; font-size: 14px; min-height: 48px; }
+.help-note { font-size: 13px; line-height: 1.6; margin-top: 8px; color: #333; }
+.help-opt { display: flex; gap: 8px; align-items: center; font-size: 13px; margin: 8px 0; }
+.help-opt input { width: 20px; height: 20px; }
+
+.site-footer { max-width: 1000px; margin: 26px auto 0; padding: 20px 15px; text-align: center; font-size: 12px; color: #555; line-height: 1.6; border-top: 1px solid #dde2e8; }
+.site-footer p { margin-bottom: 8px; }
+.link-btn { background: none; border: none; color: #0b57b5; text-decoration: underline; font-size: 13px; padding: 8px; min-height: 40px; }
+
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.55); display: none; justify-content: center; align-items: center; z-index: 1000; padding: 10px; }
+.modal-overlay.open { display: flex; }
+.modal-content { background: #fff; width: 100%; max-width: 560px; border-radius: 12px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,.3); display: flex; flex-direction: column; max-height: 90vh; max-height: 90dvh; outline: none; }
+.modal-header { background: #003366; color: #fff; padding: 14px 15px; display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.modal-header h2 { font-size: 17px; }
+.close-modal { background: none; border: none; color: #fff; font-size: 30px; padding: 0 8px; line-height: 1; min-width: 44px; min-height: 44px; }
+.modal-body { padding: 15px; overflow-y: auto; flex-grow: 1; font-size: 14px; line-height: 1.55; }
+.modal-footer { padding: 12px 15px; background: #f1f3f5; display: flex; gap: 10px; }
+.modal-input { width: 100%; padding: 12px; border: 1px solid #bbb; border-radius: 8px; outline: none; min-height: 46px; background: #fff; }
+.modal-input:focus { border-color: #0056b3; box-shadow: 0 0 0 2px #cfe3ff; }
+textarea.modal-input { min-height: 70px; resize: vertical; }
+.field { margin-bottom: 10px; }
+.field label, .tool-label { display: block; font-size: 12px; font-weight: 700; color: #444; margin-bottom: 4px; }
+.note { margin-bottom: 12px; color: #555; font-size: 13px; }
+.row { display: flex; gap: 10px; }
+.row > * { flex: 1; min-width: 0; }
+.btn-send { background: #0056b3; color: #fff; border: none; border-radius: 8px; padding: 0 18px; font-weight: 700; min-height: 46px; width: 100%; }
+.modal-footer .btn-send { width: auto; }
+.btn-send.ghost { background: #fff; color: #0056b3; border: 2px solid #0056b3; }
+.btn-send.danger { background: #b02a37; }
+.stack > * + * { margin-top: 10px; }
+.chat-bubble { margin-bottom: 10px; padding: 10px 14px; border-radius: 10px; max-width: 92%; word-wrap: break-word; }
+.chat-bubble.user { background: #e3f2fd; margin-left: auto; text-align: right; color: #0d47a1; }
+.chat-bubble.ai { background: #f1f3f5; margin-right: auto; }
+.chat-bubble a, .chat-bubble button.linkish { color: #0b57b5; font-weight: 600; background: none; border: none; text-decoration: underline; padding: 0; font-size: 14px; text-align: left; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 6px 0 12px; }
+.chips button { background: #eef3fa; border: 1px solid #cfdcee; color: #0b3d86; border-radius: 16px; padding: 7px 12px; font-size: 13px; min-height: 36px; }
+.list-item { display: flex; justify-content: space-between; align-items: center; gap: 8px; background: #f8f9fa; padding: 12px; border-radius: 8px; margin-bottom: 8px; border: 1px solid #e9ecef; }
+.list-item .grow { flex-grow: 1; min-width: 0; word-wrap: break-word; }
+.list-item small { color: #666; display: block; }
+.del-btn { background: #b02a37; color: #fff; border: none; border-radius: 6px; padding: 8px 10px; min-height: 40px; font-size: 13px; }
+.status-select { padding: 6px; border-radius: 6px; border: 1px solid #bbb; font-size: 13px; margin-top: 6px; min-height: 36px; }
+.empty { color: #777; font-size: 13px; padding: 6px 0; }
+.upload-zone { display: block; width: 100%; border: 2px dashed #0056b3; padding: 18px 15px; text-align: center; border-radius: 8px; background: #f0f4f8; margin-bottom: 12px; font-size: 14px; color: #0b3d86; font-weight: 600; min-height: 56px; }
+.tool-result { background: #f0f7ff; border: 1px solid #cfe3ff; border-radius: 8px; padding: 12px; font-size: 14px; line-height: 1.6; margin-top: 12px; }
+.tool-result.warn { background: #fff8e1; border-color: #ffe08a; }
+.rti-preview { background: #fff; border: 1px solid #ddd; border-radius: 8px; padding: 12px; font-size: 13px; line-height: 1.6; white-space: pre-wrap; margin: 12px 0; word-wrap: break-word; }
+.lawyer-card { background: #f8f9fa; border: 1px solid #e9ecef; border-radius: 8px; padding: 12px; margin-bottom: 10px; }
+.lawyer-card strong { display: block; font-size: 15px; color: #111; margin-bottom: 2px; }
+.lawyer-card .l-line { font-size: 13px; color: #555; }
+.lawyer-actions { display: flex; gap: 8px; margin-top: 10px; }
+.lawyer-actions a { flex: 1; text-align: center; text-decoration: none; padding: 10px; border-radius: 8px; font-size: 14px; font-weight: 600; color: #fff; min-height: 44px; }
+.lawyer-actions a.call { background: #0056b3; } .lawyer-actions a.wa { background: #1a8f45; }
+.lawyer-note { background: #fff8e1; border: 1px solid #ffe08a; color: #6b5200; border-radius: 8px; padding: 10px 12px; font-size: 12px; line-height: 1.5; margin-bottom: 12px; }
+.lawyer-register { display: block; text-align: center; text-decoration: none; background: #fff; color: #0056b3; border: 2px solid #0056b3; border-radius: 8px; padding: 12px; font-weight: 700; font-size: 14px; margin-top: 6px; }
+.badge { display: inline-block; font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 10px; background: #e9ecef; }
+.badge.Filed { background: #dbe7f7; color: #0b3d86; } .badge.Pending { background: #fff3cd; color: #664d03; }
+.badge.Resolved { background: #d1e7dd; color: #0f5132; } .badge.Rejected { background: #f8d7da; color: #842029; }
+.privacy-text h3 { font-size: 14px; margin: 12px 0 4px; color: #003366; }
+.privacy-text ul { padding-left: 20px; }
+.toast { position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%); background: #222; color: #fff; padding: 12px 18px; border-radius: 10px; font-size: 14px; z-index: 2000; max-width: 90%; text-align: center; opacity: 0; pointer-events: none; transition: opacity .2s; }
+.toast.show { opacity: 1; }
+#printArea { display: none; }
+@media print {
+  body.printing > *:not(#printArea) { display: none !important; }
+  body.printing #printArea { display: block !important; padding: 24px; color: #000; background: #fff; font-family: Arial, "Noto Sans", "Noto Sans Devanagari", "Noto Sans Oriya", sans-serif; }
+  body.printing { background: #fff; padding: 0; }
+}
+</style>
+</head>
+<body>
+<noscript><p style="padding:20px;font-family:sans-serif">JanSetu needs JavaScript. Please turn it on in your browser settings and reload.</p></noscript>
+
+<header>
+  <div class="header-inner">
+    <div class="header-top">
+      <div class="brand">
+        <span style="font-size:26px" aria-hidden="true">🇮🇳</span>
+        <h1 data-i18n-id="appTitle">JanSetu App</h1>
+      </div>
+      <div class="top-tools">
+        <button id="installBtn" class="install-btn" data-action="install" hidden><span data-i18n-id="btnInstall">Install app</span></button>
+        <label class="sr-only" for="langPicker">Language</label>
+        <select id="langPicker" class="lang-select">
+          <option value="en">English (EN)</option>
+          <option value="or">ଓଡ଼ିଆ (Odia)</option>
+          <option value="hi">हिन्दी (Hindi)</option>
+        </select>
+      </div>
+    </div>
+    <div class="privacy-pill">🔒 <span data-i18n-id="privacyPill">Your personal details stay on your phone</span></div>
+    <div class="quick-actions">
+      <button class="action-btn a-blue" data-action="open-modal" data-modal="wizardModal"><span class="ic" aria-hidden="true">🎯</span><span data-i18n-id="btnWizard">Find My Schemes</span></button>
+      <button class="action-btn a-purple" data-action="open-vault"><span class="ic" aria-hidden="true">📁</span><span data-i18n-id="btnVault">My Vault</span></button>
+      <button class="action-btn a-orange" data-action="open-profile"><span class="ic" aria-hidden="true">🙋</span><span data-i18n-id="btnProfile">My Details</span></button>
+      <button class="action-btn a-teal" data-action="open-track"><span class="ic" aria-hidden="true">📋</span><span data-i18n-id="btnTrack">Track Status</span></button>
+      <button class="action-btn a-yellow" data-action="open-guide"><span class="ic" aria-hidden="true">💬</span><span data-i18n-id="btnAI">Smart Guide</span></button>
+      <button class="action-btn a-green" data-action="share-app"><span class="ic" aria-hidden="true">📱</span><span data-i18n-id="btnShare">Share</span></button>
+    </div>
+    <div class="search-row">
+      <div class="search-wrap">
+        <label class="sr-only" for="searchInput">Search services</label>
+        <input type="search" id="searchInput" class="search-input" data-i18n-ph="searchPlaceholder" placeholder="Search 125+ jobs, schemes, certificates..." autocomplete="off" autocapitalize="off" spellcheck="false" enterkeyhint="search">
+        <div id="suggestBox" class="suggest-box" role="listbox"></div>
+      </div>
+      <button class="mic-btn" id="micBtn" data-action="mic" aria-label="Voice search" title="Voice search">🎤</button>
+    </div>
+    <div id="listenStatus" class="listen-status" role="status" aria-live="polite"></div>
+  </div>
+</header>
+
+<div id="offlineBanner" class="offline-banner" role="status">You are offline. Saved items and tools still work; portals need internet.</div>
+
+<div class="tts-toolbar">
+  <span>🔊 <span data-i18n-id="voiceAssistant">Voice Assistant:</span></span>
+  <button class="mini-btn" data-action="speak"><span data-i18n-id="readOverview">Read Overview</span></button>
+  <button class="mini-btn grey" data-action="stop-speech"><span data-i18n-id="stopAudio">Stop Audio ⏹️</span></button>
+</div>
+
+<main class="container">
+  <section id="newWeekSection" style="display:none; margin-bottom:16px;">
+    <h2 style="font-size:16px; margin-bottom:10px; color:#003366;">🔔 <span data-i18n-id="newThisWeek">New This Week</span></h2>
+    <div class="filters" id="newWeekStrip" style="margin-bottom:0;"></div>
+  </section>
+  <nav class="filters" id="categoriesBar" aria-label="Categories"></nav>
+  <div class="status-line" id="statusLine" role="status" aria-live="polite"></div>
+  <div class="grid" id="servicesGrid">
+    <div class="loading-msg" data-i18n-id="loading">Loading services...</div>
+  </div>
+
+  <section class="help-card" aria-labelledby="helpTitle">
+    <h2 id="helpTitle">🙋 Get Help (Price List)</h2>
+    <p class="sub">Tap a service to message us on WhatsApp.</p>
+    <div id="helpRows"></div>
+    <label class="help-opt"><input type="checkbox" id="helpIncludeDetails"> Include my saved name and city in the message</label>
+    <div class="help-note">✅ First small help is free<br>✅ Pay only after the work is done<br>💚 Can't afford it? Tell us, we'll still help.<br>🔒 Never share your password or OTP with anyone, including us.</div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <p><strong>About JanSetu</strong></p>
+  <p>JanSetu is an independent, free guide. It is not a government website and does not represent any government department. Cards open the official portals, so please confirm details and fees there before you apply.</p>
+  <p>Your personal details stay on your phone. Lawyers are listed only after their enrollment is checked, and JanSetu does not endorse any advocate or take a fee from them. Tools give general information, not legal advice.</p>
+  <button class="link-btn" data-action="open-modal" data-modal="privacyModal">Privacy &amp; how JanSetu works</button>
+  <a id="supportLink" class="card-btn green" style="display:none; max-width:320px; margin:8px auto 0;" href="#">💚 Support JanSetu (voluntary, any amount)</a>
+</footer>
+
+<!-- Scheme Wizard -->
+<div class="modal-overlay" id="wizardModal" role="dialog" aria-modal="true" aria-labelledby="wizardTitle" aria-hidden="true">
+  <div class="modal-content" tabindex="-1">
+    <div class="modal-header"><h2 id="wizardTitle">🎯 Scheme Recommender</h2><button class="close-modal" data-action="close" aria-label="Close">&times;</button></div>
+    <div class="modal-body">
+      <p class="note">Choose your profile to see relevant services:</p>
+      <div class="field"><label for="wizAudience">I am a:</label>
+        <select id="wizAudience" class="modal-input">
+          <option value="all">Any Citizen</option><option value="student">Student</option><option value="jobseeker">Job Seeker</option>
+          <option value="farmer">Farmer</option><option value="business">Business / Entrepreneur</option>
+        </select></div>
+      <div class="field"><label for="wizState">State:</label>
+        <select id="wizState" class="modal-input"><option value="all">All India / Central Schemes</option><option value="odisha">Odisha</option></select></div>
+      <button class="btn-send" data-action="wizard-run">Find Matching Services</button>
+    </div>
+  </div>
+</div>
+
+<!-- My Details -->
+<div class="modal-overlay" id="profileModal" role="dialog" aria-modal="true" aria-labelledby="profileTitle" aria-hidden="true">
+  <div class="modal-content" tabindex="-1">
+    <div class="modal-header"><h2 id="profileTitle">🙋 My Details</h2><button class="close-modal" data-action="close" aria-label="Close">&times;</button></div>
+    <div class="modal-body">
+      <p class="note">Save your details once. They are stored only on this phone and are used to fill your resume and RTI drafts.</p>
+      <div class="field"><label for="profName">Full name</label><input type="text" id="profName" class="modal-input" autocomplete="name"></div>
+      <div class="field"><label for="profPhone">Phone / WhatsApp</label><input type="tel" id="profPhone" class="modal-input" inputmode="numeric" autocomplete="tel"></div>
+      <div class="field"><label for="profCity">City / District</label><input type="text" id="profCity" class="modal-input" autocomplete="address-level2"></div>
+      <div class="stack"><button class="btn-send" data-action="save-profile">Save My Details</button>
+      <button class="btn-send ghost" data-action="clear-profile">Delete my saved details</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- Track -->
+<div class="modal-overlay" id="trackModal" role="dialog" aria-modal="true" aria-labelledby="trackTitle" aria-hidden="true">
+  <div class="modal-content" tabindex="-1">
+    <div class="modal-header"><h2 id="trackTitle">📋 Track My Applications</h2><button class="close-modal" data-action="close" aria-label="Close">&times;</button></div>
+    <div class="modal-body">
+      <p class="note">Note down what you applied for. Check the official portal yourself and update the status here. JanSetu does not read your application status automatically.</p>
+      <div class="field"><label for="trackName">What did you apply for?</label><input type="text" id="trackName" class="modal-input" maxlength="120" placeholder="e.g. GST Registration"></div>
+      <div class="field"><label for="trackRef">Reference / ARN number</label><input type="text" id="trackRef" class="modal-input" maxlength="60"></div>
+      <button class="btn-send" style="margin-bottom:14px" data-action="save-track">Save to Track List</button>
+      <div id="trackList"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Smart Guide -->
+<div class="modal-overlay" id="aiModal" role="dialog" aria-modal="true" aria-labelledby="aiTitle" aria-hidden="true">
+  <div class="modal-content" tabindex="-1">
+    <div class="modal-header"><h2 id="aiTitle">💬 Ask JanSetu</h2><button class="close-modal" data-action="close" aria-label="Close">&times;</button></div>
+    <div class="modal-body" id="aiChatBody" aria-live="polite">
+      <div class="chat-bubble ai">Namaste! Tell me what you need (job, scheme, scholarship, farmer help, business support) and I will point you to matching services from JanSetu's list. I am a simple search guide, not a human or a legal/financial adviser.</div>
+      <div class="chips" id="aiChips"></div>
+    </div>
+    <div class="modal-footer">
+      <label class="sr-only" for="aiChatInput">Your question</label>
+      <input type="text" id="aiChatInput" class="modal-input" placeholder="Example: I need a government job" autocomplete="off">
+      <button class="btn-send" data-action="ai-send">Ask</button>
+    </div>
+  </div>
+</div>
+
+<!-- Lawyers -->
+<div class="modal-overlay" id="lawyerModal" role="dialog" aria-modal="true" aria-labelledby="lawyerTitle" aria-hidden="true">
+  <div class="modal-content" tabindex="-1">
+    <div class="modal-header"><h2 id="lawyerTitle">⚖️ Find a Lawyer</h2><button class="close-modal" data-action="close" aria-label="Close">&times;</button></div>
+    <div class="modal-body">
+      <div class="lawyer-note">This is a plain, unpaid information listing shown in alphabetical order. JanSetu does not rank, recommend, endorse, or accept payment for placement. Please verify enrollment and credentials independently before engaging any advocate.</div>
+      <div class="field"><label for="lawyerFilter">Filter by city or practice area</label><input type="search" id="lawyerFilter" class="modal-input" placeholder="e.g. Bhubaneswar, family, property"></div>
+      <div id="lawyerList"></div>
+      <a class="lawyer-register" id="lawyerRegisterLink" href="#" target="_blank" rel="noopener noreferrer">⚖️ Are you an advocate? Register to be listed (free)</a>
+      <p style="font-size:11px; color:#666; text-align:center; margin-top:8px;">Enrollment is verified before any listing is approved.</p>
+    </div>
+  </div>
+</div>
+
+<!-- Photo & Signature Resizer -->
+<div class="modal-overlay" id="resizerModal" role="dialog" aria-modal="true" aria-labelledby="resizerTitle" aria-hidden="true">
+  <div class="modal-content" tabindex="-1">
+    <div class="modal-header"><h2 id="resizerTitle">🖼️ Photo &amp; Signature Resizer</h2><button class="close-modal" data-action="close" aria-label="Close">&times;</button></div>
+    <div class="modal-body">
+      <p class="note">Resize and compress right on your phone. Nothing is uploaded. Always check the size rules in your exam or form notice.</p>
+      <div class="filters" style="margin-bottom:10px">
+        <button class="filter-btn active" id="presetBtnPhoto" data-action="preset" data-preset="photo">📷 Photo (200×230, 20–50 KB)</button>
+        <button class="filter-btn" id="presetBtnSign" data-action="preset" data-preset="sign">✍️ Signature (140×60, 10–20 KB)</button>
+      </div>
+      <label class="upload-zone" for="resizerFile">📎 Tap to select a photo from your phone</label>
+      <input type="file" id="resizerFile" accept="image/*" class="sr-only">
+      <div class="row field">
+        <div><label for="resizeW">Width (px)</label><input type="number" id="resizeW" class="modal-input" value="200" min="20" max="4000" inputmode="numeric"></div>
+        <div><label for="resizeH">Height (px)</label><input type="number" id="resizeH" class="modal-input" value="230" min="20" max="4000" inputmode="numeric"></div>
+      </div>
+      <div class="row field">
+        <div><label for="resizeMin">Minimum KB</label><input type="number" id="resizeMin" class="modal-input" value="20" min="0" max="2000" inputmode="numeric"></div>
+        <div><label for="resizeMax">Maximum KB</label><input type="number" id="resizeMax" class="modal-input" value="50" min="5" max="2000" inputmode="numeric"></div>
+      </div>
+      <div id="resizerPreviewBox" style="display:none; text-align:center; margin-bottom:12px;">
+        <img id="resizerPreviewImg" alt="Preview" style="max-width:100%; max-height:260px; border:1px solid #ddd; border-radius:8px;">
+        <p id="resizerResultInfo" style="font-size:13px; margin-top:8px; font-weight:600;" role="status"></p>
+      </div>
+      <div class="stack">
+        <button class="btn-send" data-action="resize-run">Resize Image</button>
+        <a id="resizerDownloadLink" class="card-btn green" style="display:none" download="jansetu-image.jpg">⬇ Download</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Resume -->
+<div class="modal-overlay" id="resumeModal" role="dialog" aria-modal="true" aria-labelledby="resumeTitle" aria-hidden="true">
+  <div class="modal-content" tabindex="-1">
+    <div class="modal-header"><h2 id="resumeTitle">📄 Resume Builder</h2><button class="close-modal" data-action="close" aria-label="Close">&times;</button></div>
+    <div class="modal-body">
+      <p class="note">Fill in your details, build the resume, then tap Download. In the print screen choose "Save as PDF".</p>
+      <div class="field"><label for="resName">Full name</label><input type="text" id="resName" class="modal-input" autocomplete="name"></div>
+      <div class="field"><label for="resContact">Phone, email, city</label><input type="text" id="resContact" class="modal-input"></div>
+      <div class="field"><label for="resSummary">Short summary about yourself</label><textarea id="resSummary" class="modal-input"></textarea></div>
+      <div class="field"><label for="resEducation">Education (one line per course)</label><textarea id="resEducation" class="modal-input"></textarea></div>
+      <div class="field"><label for="resExperience">Experience / projects (optional)</label><textarea id="resExperience" class="modal-input"></textarea></div>
+      <div class="field"><label for="resSkills">Skills, comma separated</label><input type="text" id="resSkills" class="modal-input"></div>
+      <button class="btn-send" style="margin-bottom:10px" data-action="resume-build">Build My Resume</button>
+      <div id="resumePreviewWrap" style="display:none">
+        <div id="resumePreview" style="background:#fff; border:1px solid #ddd; padding:16px; border-radius:8px; margin-bottom:12px; word-wrap:break-word;"></div>
+        <div class="stack">
+          <button class="card-btn" data-action="resume-print">⬇ Download as PDF</button>
+          <a id="resumeSupportLink" class="card-btn green" style="display:none" href="#">💚 Support with ₹10 (optional)</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Age Calculator -->
+<div class="modal-overlay" id="ageModal" role="dialog" aria-modal="true" aria-labelledby="ageTitle" aria-hidden="true">
+  <div class="modal-content" tabindex="-1">
+    <div class="modal-header"><h2 id="ageTitle">🎂 Age Eligibility Calculator</h2><button class="close-modal" data-action="close" aria-label="Close">&times;</button></div>
+    <div class="modal-body">
+      <p class="note">Enter the age limits and the "age as on" date from the official job notification.</p>
+      <div class="field"><label for="ageDob">Your date of birth</label><input type="date" id="ageDob" class="modal-input"></div>
+      <div class="field"><label for="ageAsOn">Age as on date (leave empty for today)</label><input type="date" id="ageAsOn" class="modal-input"></div>
+      <div class="row field">
+        <div><label for="ageMin">Minimum age</label><input type="number" id="ageMin" class="modal-input" placeholder="18" inputmode="numeric"></div>
+        <div><label for="ageMax">Maximum age</label><input type="number" id="ageMax" class="modal-input" placeholder="32" inputmode="numeric"></div>
+        <div><label for="ageRelax">Relaxation (yrs)</label><input type="number" id="ageRelax" class="modal-input" placeholder="5" inputmode="numeric"></div>
+      </div>
+      <button class="btn-send" data-action="age-calc">Check My Age</button>
+      <div id="ageResult" role="status"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Photos to PDF -->
+<div class="modal-overlay" id="pdfModal" role="dialog" aria-modal="true" aria-labelledby="pdfTitle" aria-hidden="true">
+  <div class="modal-content" tabindex="-1">
+    <div class="modal-header"><h2 id="pdfTitle">📑 Photos to PDF</h2><button class="close-modal" data-action="close" aria-label="Close">&times;</button></div>
+    <div class="modal-body">
+      <p class="note">Pick up to 20 photos. Each photo becomes one page. Everything happens on your phone.</p>
+      <label class="upload-zone" for="pdfFiles">📎 Tap to select photos</label>
+      <input type="file" id="pdfFiles" accept="image/*" multiple class="sr-only">
+      <p id="pdfCount" style="font-size:13px; font-weight:600; margin-bottom:10px;"></p>
+      <div class="field"><label for="pdfQuality">PDF size</label>
+        <select id="pdfQuality" class="modal-input">
+          <option value="small">Small (best for 100-200 KB limits)</option>
+          <option value="medium" selected>Medium</option>
+          <option value="high">High quality</option>
+        </select></div>
+      <div class="stack">
+        <button class="btn-send" data-action="pdf-make">Make PDF</button>
+        <div id="pdfResult" style="font-size:13px; font-weight:600;" role="status"></div>
+        <a id="pdfDownloadLink" class="card-btn green" style="display:none" download="jansetu-document.pdf">⬇ Download PDF</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- RTI -->
+<div class="modal-overlay" id="rtiModal" role="dialog" aria-modal="true" aria-labelledby="rtiTitle" aria-hidden="true">
+  <div class="modal-content" tabindex="-1">
+    <div class="modal-header"><h2 id="rtiTitle">📝 RTI Application Draft</h2><button class="close-modal" data-action="close" aria-label="Close">&times;</button></div>
+    <div class="modal-body">
+      <p class="note">A starting draft under the RTI Act, 2005. It is general information, not legal advice. Check the fee and format on the authority's official page.</p>
+      <div class="field"><label for="rtiName">Your full name</label><input type="text" id="rtiName" class="modal-input" autocomplete="name"></div>
+      <div class="field"><label for="rtiAddress">Your address and phone</label><textarea id="rtiAddress" class="modal-input"></textarea></div>
+      <div class="field"><label for="rtiAuthority">Public Information Officer: office / department and address</label><textarea id="rtiAuthority" class="modal-input"></textarea></div>
+      <div class="field"><label for="rtiInfo">What information do you want? Write each point clearly (1, 2, 3...)</label><textarea id="rtiInfo" class="modal-input" style="min-height:100px"></textarea></div>
+      <label class="help-opt"><input type="checkbox" id="rtiBpl"> I belong to a Below Poverty Line (BPL) family</label>
+      <button class="btn-send" data-action="rti-build">Create Draft</button>
+      <div id="rtiOutWrap" style="display:none">
+        <div id="rtiPreview" class="rti-preview"></div>
+        <div class="stack"><button class="card-btn" data-action="rti-copy">📋 Copy Text</button>
+        <button class="card-btn grey" data-action="rti-print">⬇ Download as PDF</button></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Vault -->
+<div class="modal-overlay" id="vaultModal" role="dialog" aria-modal="true" aria-labelledby="vaultTitle" aria-hidden="true">
+  <div class="modal-content" tabindex="-1">
+    <div class="modal-header"><h2 id="vaultTitle">📁 My Vault</h2><button class="close-modal" data-action="close" aria-label="Close">&times;</button></div>
+    <div class="modal-body">
+      <p class="note">Short reminders stored only on this phone, for example "Aadhaar update pending". Please do not save passwords, OTPs, or full ID / card numbers here.</p>
+      <div class="field"><label for="vaultInput">New note</label><input type="text" id="vaultInput" class="modal-input" maxlength="200"></div>
+      <button class="btn-send" style="margin-bottom:14px" data-action="save-vault">Save to Vault</button>
+      <div id="vaultList"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Privacy -->
+<div class="modal-overlay" id="privacyModal" role="dialog" aria-modal="true" aria-labelledby="privacyTitle" aria-hidden="true">
+  <div class="modal-content" tabindex="-1">
+    <div class="modal-header"><h2 id="privacyTitle">🔒 Privacy &amp; how JanSetu works</h2><button class="close-modal" data-action="close" aria-label="Close">&times;</button></div>
+    <div class="modal-body privacy-text">
+      <p>This is a plain-language note, last updated 13 October 2026.</p>
+      <h3>What stays on your phone</h3>
+      <ul><li>My Details, My Vault, Track Status, favourites, resume and RTI text are saved only in your browser on this phone. JanSetu has no accounts and no server that receives them. Clearing your browser data deletes them.</li>
+      <li>Photo resizer, Photos to PDF, resume and RTI tools work on your phone. Your files are not uploaded to JanSetu.</li></ul>
+      <h3>What uses other services</h3>
+      <ul><li>Voice search and read-aloud use your phone's or browser's speech service (for example Google). Their privacy terms apply to your voice.</li>
+      <li>The lawyer list is loaded from a public Google Sheet of advocates who chose to be listed.</li>
+      <li>WhatsApp, UPI apps and government portals open outside JanSetu. We do not control them. What you send on WhatsApp is seen by us and by WhatsApp.</li>
+      <li id="analyticsNote" style="display:none">Anonymous page-view counts are collected with a privacy-friendly counter. No names, phone numbers or saved items are included.</li></ul>
+      <h3>Please remember</h3>
+      <ul><li>JanSetu is not a government website. Always confirm details and fees on the official portal.</li>
+      <li>Never share passwords or OTPs, with anyone.</li>
+      <li>Tools give general information, not legal advice.</li></ul>
+      <h3>Questions or complaints</h3>
+      <p>Message us on WhatsApp: <a id="privacyWa" href="#" target="_blank" rel="noopener noreferrer">Amit Mohanty</a>.</p>
+    </div>
+  </div>
+</div>
+
+<div id="printArea" aria-hidden="true"></div>
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+<script>
+// ===== SETTINGS YOU CAN EDIT =====
+// Lawyer directory: reads the "Public" tab of your Google Sheet (approved lawyers only)
+const LAWYER_SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/1qO7H0jtHtSdBa_ITZOxv2R9p_7Wll8TpM09LkWQ-zV4/gviz/tq?tqx=out:csv&headers=1&sheet=Public";
+// Advocate registration form (Tally)
+const REGISTER_FORM_URL = "https://tally.so/r/BzNRaN";
+// UPI ID for the Rs.10 resume support button and footer button. Leave "" to hide them.
+const UPI_ID = "9437572429@ybl";
+// Public link of the app (used in WhatsApp share messages)
+const APP_URL = "https://amitmohanty062-boop.github.io/Jansetu-/";
+// WhatsApp number for "Get Help" (country code + number, no + sign)
+const WHATSAPP_NUMBER = "919437572429";
+// Help price list: [label, price, text sent on WhatsApp]
+const HELP_ITEMS = [
+  ["📄 Document check (photo, PDF, size)", "₹20", "Document check"],
+  ["📝 Form filling help", "₹49", "Form filling help"],
+  ["🎓 Scholarship / scheme application", "₹79", "Scholarship or scheme application"]
+];
+// Optional free visitor counter: create a free account at goatcounter.com, then put your code here (example: "jansetu"). Leave "" to keep it off.
+const GOATCOUNTER_CODE = "";
+
+// ===== SERVICES DATA =====
+const SERVICES = [
+  // --- JOBS & EMPLOYMENT (18) ---
+  { id: "ncs", name: "National Career Service", category: "jobs", audience: ["jobseeker", "student"], state: "all", type: "government", description: "Government employment and career services.", keywords: ["government jobs", "jobs", "employment", "career", "rozgar", "naukri"], url: "https://www.ncs.gov.in/", official: true },
+  { id: "naukri", name: "Naukri.com", category: "jobs", audience: ["jobseeker", "student"], state: "all", type: "private", description: "Private-sector job search and recruitment platform.", keywords: ["private jobs", "jobs", "freshers", "career"], url: "https://www.naukri.com/", official: false },
+  { id: "indeed", name: "Indeed India", category: "jobs", audience: ["jobseeker"], state: "all", type: "private", description: "Search employment opportunities by job, skill and location.", keywords: ["jobs", "private jobs", "work from home"], url: "https://in.indeed.com/", official: false },
+  { id: "foundit", name: "Foundit", category: "jobs", audience: ["jobseeker"], state: "all", type: "private", description: "Private recruitment and career opportunities.", keywords: ["jobs", "private jobs", "career"], url: "https://www.foundit.in/", official: false },
+  { id: "linkedin-jobs", name: "LinkedIn Jobs", category: "jobs", audience: ["jobseeker", "student"], state: "all", type: "private", description: "Professional networking and job opportunities.", keywords: ["professional jobs", "jobs", "networking"], url: "https://www.linkedin.com/jobs/", official: false },
+  { id: "upsc", name: "UPSC", category: "jobs", audience: ["jobseeker", "student"], state: "all", type: "government", description: "Union Public Service Commission recruitment information.", keywords: ["UPSC", "government jobs", "civil services", "IAS", "sarkari naukri"], url: "https://upsc.gov.in/", official: true },
+  { id: "opsc", name: "OPSC", category: "jobs", audience: ["jobseeker", "student"], state: "odisha", type: "government", description: "Odisha Public Service Commission recruitment.", keywords: ["OPSC", "Odisha jobs", "government jobs"], url: "https://www.opsc.gov.in/", official: true },
+  { id: "osssc", name: "OSSSC", category: "jobs", audience: ["jobseeker", "student"], state: "odisha", type: "government", description: "Odisha Sub-Ordinate Staff Selection Commission recruitment.", keywords: ["OSSSC", "Odisha jobs", "government jobs"], url: "https://www.osssc.gov.in/", official: true },
+  { id: "ossc", name: "OSSC", category: "jobs", audience: ["jobseeker", "student"], state: "odisha", type: "government", description: "Odisha Staff Selection Commission recruitment.", keywords: ["OSSC", "Odisha jobs", "CGL"], url: "https://www.ossc.gov.in/", official: true },
+  { id: "ssc", name: "Staff Selection Commission (SSC)", category: "jobs", audience: ["jobseeker", "student"], state: "all", type: "government", description: "Central government exam notifications and results.", keywords: ["SSC", "CGL", "CHSL", "government jobs"], url: "https://ssc.gov.in/", official: true },
+  { id: "ibps", name: "IBPS", category: "jobs", audience: ["jobseeker", "student"], state: "all", type: "government", description: "Bank recruitment exams (PO, Clerk, RRB).", keywords: ["bank jobs", "IBPS", "PO", "clerk"], url: "https://www.ibps.in/", official: true },
+  { id: "rrb", name: "Railway Recruitment Board", category: "jobs", audience: ["jobseeker"], state: "all", type: "government", description: "Indian Railways recruitment exams and notifications.", keywords: ["railway jobs", "RRB", "NTPC", "loco pilot"], url: "https://indianrailways.gov.in/", official: true },
+  { id: "employment-news", name: "Employment News", category: "jobs", audience: ["jobseeker", "student"], state: "all", type: "government", description: "Government job notifications and career guidance.", keywords: ["employment news", "vacancy"], url: "https://www.employmentnews.gov.in/", official: true },
+  { id: "apprenticeship-india", name: "Apprenticeship India", category: "jobs", audience: ["student", "jobseeker"], state: "all", type: "government", description: "Apprenticeship training opportunities with employers.", keywords: ["apprenticeship", "ITI", "stipend"], url: "https://www.apprenticeshipindia.gov.in/", official: true },
+  { id: "shine", name: "Shine.com", category: "jobs", audience: ["jobseeker", "student"], state: "all", type: "private", description: "Private job search platform.", keywords: ["private jobs", "freshers"], url: "https://www.shine.com/", official: false },
+  { id: "apna", name: "Apna", category: "jobs", audience: ["jobseeker"], state: "all", type: "private", description: "Job search for local and entry-level jobs.", keywords: ["local jobs", "jobs near me"], url: "https://apna.co/", official: false },
+  { id: "internshala", name: "Internshala", category: "jobs", audience: ["student", "jobseeker"], state: "all", type: "private", description: "Internships and training opportunities for students.", keywords: ["internship", "student"], url: "https://internshala.com/", official: false },
+  { id: "resume-builder", dateAdded: "2026-10-09", name: "Resume Builder", category: "jobs", audience: ["student", "jobseeker"], state: "all", type: "directory", description: "Build a clean resume and download it as a PDF locally.", keywords: ["resume", "CV", "biodata", "job application"], url: "#", official: true },
+
+  // --- SCHEMES & WELFARE (18) ---
+  { id: "myscheme", name: "myScheme", category: "schemes", audience: ["citizen", "farmer", "student", "jobseeker", "business"], state: "all", type: "government", description: "Discover government schemes and eligibility information.", keywords: ["government schemes", "benefits", "eligibility", "subsidy", "yojana"], url: "https://www.myscheme.gov.in/", official: true },
+  { id: "subhadra", name: "Subhadra Scheme", category: "schemes", audience: ["citizen"], state: "odisha", type: "government", description: "Official Odisha Subhadra scheme information and services.", keywords: ["Subhadra", "Odisha", "women", "scheme"], url: "https://subhadra.odisha.gov.in/", official: true },
+  { id: "pmay", name: "Pradhan Mantri Awas Yojana", category: "schemes", audience: ["citizen"], state: "all", type: "government", description: "Housing-related government services and information.", keywords: ["housing", "home", "PMAY", "awas"], url: "https://pmaymis.gov.in/", official: true },
+  { id: "pmjay", name: "Ayushman Bharat PM-JAY", category: "schemes", audience: ["citizen"], state: "all", type: "government", description: "Health insurance cover for eligible families.", keywords: ["health", "insurance", "Ayushman"], url: "https://pmjay.gov.in/", official: true },
+  { id: "pmuy", name: "PM Ujjwala Yojana", category: "schemes", audience: ["citizen"], state: "all", type: "government", description: "LPG connection support for eligible households.", keywords: ["LPG", "Ujjwala"], url: "https://www.pmuy.gov.in/", official: true },
+  { id: "pmjdy", name: "PM Jan Dhan Yojana", category: "schemes", audience: ["citizen"], state: "all", type: "government", description: "Basic bank account for every household.", keywords: ["bank account", "Jan Dhan"], url: "https://pmjdy.gov.in/", official: true },
+  { id: "jansuraksha", name: "PM Suraksha Bima & Jeevan Jyoti", category: "schemes", audience: ["citizen"], state: "all", type: "government", description: "Low-cost accident and life insurance schemes.", keywords: ["insurance", "PMSBY", "PMJJBY"], url: "https://jansuraksha.gov.in/", official: true },
+  { id: "nps-apy", name: "Atal Pension Yojana", category: "schemes", audience: ["citizen"], state: "all", type: "government", description: "Pension schemes regulated by PFRDA.", keywords: ["pension", "APY", "NPS"], url: "https://www.pfrda.org.in/", official: true },
+  { id: "nsap", name: "National Social Assistance Programme", category: "schemes", audience: ["citizen"], state: "all", type: "government", description: "Pension support for elderly, widows and disabled persons.", keywords: ["old age pension", "widow pension"], url: "https://nsap.nic.in/", official: true },
+  { id: "nfsa", name: "National Food Security Act (Ration)", category: "schemes", audience: ["citizen"], state: "all", type: "government", description: "Information on ration cards and food security.", keywords: ["ration card", "NFSA"], url: "https://nfsa.gov.in/", official: true },
+  { id: "food-odisha", name: "Food Supplies Odisha", category: "schemes", audience: ["citizen"], state: "odisha", type: "government", description: "Odisha food supplies and ration card services.", keywords: ["ration card", "Odisha"], url: "https://foododisha.in/", official: true },
+  { id: "pm-vishwakarma", name: "PM Vishwakarma", category: "schemes", audience: ["business", "citizen"], state: "all", type: "government", description: "Support for traditional artisans and craftspeople.", keywords: ["artisan", "Vishwakarma"], url: "https://pmvishwakarma.gov.in/", official: true },
+  { id: "pm-svanidhi", name: "PM SVANidhi", category: "schemes", audience: ["business"], state: "all", type: "government", description: "Working capital loans for street vendors.", keywords: ["street vendor", "loan", "SVANidhi"], url: "https://pmsvanidhi.mohua.gov.in/", official: true },
+  { id: "eshram", name: "e-Shram Portal", category: "schemes", audience: ["citizen", "jobseeker"], state: "all", type: "government", description: "Registration portal for unorganised workers.", keywords: ["e-Shram", "labour card"], url: "https://eshram.gov.in/", official: true },
+  { id: "mgnrega", name: "MGNREGA Portal", category: "schemes", audience: ["citizen", "farmer"], state: "all", type: "government", description: "Rural employment guarantee scheme details and job cards.", keywords: ["MGNREGA", "job card", "rural employment"], url: "https://nrega.nic.in/", official: true },
+  { id: "pmsvanidhi-status", name: "PM SVANidhi Loan Status", category: "schemes", audience: ["business"], state: "all", type: "government", description: "Track your street vendor loan application status.", keywords: ["street vendor status", "loan tracking"], url: "https://pmsvanidhi.mohua.gov.in/Schemes/SearchVendor", official: true },
+  { id: "pmsurya-ghar", name: "PM Surya Ghar Muft Bijli", category: "schemes", audience: ["citizen"], state: "all", type: "government", description: "Rooftop solar subsidy portal for free electricity.", keywords: ["solar subsidy", "surya ghar", "rooftop solar"], url: "https://pmsuryaghar.gov.in/", official: true },
+  { id: "prm-odisha", name: "Mo Seba Kendra Odisha", category: "schemes", audience: ["citizen"], state: "odisha", type: "government", description: "Odisha rural and urban citizen service centres.", keywords: ["mo seba kendra", "odisha services"], url: "https://mosebakendra.odisha.gov.in/", official: true },
+
+  // --- CITIZEN SERVICES (17) ---
+  { id: "umang", name: "UMANG Portal", category: "citizen", audience: ["citizen"], state: "all", type: "government", description: "Access hundreds of central and state government services.", keywords: ["government services", "online services"], url: "https://web.umang.gov.in/", official: true },
+  { id: "india-gov", name: "National Portal of India", category: "citizen", audience: ["citizen"], state: "all", type: "government", description: "Official gateway to Government of India information.", keywords: ["government", "india.gov.in"], url: "https://www.india.gov.in/", official: true },
+  { id: "mygov", name: "MyGov India", category: "citizen", audience: ["citizen"], state: "all", type: "government", description: "Citizen engagement platform of the Government of India.", keywords: ["MyGov", "citizen engagement"], url: "https://www.mygov.in/", official: true },
+  { id: "cpgrams", name: "CPGRAMS Grievance", category: "citizen", audience: ["citizen"], state: "all", type: "government", description: "Central government public grievance redressal portal.", keywords: ["complaint", "grievance", "CPGRAMS"], url: "https://pgportal.gov.in/", official: true },
+  { id: "parivahan", name: "Parivahan Sewa", category: "citizen", audience: ["citizen"], state: "all", type: "government", description: "Driving licence, RC and vehicle-related services.", keywords: ["driving licence", "vehicle", "RC", "DL"], url: "https://parivahan.gov.in/", official: true },
+  { id: "irctc", name: "IRCTC Train Booking", category: "citizen", audience: ["citizen"], state: "all", type: "government", description: "Official railway ticketing and travel services.", keywords: ["train", "railway", "ticket", "IRCTC"], url: "https://www.irctc.co.in/", official: true },
+  { id: "rti", name: "RTI Online", category: "citizen", audience: ["citizen"], state: "all", type: "government", description: "File Right to Information requests online.", keywords: ["RTI", "right to information"], url: "https://rtionline.gov.in/", official: true },
+  { id: "consumer-helpline", name: "National Consumer Helpline", category: "citizen", audience: ["citizen"], state: "all", type: "government", description: "Consumer complaints and dispute resolution.", keywords: ["consumer", "complaint", "fraud"], url: "https://consumerhelpline.gov.in/", official: true },
+  { id: "cybercrime", name: "National Cyber Crime Portal", category: "citizen", audience: ["citizen"], state: "all", type: "government", description: "Report online fraud, UPI scams and cyber crimes.", keywords: ["cyber crime", "online fraud", "scam"], url: "https://cybercrime.gov.in/", official: true },
+  { id: "sanchar-saathi", name: "Sanchar Saathi", category: "citizen", audience: ["citizen"], state: "all", type: "government", description: "Report lost mobile phones and manage registered SIM cards.", keywords: ["lost phone", "IMEI", "SIM"], url: "https://sancharsaathi.gov.in/", official: true },
+  { id: "abdm", name: "ABHA Digital Health Account", category: "citizen", audience: ["citizen"], state: "all", type: "government", description: "Create a digital health ID and manage medical records.", keywords: ["ABHA", "health ID"], url: "https://abdm.gov.in/", official: true },
+  { id: "esanjeevani", name: "e-Sanjeevani Telemedicine", category: "citizen", audience: ["citizen"], state: "all", type: "government", description: "Free online doctor consultation platform.", keywords: ["doctor", "telemedicine"], url: "https://esanjeevani.mohfw.gov.in/", official: true },
+  { id: "rbi-cms", name: "RBI Ombudsman Complaint", category: "citizen", audience: ["citizen"], state: "all", type: "government", description: "Lodge complaints against banks and financial companies.", keywords: ["bank complaint", "RBI"], url: "https://cms.rbi.org.in/", official: true },
+  { id: "esic", name: "ESIC Portal", category: "citizen", audience: ["citizen", "jobseeker"], state: "all", type: "government", description: "Employee state insurance medical benefits and services.", keywords: ["ESIC", "medical benefit"], url: "https://www.esic.gov.in/", official: true },
+  { id: "epfo", name: "EPFO Member Portal", category: "citizen", audience: ["citizen", "jobseeker"], state: "all", type: "government", description: "Check PF balance, manage UAN and claim funds.", keywords: ["PF", "provident fund", "UAN"], url: "https://unifiedportal-mem.epfindia.gov.in/", official: true },
+  { id: "india-post", name: "India Post Services", category: "citizen", audience: ["citizen"], state: "all", type: "government", description: "Post office savings, tracking and postal banking.", keywords: ["post office", "savings"], url: "https://www.indiapost.gov.in/", official: true },
+  { id: "odisha-police", name: "Odisha Police Citizen Portal", category: "citizen", audience: ["citizen"], state: "odisha", type: "government", description: "File online police verification and report complaints in Odisha.", keywords: ["police", "FIR", "Odisha police"], url: "https://odishapolice.gov.in/", official: true },
+
+  // --- AGRICULTURE & FARMERS (14) ---
+  { id: "pm-kisan", name: "PM-KISAN Portal", category: "agriculture", audience: ["farmer"], state: "all", type: "government", description: "Farmer direct income support scheme details.", keywords: ["farmer", "PM KISAN", "agriculture", "kisan"], url: "https://pmkisan.gov.in/", official: true },
+  { id: "kalia", name: "KALIA Odisha", category: "agriculture", audience: ["farmer"], state: "odisha", type: "government", description: "Odisha direct financial support for farmers and landless laborers.", keywords: ["KALIA", "farmer", "Odisha"], url: "https://kaliaportal.odisha.gov.in/", official: true },
+  { id: "enam", name: "e-NAM (National Agriculture Market)", category: "agriculture", audience: ["farmer"], state: "all", type: "government", description: "Pan-India electronic trading portal for farm produce.", keywords: ["farmer", "mandi", "e-NAM"], url: "https://www.enam.gov.in/", official: true },
+  { id: "agristack", name: "AgriStack Digital Farmer ID", category: "agriculture", audience: ["farmer"], state: "all", type: "government", description: "Digital agriculture infrastructure and farmer registry.", keywords: ["agriculture", "farmer ID"], url: "https://agristack.gov.in/", official: true },
+  { id: "pmfby", name: "PM Fasal Bima Yojana", category: "agriculture", audience: ["farmer"], state: "all", type: "government", description: "Crop insurance portal for farmers.", keywords: ["crop insurance", "fasal bima"], url: "https://pmfby.gov.in/", official: true },
+  { id: "soil-health", name: "Soil Health Card", category: "agriculture", audience: ["farmer"], state: "all", type: "government", description: "Get soil test recommendations for fertilizer use.", keywords: ["soil", "soil testing"], url: "https://soilhealth.dac.gov.in/", official: true },
+  { id: "mkisan", name: "mKisan Portal", category: "agriculture", audience: ["farmer"], state: "all", type: "government", description: "Agricultural advisories and weather alerts via SMS.", keywords: ["advisory", "farming tips"], url: "https://mkisan.gov.in/", official: true },
+  { id: "agri-odisha", name: "Agriculture Department Odisha", category: "agriculture", audience: ["farmer"], state: "odisha", type: "government", description: "Odisha farm machinery, seed subsidies and farmer schemes.", keywords: ["Odisha agriculture", "seeds"], url: "https://agriodisha.nic.in/", official: true },
+  { id: "pm-kusum", name: "PM-KUSUM Solar Scheme", category: "agriculture", audience: ["farmer"], state: "all", type: "government", description: "Subsidies for solar water pumps and solar power setup.", keywords: ["solar pump", "KUSUM"], url: "https://pmkusum.mnre.gov.in/", official: true },
+  { id: "pmmsy", name: "PM Matsya Sampada Yojana", category: "agriculture", audience: ["farmer"], state: "all", type: "government", description: "Support and subsidies for fisheries and fish farmers.", keywords: ["fisheries", "fish farming"], url: "https://pmmsy.dof.gov.in/", official: true },
+  { id: "imd", name: "IMD Weather Forecast", category: "agriculture", audience: ["farmer", "citizen"], state: "all", type: "government", description: "Real-time weather forecasts, rain and cyclone warnings.", keywords: ["weather", "rain", "cyclone"], url: "https://mausam.imd.gov.in/", official: true },
+  { id: "national-horticulture", name: "National Horticulture Board", category: "agriculture", audience: ["farmer"], state: "all", type: "government", description: "Subsidies for commercial horticulture development.", keywords: ["horticulture", "fruits", "vegetables"], url: "https://nhb.gov.in/", official: true },
+  { id: "kisan-call-centre", name: "Kisan Call Centre Support", category: "agriculture", audience: ["farmer"], state: "all", type: "government", description: "Free agricultural expert advice portal for farmers.", keywords: ["kisan call centre", "farmer helpline"], url: "https://dge.gov.in/dge/kcc", official: true },
+  { id: "odisha-krushak", name: "Krushak Odisha Portal", category: "agriculture", audience: ["farmer"], state: "odisha", type: "government", description: "Odisha unified farmer database and subsidy portal.", keywords: ["krushak odisha", "farmer database"], url: "https://krushak.odisha.gov.in/", official: true },
+
+  // --- DOCUMENTS & IDENTITY (15) ---
+  { id: "aadhaar", name: "myAadhaar UIDAI Portal", category: "documents", audience: ["citizen"], state: "all", type: "government", description: "Download Aadhaar, check status and update details online.", keywords: ["Aadhaar", "UIDAI", "identity"], url: "https://myaadhaar.uidai.gov.in/", official: true },
+  { id: "digilocker", name: "DigiLocker", category: "documents", audience: ["citizen", "student"], state: "all", type: "government", description: "Store and access official digital certificates.", keywords: ["documents", "DigiLocker", "certificate"], url: "https://www.digilocker.gov.in/", official: true },
+  { id: "income-tax", name: "Income Tax e-Filing Portal", category: "documents", audience: ["citizen", "business"], state: "all", type: "government", description: "File ITR, apply for Instant PAN and check refund status.", keywords: ["PAN", "income tax", "tax", "ITR"], url: "https://www.incometax.gov.in/", official: true },
+  { id: "voter", name: "Voter Services Portal (ECI)", category: "documents", audience: ["citizen"], state: "all", type: "government", description: "Apply for Voter ID, correct details and track card status.", keywords: ["voter ID", "election", "EPIC"], url: "https://voters.eci.gov.in/", official: true },
+  { id: "passport", name: "Passport Seva Portal", category: "documents", audience: ["citizen"], state: "all", type: "government", description: "Apply for fresh passport, renewal and check appointment status.", keywords: ["passport", "travel"], url: "https://www.passportindia.gov.in/", official: true },
+  { id: "bhulekh-odisha", name: "Bhulekh Odisha Land Records", category: "documents", audience: ["citizen", "farmer"], state: "odisha", type: "government", description: "Check Odisha land Khatiyan and ROR online.", keywords: ["land records", "ROR", "Bhulekh", "Odisha"], url: "https://bhulekh.ori.nic.in/", official: true },
+  { id: "crs", name: "Birth & Death Registration (CRS)", category: "documents", audience: ["citizen"], state: "all", type: "government", description: "Apply for civil registration certificates online.", keywords: ["birth certificate", "death certificate"], url: "https://crsorgi.gov.in/", official: true },
+  { id: "jeevan-pramaan", name: "Jeevan Pramaan", category: "documents", audience: ["citizen"], state: "all", type: "government", description: "Submit digital life certificate online for pensioners.", keywords: ["life certificate", "pensioner"], url: "https://jeevanpramaan.gov.in/", official: true },
+  { id: "edistrict-odisha", name: "e-District Odisha", category: "documents", audience: ["citizen"], state: "odisha", type: "government", description: "Apply for Income, Caste, and Residence certificates in Odisha.", keywords: ["caste certificate", "income certificate", "residence"], url: "https://edistrict.odisha.gov.in/", official: true },
+  { id: "pan-utiitsl", name: "UTIITSL PAN Portal", category: "documents", audience: ["citizen"], state: "all", type: "government", description: "Track PAN card status and apply for PAN card corrections.", keywords: ["PAN status", "UTIITSL"], url: "https://www.trackpan.utiitsl.com/", official: true },
+  { id: "pan-nsdl", name: "Protean (NSDL) PAN Service", category: "documents", audience: ["citizen"], state: "all", type: "government", description: "Official Protean portal for PAN card processing.", keywords: ["NSDL PAN", "PAN card"], url: "https://www.tin-nsdl.com/", official: true },
+  { id: "igrs-odisha", name: "e-Registration Odisha (IGRS)", category: "documents", audience: ["citizen", "business"], state: "odisha", type: "government", description: "Property registration and encumbrance certificate portal.", keywords: ["property registration", "encumbrance certificate"], url: "https://www.igrodisha.gov.in/", official: true },
+  { id: "ration-card-status", name: "Ration Card Status Check", category: "documents", audience: ["citizen"], state: "all", type: "government", description: "Check ration card member list and application status.", keywords: ["ration card status", "food card"], url: "https://nfsa.gov.in/portal/ration_card_state_portals_aa", official: true },
+  { id: "driving-license-status", name: "Driving License Status Check", category: "documents", audience: ["citizen"], state: "all", type: "government", description: "Check status of DL and Learner's permit applications.", keywords: ["DL status", "license tracking"], url: "https://sarathi.parivahan.gov.in/", official: true },
+  { id: "photo-signature-resizer", dateAdded: "2026-10-09", name: "Photo & Signature Resizer", category: "documents", audience: ["citizen", "student", "jobseeker"], state: "all", type: "directory", description: "Resize and compress your photo or signature to exact sizes for exams.", keywords: ["photo resize", "signature resize", "KB size", "passport photo"], url: "#", official: true },
+
+  // --- EDUCATION & SCHOLARSHIPS (18) ---
+  { id: "nsp", name: "National Scholarship Portal", category: "education", audience: ["student"], state: "all", type: "government", description: "Central and state scholarship schemes for students.", keywords: ["scholarship", "student", "education"], url: "https://scholarships.gov.in/", official: true },
+  { id: "sams-odisha", name: "SAMS Odisha Admissions", category: "education", audience: ["student"], state: "odisha", type: "government", description: "Odisha +2, +3 and post-graduate admission portal.", keywords: ["SAMS", "Odisha", "admission"], url: "https://samsodisha.gov.in/", official: true },
+  { id: "skill-india", name: "Skill India Digital Portal", category: "education", audience: ["student", "jobseeker"], state: "all", type: "government", description: "Skill training programs and government courses.", keywords: ["skills", "training", "courses"], url: "https://www.skillindia.gov.in/", official: true },
+  { id: "swayam", name: "SWAYAM Free Online Courses", category: "education", audience: ["student", "jobseeker"], state: "all", type: "government", description: "Government-supported online university learning platform.", keywords: ["online courses", "education", "SWAYAM"], url: "https://swayam.gov.in/", official: true },
+  { id: "nptel", name: "NPTEL Online Courses", category: "education", audience: ["student", "jobseeker"], state: "all", type: "government", description: "Online engineering and science courses from premier IITs.", keywords: ["NPTEL", "IIT", "engineering"], url: "https://nptel.ac.in/", official: true },
+  { id: "diksha", name: "DIKSHA Learning Portal", category: "education", audience: ["student"], state: "all", type: "government", description: "School learning materials and digital textbooks.", keywords: ["school", "NCERT"], url: "https://diksha.gov.in/", official: true },
+  { id: "cbse", name: "CBSE Official Portal", category: "education", audience: ["student"], state: "all", type: "government", description: "CBSE exam schedules, results and notifications.", keywords: ["CBSE", "result", "board exam"], url: "https://www.cbse.gov.in/", official: true },
+  { id: "chse-odisha", name: "CHSE Odisha (+2 Council)", category: "education", audience: ["student"], state: "odisha", type: "government", description: "Odisha higher secondary education council.", keywords: ["CHSE", "plus two", "+2"], url: "https://chseodisha.nic.in/", official: true },
+  { id: "bse-odisha", name: "BSE Odisha (Class 10 Board)", category: "education", audience: ["student"], state: "odisha", type: "government", description: "Odisha secondary education board results and services.", keywords: ["BSE Odisha", "matric", "10th"], url: "https://bseodisha.ac.in/", official: true },
+  { id: "nta", name: "National Testing Agency (NTA)", category: "education", audience: ["student"], state: "all", type: "government", description: "Admit cards and results for JEE, NEET, CUET exams.", keywords: ["NTA", "JEE", "NEET", "CUET"], url: "https://nta.ac.in/", official: true },
+  { id: "ugc", name: "UGC Official Portal", category: "education", audience: ["student"], state: "all", type: "government", description: "University Grants Commission regulations and approved universities.", keywords: ["UGC", "university"], url: "https://www.ugc.gov.in/", official: true },
+  { id: "aicte", name: "AICTE Portal", category: "education", audience: ["student"], state: "all", type: "government", description: "Technical education approvals and student schemes.", keywords: ["AICTE", "technical education"], url: "https://www.aicte-india.org/", official: true },
+  { id: "abc", name: "Academic Bank of Credits (ABC)", category: "education", audience: ["student"], state: "all", type: "government", description: "Digitally store and transfer university academic credits.", keywords: ["credits", "ABC"], url: "https://www.abc.gov.in/", official: true },
+  { id: "scholarship-odisha", name: "State Scholarship Portal Odisha", category: "education", audience: ["student"], state: "odisha", type: "government", description: "Odisha state scholarship applications for students.", keywords: ["scholarship", "Odisha"], url: "https://scholarship.odisha.gov.in/", official: true },
+  { id: "pm-vidyalaxmi", name: "PM Vidyalaxmi Education Loan", category: "education", audience: ["student"], state: "all", type: "government", description: "Central education loan portal for higher studies.", keywords: ["education loan", "student loan"], url: "https://pmvidyalaxmi.co.in/", official: true },
+  { id: "nsdc", name: "NSDC Skill Portal", category: "education", audience: ["student", "jobseeker"], state: "all", type: "government", description: "Skill development courses and job training certificates.", keywords: ["NSDC", "certification"], url: "https://nsdcindia.org/", official: true },
+  { id: "nios", name: "NIOS Open Schooling", category: "education", audience: ["student"], state: "all", type: "government", description: "Open school distance education for Class 10 and 12.", keywords: ["NIOS", "open school"], url: "https://www.nios.ac.in/", official: true },
+  { id: "ignou", name: "IGNOU Open University", category: "education", audience: ["student", "jobseeker"], state: "all", type: "government", description: "Distance learning degree and diploma programs.", keywords: ["IGNOU", "distance education"], url: "https://www.ignou.ac.in/", official: true },
+
+  // --- BUSINESS & MSME (15) ---
+  { id: "udyam", name: "Udyam MSME Registration", category: "business", audience: ["business"], state: "all", type: "government", description: "Official free government MSME registration portal.", keywords: ["MSME", "Udyam", "business", "registration"], url: "https://udyamregistration.gov.in/", official: true },
+  { id: "startup-india", name: "Startup India Portal", category: "business", audience: ["business", "student"], state: "all", type: "government", description: "Startup recognition, tax benefits and funding opportunities.", keywords: ["startup", "entrepreneur", "funding"], url: "https://www.startupindia.gov.in/", official: true },
+  { id: "startup-odisha", name: "Startup Odisha", category: "business", audience: ["business"], state: "odisha", type: "government", description: "Odisha startup grants, incubation and recognition support.", keywords: ["Startup Odisha", "incubation"], url: "https://startupodisha.gov.in/", official: true },
+  { id: "gst", name: "GST Portal India", category: "business", audience: ["business"], state: "all", type: "government", description: "GST registration, return filing and taxpayer portal.", keywords: ["GST", "tax", "registration"], url: "https://www.gst.gov.in/", official: true },
+  { id: "gst-arn-status", name: "GST Application Status (ARN)", category: "business", audience: ["business"], state: "all", type: "government", dateAdded: "2026-09-26", description: "Track your new GST application status directly using ARN.", keywords: ["GST status", "ARN status"], url: "https://services.gst.gov.in/services/arnstatus", official: true },
+  { id: "gem", name: "Government e-Marketplace (GeM)", category: "business", audience: ["business"], state: "all", type: "government", description: "Sell goods and services directly to government departments.", keywords: ["GeM", "procurement", "tender"], url: "https://gem.gov.in/", official: true },
+  { id: "mudra", name: "Mudra Loan Scheme", category: "business", audience: ["business"], state: "all", type: "government", description: "Business loans up to 10 Lakhs for micro enterprises.", keywords: ["Mudra loan", "business loan"], url: "https://www.mudra.org.in/", official: true },
+  { id: "pmegp", name: "PMEGP Loan Portal", category: "business", audience: ["business", "jobseeker"], state: "all", type: "government", description: "Government subsidy loans for starting new micro units.", keywords: ["PMEGP", "subsidy", "self employment"], url: "https://www.kviconline.gov.in/pmegpeportal/", official: true },
+  { id: "standup-india", name: "Stand-Up India Scheme", category: "business", audience: ["business"], state: "all", type: "government", description: "Loans for SC/ST and women entrepreneurs.", keywords: ["Stand-Up India", "women entrepreneur"], url: "https://www.standupmitra.in/", official: true },
+  { id: "invest-odisha", name: "Invest Odisha", category: "business", audience: ["business"], state: "odisha", type: "government", description: "Odisha single window portal for business clearances.", keywords: ["Invest Odisha", "investment"], url: "https://investodisha.gov.in/", official: true },
+  { id: "mca", name: "MCA Corporate Portal", category: "business", audience: ["business"], state: "all", type: "government", description: "Company and LLP registration and annual filing.", keywords: ["company registration", "MCA"], url: "https://www.mca.gov.in/", official: true },
+  { id: "ipindia", name: "IP India (Trademarks & Patents)", category: "business", audience: ["business"], state: "all", type: "government", description: "Register trademarks, brand names and patents online.", keywords: ["trademark", "patent"], url: "https://ipindia.gov.in/", official: true },
+  { id: "fssai", name: "FSSAI FoSCoS (Food Licence)", category: "business", audience: ["business"], state: "all", type: "government", description: "Apply for food business registration and food safety licenses.", keywords: ["FSSAI", "food licence"], url: "https://foscos.fssai.gov.in/", official: true },
+  { id: "dgft", name: "DGFT (Import-Export Code)", category: "business", audience: ["business"], state: "all", type: "government", description: "Apply for Import Export Code (IEC) and trade benefits.", keywords: ["IEC", "export", "import"], url: "https://www.dgft.gov.in/", official: true },
+  { id: "jansamarth", name: "Jan Samarth Credit Portal", category: "business", audience: ["business", "student", "farmer"], state: "all", type: "government", description: "Apply for multiple government-subsidized credit loan schemes.", keywords: ["Jan Samarth", "credit linked"], url: "https://www.jansamarth.in/", official: true },
+
+  // --- LEGAL AID & COURTS (10) ---
+  { id: "nalsa2", dateAdded: "2026-09-25", name: "NALSA Free Legal Aid", category: "legal", audience: ["citizen"], state: "all", type: "government", description: "Apply for a free government advocate or legal aid lawyer.", keywords: ["free lawyer", "legal aid", "NALSA"], url: "https://nalsa.gov.in/", official: true },
+  { id: "oslsa", dateAdded: "2026-09-25", name: "Odisha State Legal Services Authority", category: "legal", audience: ["citizen"], state: "odisha", type: "government", description: "Free legal support, Lok Adalats and advocate help in Odisha.", keywords: ["OSLSA", "Odisha legal aid"], url: "https://www.oslsa.nic.in/", official: true },
+  { id: "efiling-courts", dateAdded: "2026-09-25", name: "e-Filing (eCourts Portal)", category: "legal", audience: ["citizen", "business"], state: "all", type: "government", description: "File court cases and legal petitions online across India.", keywords: ["e-filing", "file a case"], url: "https://efiling.ecourts.gov.in/", official: true },
+  { id: "njdg", dateAdded: "2026-09-25", name: "National Judicial Data Grid", category: "legal", audience: ["citizen"], state: "all", type: "government", description: "Track pending court case status and order copies nationwide.", keywords: ["case tracking", "court status"], url: "https://njdg.ecourts.gov.in/", official: true },
+  { id: "edaakhil", dateAdded: "2026-09-25", name: "e-Daakhil Consumer Court Portal", category: "legal", audience: ["citizen"], state: "all", type: "government", description: "File consumer complaints online directly to consumer commissions.", keywords: ["consumer case", "e-daakhil"], url: "https://edaakhil.nic.in/", official: true },
+  { id: "lawrato", dateAdded: "2026-09-25", name: "LawRato Lawyer Search", category: "legal", audience: ["citizen", "business"], state: "all", type: "private", description: "Search private verified advocates by city and expertise.", keywords: ["find a lawyer", "private lawyer"], url: "https://lawrato.com/", official: false },
+  { id: "vakilsearch", dateAdded: "2026-09-25", name: "Vakilsearch Legal Drafting", category: "legal", audience: ["citizen", "business"], state: "all", type: "private", description: "Assistance with legal drafting, agreements and legal notices.", keywords: ["draft petition", "legal drafting"], url: "https://vakilsearch.com/", official: false },
+  { id: "shcil-estamp", dateAdded: "2026-09-25", name: "e-Stamp Duty Portal", category: "legal", audience: ["citizen", "business"], state: "all", type: "government", description: "Purchase e-stamp paper online for legal documents.", keywords: ["e-stamp", "stamp duty"], url: "https://www.shcilestamp.com/", official: true },
+  { id: "lawyer-directory", dateAdded: "2026-09-25", name: "Find a Lawyer (Directory)", category: "legal", audience: ["citizen", "business"], state: "all", type: "directory", description: "A neutral, unpaid directory of lawyers by name, qualification, and practice area, listed alphabetically. JanSetu does not rank, endorse, or charge for placement.", keywords: ["find a lawyer", "advocate", "legal directory", "vakil"], url: "#", official: true },
+  { id: "tele-law", name: "Tele-Law (Free Legal Advice)", category: "legal", audience: ["citizen"], state: "all", type: "government", description: "Pre-litigation legal advice from panel lawyers via video conference.", keywords: ["tele law", "legal advice"], url: "https://www.tele-law.in/", official: true },
+  { id: "rti-draft", dateAdded: "2026-10-12", name: "RTI Application Draft Maker", category: "legal", audience: ["citizen"], state: "all", type: "directory", description: "Fill a short form and get a ready-to-print RTI application under the RTI Act, 2005.", keywords: ["RTI", "right to information", "draft", "application", "letter"], url: "#", official: true, tool: "rtiModal" },
+
+  // --- JANSETU TOOLS ---
+  { id: "age-calculator", dateAdded: "2026-10-12", name: "Exam Age Eligibility Calculator", category: "tools", audience: ["student", "jobseeker"], state: "all", type: "directory", description: "Find your exact age on the cut-off date and check it against the age limit in a job notification.", keywords: ["age calculator", "age limit", "eligibility", "date of birth", "cut off date", "relaxation"], url: "#", official: true, tool: "ageModal" },
+  { id: "pdf-maker", dateAdded: "2026-10-12", name: "Photos to PDF Maker", category: "tools", audience: ["citizen", "student", "jobseeker"], state: "all", type: "directory", description: "Turn photos of your documents into one small PDF on your phone. No upload, nothing leaves your device.", keywords: ["image to pdf", "jpg to pdf", "pdf", "document scan", "merge", "reduce size"], url: "#", official: true, tool: "pdfModal" }
+];
+
+// ===== TRANSLATIONS =====
+const i18nDict = {
+  en: {
+    appTitle: "JanSetu App", btnVault: "My Vault", btnAI: "AI Guide", btnShare: "Share", btnProfile: "My Details", btnTrack: "Track Status", btnWizard: "Find My Schemes",
+    privacyPill: "Local-First Privacy: Zero server upload (DPDP-aligned)",
+    voiceAssistant: "Voice Assistant:", readOverview: "Read Overview", stopAudio: "Stop Audio ⏹️",
+    searchPlaceholder: "Search 125+ jobs, schemes, certificates...", loading: "Loading services...",
+    noResults: "No services found. Try a different word.", openService: "Open Portal ↗", newThisWeek: "New This Week"
+  },
+  hi: {
+    appTitle: "जनसेतु ऐप", btnVault: "मेरा वॉल्ट", btnAI: "एआई गाइड", btnShare: "शेयर करें", btnProfile: "मेरा विवरण", btnTrack: "स्थिति ट्रैक करें", btnWizard: "योजनाएं खोजें",
+    privacyPill: "स्थानीय-प्रथम गोपनीयता: कोई सर्वर अपलोड नहीं (DPDP-अनुरूप)",
+    voiceAssistant: "वॉयस असिस्टेंट:", readOverview: "अवलोकन पढ़ें", stopAudio: "ऑडियो बंद करें ⏹️",
+    searchPlaceholder: "125+ नौकरियां, योजनाएं, दस्तावेज खोजें...", loading: "सेवाएं लोड हो रही हैं...",
+    noResults: "कोई सेवा नहीं मिली।", openService: "पोर्टल खोलें ↗", newThisWeek: "इस सप्ताह नया"
+  },
+  or: {
+    appTitle: "ଜନସେତୁ ଆପ୍", btnVault: "ମୋର ଭଲ୍ଟ", btnAI: "ଏଆଇ ଗାଇଡ୍", btnShare: "ସେୟାର୍", btnProfile: "ମୋର ବିବରଣୀ", btnTrack: "ସ୍ଥିତି ଟ୍ରାକ୍", btnWizard: "ଯୋଜନା ଖୋଜନ୍ତୁ",
+    privacyPill: "ଲୋକାଲ-ଫର୍ଷ୍ଟ ଗୋପନୀୟତା: କୌଣସି ସର୍ଭର ଅପଲୋଡ୍ ନାହିଁ",
+    voiceAssistant: "ଭଏସ୍ ଆସିଷ୍ଟାଣ୍ଟ:", readOverview: "ଓଭରଭ୍ୟୁ ପଢନ୍ତୁ", stopAudio: "ଅଡିଓ ବନ୍ଦ ⏹️",
+    searchPlaceholder: "125+ ଚାକିରି, ଯୋଜନା, ସେବା ଖୋଜନ୍ତୁ...", loading: "ସେବା ଲୋଡ୍ ହେଉଛି...",
+    noResults: "କୌଣସି ସେବା ମିଳିଲା ନାହିଁ।", openService: "ପୋର୍ଟାଲ୍ ଖୋଲନ୍ତୁ ↗", newThisWeek: "ଏହି ସପ୍ତାହର ନୂତନ"
+  }
+};
+// Updated wording (the old "AI Guide" and "DPDP-aligned" claims were replaced with accurate ones)
+const I18N_EXTRA = {
+  en: { btnAI: "Smart Guide", privacyPill: "Your personal details stay on your phone", btnInstall: "Install app", speakText: "Welcome to JanSetu. Find government schemes, jobs and useful tools like the resume builder and photo resizer." },
+  hi: { btnAI: "स्मार्ट गाइड", privacyPill: "आपकी निजी जानकारी आपके फोन में ही रहती है", btnInstall: "ऐप इंस्टॉल करें", speakText: "जनसेतु में आपका स्वागत है। यहाँ सरकारी योजनाएं, नौकरियां और रिज़्यूमे बिल्डर जैसे उपयोगी टूल पाएं।" },
+  or: { btnAI: "ସ୍ମାର୍ଟ ଗାଇଡ୍", privacyPill: "ଆପଣଙ୍କ ବ୍ୟକ୍ତିଗତ ତଥ୍ୟ ଆପଣଙ୍କ ଫୋନ୍‌ରେ ହିଁ ରହେ", btnInstall: "ଆପ୍ ଇନ୍‌ଷ୍ଟଲ୍ କରନ୍ତୁ", speakText: "ଜନସେତୁକୁ ସ୍ୱାଗତ। ଏଠାରେ ସରକାରୀ ଯୋଜନା, ଚାକିରି ଏବଂ ଉପଯୋଗୀ ଟୁଲ୍ ପାଇପାରିବେ।" }
+};
+Object.keys(I18N_EXTRA).forEach(function (l) { Object.assign(i18nDict[l], I18N_EXTRA[l]); });
+
+// ===== SMALL HELPERS =====
+const $ = function (id) { return document.getElementById(id); };
+function esc(s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
+function safeUrl(u) { return /^https?:\/\//i.test(u || "") ? u : ""; }
+const store = {
+  get: function (k, def) { try { var v = localStorage.getItem(k); return v == null ? def : JSON.parse(v); } catch (e) { return def; } },
+  set: function (k, v) { try { localStorage.setItem(k, JSON.stringify(v)); return true; } catch (e) { return false; } },
+  del: function (k) { try { localStorage.removeItem(k); } catch (e) {} }
+};
+var toastTimer;
+function toast(msg) {
+  var t = $("toast"); t.textContent = msg; t.classList.add("show");
+  clearTimeout(toastTimer); toastTimer = setTimeout(function () { t.classList.remove("show"); }, 2800);
+}
+function parseYMD(s) { var p = String(s).split("-").map(Number); return new Date(p[0], p[1] - 1, p[2]); }
+function digitsOnly(s) { return String(s || "").replace(/\D/g, ""); }
+function waLink(text) { return "https://wa.me/" + WHATSAPP_NUMBER + (text ? "?text=" + encodeURIComponent(text) : ""); }
+var scriptCache = {};
+function loadScript(src) {
+  if (!scriptCache[src]) {
+    scriptCache[src] = new Promise(function (res, rej) {
+      var s = document.createElement("script"); s.src = src; s.onload = res;
+      s.onerror = function () { delete scriptCache[src]; rej(new Error("load failed")); };
+      document.head.appendChild(s);
+    });
+  }
+  return scriptCache[src];
+}
+
+// ===== STATE =====
+var state = { cat: "all", q: "", wiz: null };
+var favs = store.get("jansetuFavs", []);
+if (!Array.isArray(favs)) favs = [];
+var currentLang = store.get("jansetuLanguage", "en");
+if (!i18nDict[currentLang]) currentLang = "en";
+var ICONS = { jobs: "💼", schemes: "🏛️", citizen: "🔗", agriculture: "🌾", documents: "📄", education: "🎓", business: "🚀", legal: "⚖️", tools: "🛠️" };
+var SPECIAL = { "lawyer-directory": { lawyers: true }, "photo-signature-resizer": { modal: "resizerModal" }, "resume-builder": { modal: "resumeModal" } };
+
+// Clean the data once: drop broken entries and duplicate ids
+var VALID = []; (function () {
+  var seen = {};
+  SERVICES.forEach(function (s) {
+    if (!s || !s.id || !s.name || seen[s.id]) return;
+    seen[s.id] = true; VALID.push(s);
+  });
+})();
+function actionFor(s) {
+  if (s.tool) return { modal: s.tool };
+  if (SPECIAL[s.id]) return SPECIAL[s.id];
+  var u = safeUrl(s.url);
+  return u ? { url: u } : null;
+}
+
+// ===== SEARCH (synonyms + typo tolerance + ranking) =====
+var SYNONYMS = {
+  "sarkari naukri": ["government jobs", "sarkari"], "naukri": ["jobs"], "nokri": ["jobs"], "chakri": ["jobs"], "rozgar": ["jobs", "employment"], "kaam": ["jobs"],
+  "admission": ["education", "college", "school"], "padhai": ["education"], "chatravriti": ["scholarship"], "chhatravriti": ["scholarship"], "vritti": ["scholarship"],
+  "kisan": ["farmer", "agriculture"], "kheti": ["agriculture", "farmer"], "krushak": ["farmer", "agriculture"],
+  "vakil": ["lawyer", "legal"], "dukan": ["business", "msme"], "vyapar": ["business"], "yojana": ["scheme"], "bima": ["insurance"], "zameen": ["land"], "jami": ["land"],
+  "नौकरी": ["jobs"], "सरकारी नौकरी": ["government jobs"], "रोजगार": ["jobs", "employment"], "योजना": ["scheme"], "छात्रवृत्ति": ["scholarship"], "किसान": ["farmer", "agriculture"],
+  "खेती": ["agriculture"], "वकील": ["lawyer", "legal"], "व्यापार": ["business"], "व्यवसाय": ["business"], "शिक्षा": ["education"], "बीमा": ["insurance"], "ज़मीन": ["land"], "जमीन": ["land"],
+  "ଚାକିରି": ["jobs"], "ସରକାରୀ ଚାକିରି": ["government jobs"], "ଯୋଜନା": ["scheme"], "ବୃତ୍ତି": ["scholarship"], "କୃଷକ": ["farmer", "agriculture"], "ଚାଷ": ["agriculture"],
+  "ଓକିଲ": ["lawyer", "legal"], "ବ୍ୟବସାୟ": ["business"], "ଶିକ୍ଷା": ["education"], "ବୀମା": ["insurance"], "ଜମି": ["land"]
+};
+var SYN_KEYS = Object.keys(SYNONYMS).sort(function (a, b) { return b.length - a.length; });
+var STOP = new Set("i a an the for to of in on and or my me need want how apply online get is are can please kaise mujhe chahiye ke ka ki ko se hai kya".split(" "));
+function normalize(s) { return String(s || "").toLowerCase().normalize("NFC").replace(/[^\p{L}\p{M}\p{N}\s]/gu, " ").replace(/\s+/g, " ").trim(); }
+function lev(a, b, max) {
+  if (Math.abs(a.length - b.length) > max) return max + 1;
+  var prev = [], i, j;
+  for (j = 0; j <= b.length; j++) prev[j] = j;
+  for (i = 1; i <= a.length; i++) {
+    var cur = [i], best = i;
+    for (j = 1; j <= b.length; j++) {
+      cur[j] = Math.min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
+      if (cur[j] < best) best = cur[j];
+    }
+    if (best > max) return max + 1;
+    prev = cur;
+  }
+  return prev[b.length];
+}
+var INDEX = VALID.map(function (s) {
+  var name = normalize(s.name), kw = normalize((s.keywords || []).join(" ")), desc = normalize(s.description);
+  return { s: s, name: name, kw: kw, desc: desc, words: Array.from(new Set((name + " " + kw).split(" "))).filter(Boolean) };
+});
+function queryGroups(q) {
+  var rest = " " + normalize(q) + " ", groups = [];
+  SYN_KEYS.forEach(function (k) {
+    var nk = " " + normalize(k) + " ";
+    if (rest.indexOf(nk) > -1) { groups.push([normalize(k)].concat(SYNONYMS[k])); rest = rest.replace(nk, " "); }
+  });
+  rest.trim().split(" ").forEach(function (t) { if (t && !STOP.has(t) && (t.length > 1 || /\d/.test(t))) groups.push([t]); });
+  return groups;
+}
+function groupScore(e, alts) {
+  var best = 0;
+  alts.forEach(function (a) {
+    var sc = 0;
+    if (e.name.indexOf(a) > -1) sc = 3; else if (e.kw.indexOf(a) > -1) sc = 2; else if (e.desc.indexOf(a) > -1) sc = 1;
+    else if (a.length >= 5 && a.indexOf(" ") < 0) {
+      var tol = a.length >= 8 ? 2 : 1;
+      for (var i = 0; i < e.words.length; i++) { if (lev(e.words[i], a, tol) <= tol) { sc = 1; break; } }
+    }
+    if (sc > best) best = sc;
+  });
+  return best;
+}
+function rank(q, pool) {
+  var groups = queryGroups(q);
+  if (!groups.length) return pool;
+  var allowed = new Set(pool.map(function (s) { return s.id; }));
+  var scored = INDEX.filter(function (e) { return allowed.has(e.s.id); }).map(function (e, i) {
+    var total = 0, hit = 0;
+    groups.forEach(function (g) { var sc = groupScore(e, g); if (sc > 0) { hit++; total += sc; } });
+    return { s: e.s, hit: hit, total: total, i: i };
+  });
+  var need = groups.length;
+  var res = scored.filter(function (x) { return x.hit === need; });
+  if (!res.length && need > 1) res = scored.filter(function (x) { return x.hit >= Math.ceil(need / 2) && x.hit > 0; });
+  res.sort(function (a, b) { return b.hit - a.hit || b.total - a.total || a.i - b.i; });
+  return res.map(function (x) { return x.s; });
+}
+
+// ===== RENDER =====
+function t(key) { return (i18nDict[currentLang] && i18nDict[currentLang][key]) || i18nDict.en[key] || ""; }
+function applyI18n() {
+  var d = i18nDict[currentLang] || i18nDict.en;
+  document.querySelectorAll("[data-i18n-id]").forEach(function (el) { var v = d[el.getAttribute("data-i18n-id")]; if (v !== undefined) el.textContent = v; });
+  document.querySelectorAll("[data-i18n-ph]").forEach(function (el) { var v = d[el.getAttribute("data-i18n-ph")]; if (v !== undefined) el.placeholder = v; });
+  document.documentElement.lang = currentLang;
+  $("langPicker").value = currentLang;
+}
+function catLabel(c) { return c === "favs" ? "⭐ Favorites" : c === "all" ? "All" : c.charAt(0).toUpperCase() + c.slice(1); }
+function buildCategories() {
+  var cats = ["all", "favs"].concat(Array.from(new Set(VALID.map(function (s) { return s.category; }))));
+  $("categoriesBar").innerHTML = cats.map(function (c) {
+    return '<button class="filter-btn' + (c === state.cat ? " active" : "") + '" data-action="cat" data-cat="' + esc(c) + '">' + esc(catLabel(c)) + "</button>";
+  }).join("");
+}
+function currentList() {
+  var pool = VALID;
+  if (state.wiz) {
+    pool = pool.filter(function (s) {
+      return (state.wiz.aud === "all" || (s.audience && s.audience.indexOf(state.wiz.aud) > -1)) && (state.wiz.st === "all" || s.state === "all" || s.state === state.wiz.st);
+    });
+  }
+  if (state.cat === "favs") pool = pool.filter(function (s) { return favs.indexOf(s.id) > -1; });
+  else if (state.cat !== "all") pool = pool.filter(function (s) { return s.category === state.cat; });
+  if (state.q) pool = rank(state.q, pool);
+  return pool;
+}
+function cardHtml(s) {
+  var act = actionFor(s), isFav = favs.indexOf(s.id) > -1, isTool = !!(s.tool || SPECIAL[s.id]);
+  var badge = s.type === "private" ? '<span class="card-badge private">Private</span>' : isTool || s.type === "directory" ? '<span class="card-badge tool">JanSetu</span>' : '<span class="card-badge">Official</span>';
+  var btn;
+  if (!act) btn = '<button class="card-btn grey" disabled>Link unavailable</button>';
+  else if (act.url) btn = '<a class="card-btn" href="' + esc(act.url) + '" target="_blank" rel="noopener noreferrer">' + esc(t("openService") || "Open Portal ↗") + "</a>";
+  else if (act.lawyers) btn = '<button class="card-btn" data-action="open-lawyers">View Directory</button>';
+  else btn = '<button class="card-btn" data-action="open-modal" data-modal="' + esc(act.modal) + '">Open Tool</button>';
+  return '<article class="card"><div><div class="card-top-row">' + badge +
+    '<div class="card-icons"><button class="fav-star' + (isFav ? " active" : "") + '" data-action="fav" data-id="' + esc(s.id) + '" aria-pressed="' + isFav + '" aria-label="Favorite ' + esc(s.name) + '">★</button><span aria-hidden="true">' + (ICONS[s.category] || "🔗") + "</span></div></div>" +
+    "<h3>" + esc(s.name) + "</h3><p>" + esc(s.description) + '</p></div><div class="card-actions">' + btn +
+    '<button class="share-btn" data-action="share-service" data-id="' + esc(s.id) + '">📲 Share on WhatsApp</button></div></article>';
+}
+function render() {
+  if (state.q.toLowerCase() === "admin:missed") { renderMissed(); return; }
+  var list = currentList(), grid = $("servicesGrid");
+  grid.innerHTML = list.length ? list.map(cardHtml).join("") :
+    '<div class="no-results">' + esc(t("noResults") || "No services found.") + '<br><br><button class="chip-clear" data-action="open-guide-q">Ask the Smart Guide</button> <button class="chip-clear" data-action="reset-all">Show all services</button></div>';
+  var parts = [];
+  if (state.q) parts.push(list.length + " result" + (list.length === 1 ? "" : "s") + ' for "' + esc(state.q) + '"');
+  else parts.push(list.length + " service" + (list.length === 1 ? "" : "s"));
+  var html = "<span>" + parts.join("") + "</span>";
+  if (state.wiz) html += '<button class="chip-clear" data-action="wizard-clear">✕ ' + esc(state.wiz.label) + "</button>";
+  $("statusLine").innerHTML = html;
+  document.querySelectorAll("#categoriesBar .filter-btn").forEach(function (b) { b.classList.toggle("active", b.dataset.cat === state.cat); });
+  if (state.q && !list.length && state.q.length >= 3) scheduleMissedLog(state.q);
+}
+function renderNew() {
+  var now = new Date(), cutoff = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 7);
+  var recent = VALID.filter(function (s) { return s.dateAdded && parseYMD(s.dateAdded) >= cutoff; });
+  var sec = $("newWeekSection");
+  if (!recent.length) { sec.style.display = "none"; return; }
+  sec.style.display = "block";
+  $("newWeekStrip").innerHTML = recent.map(function (s) {
+    var a = actionFor(s) || {};
+    var attrs = a.url ? 'data-action="open-url" data-url="' + esc(a.url) + '"' : a.lawyers ? 'data-action="open-lawyers"' : a.modal ? 'data-action="open-modal" data-modal="' + esc(a.modal) + '"' : "disabled";
+    return '<button class="filter-btn new-chip" ' + attrs + ">" + (ICONS[s.category] || "🔗") + " " + esc(s.name) + "</button>";
+  }).join("");
+}
+var missedTimer;
+function scheduleMissedLog(q) {
+  clearTimeout(missedTimer);
+  missedTimer = setTimeout(function () {
+    var log = store.get("janSetuMissedSearches", {}); var k = normalize(q); if (!k) return;
+    log[k] = (log[k] || 0) + 1; store.set("janSetuMissedSearches", log);
+  }, 1200);
+}
+function renderMissed() {
+  var log = store.get("janSetuMissedSearches", {}), entries = Object.keys(log).map(function (k) { return [k, log[k]]; }).sort(function (a, b) { return b[1] - a[1]; });
+  $("servicesGrid").innerHTML = '<div class="no-results" style="text-align:left"><h3 style="margin-bottom:10px">Missed searches on this device</h3>' +
+    (entries.length ? entries.map(function (e) { return '<div class="list-item"><span class="grow">' + esc(e[0]) + "</span><strong>" + e[1] + "</strong></div>"; }).join("") : "Nothing logged yet.") + "</div>";
+  $("statusLine").textContent = "";
+}
+
+// ===== SEARCH BOX, SUGGESTIONS =====
+var searchTimer;
+function onSearchInput() {
+  var v = $("searchInput").value;
+  clearTimeout(searchTimer);
+  searchTimer = setTimeout(function () { state.q = v.trim(); render(); showSuggestions(v); }, 140);
+}
+function showSuggestions(v) {
+  var box = $("suggestBox"), q = normalize(v);
+  if (q.length < 2 || q === "admin missed") { box.classList.remove("open"); return; }
+  var hits = INDEX.filter(function (e) { return e.name.indexOf(q) > -1; }).slice(0, 5);
+  if (!hits.length) { box.classList.remove("open"); return; }
+  box.innerHTML = hits.map(function (e) { return '<button type="button" data-action="suggest" data-text="' + esc(e.s.name) + '">' + (ICONS[e.s.category] || "🔗") + " " + esc(e.s.name) + "</button>"; }).join("");
+  box.classList.add("open");
+}
+
+// ===== MODALS =====
+var lastFocus = null;
+function openModal(id) {
+  var m = $(id); if (!m) return;
+  lastFocus = document.activeElement;
+  m.classList.add("open"); m.setAttribute("aria-hidden", "false"); document.body.classList.add("modal-open");
+  var c = m.querySelector(".modal-content"); if (c) c.focus();
+}
+function closeModal(id) {
+  var m = $(id); if (!m) return;
+  m.classList.remove("open"); m.setAttribute("aria-hidden", "true");
+  if (!document.querySelector(".modal-overlay.open")) { document.body.classList.remove("modal-open"); if (lastFocus && lastFocus.focus) { try { lastFocus.focus(); } catch (e) {} } }
+}
+function closeAllModals() { document.querySelectorAll(".modal-overlay.open").forEach(function (m) { closeModal(m.id); }); }
+
+// ===== LAWYERS =====
+var lawyers = [], lawyerState = "idle";
+function parseCSV(text) {
+  var rows = [], row = [], cur = "", q = false, i, c;
+  for (i = 0; i < text.length; i++) {
+    c = text[i];
+    if (q) { if (c === '"') { if (text[i + 1] === '"') { cur += '"'; i++; } else q = false; } else cur += c; }
+    else if (c === '"') q = true;
+    else if (c === ",") { row.push(cur); cur = ""; }
+    else if (c === "\n" || c === "\r") { if (c === "\r" && text[i + 1] === "\n") i++; row.push(cur); rows.push(row); row = []; cur = ""; }
+    else cur += c;
+  }
+  if (cur !== "" || row.length) { row.push(cur); rows.push(row); }
+  return rows.filter(function (r) { return r.some(function (x) { return String(x).trim(); }); });
+}
+function cleanLawyers(rows) {
+  return rows.map(function (r) { return { name: (r[0] || "").trim(), qualification: (r[1] || "").trim(), practiceArea: (r[2] || "").trim(), city: (r[3] || "").trim(), phone: digitsOnly(r[4]) }; })
+    .filter(function (l) { return l.name && !/^(full\s*)?name$/i.test(l.name); })
+    .sort(function (a, b) { return a.name.localeCompare(b.name); });
+}
+function loadLawyers() {
+  var cache = store.get("jansetuLawyersCache", null);
+  if (cache && cache.rows) lawyers = cache.rows;
+  lawyerState = lawyers.length ? "ok" : "loading"; renderLawyers();
+  var ctl = typeof AbortController !== "undefined" ? new AbortController() : null;
+  var to = setTimeout(function () { if (ctl) ctl.abort(); }, 12000);
+  fetch(LAWYER_SHEET_CSV_URL + "&_=" + Date.now(), ctl ? { signal: ctl.signal } : {})
+    .then(function (r) { if (!r.ok) throw new Error("bad"); return r.text(); })
+    .then(function (text) {
+      clearTimeout(to);
+      if (/^\s*<(!doctype|html)/i.test(text)) throw new Error("not csv");
+      lawyers = cleanLawyers(parseCSV(text.trim()));
+      store.set("jansetuLawyersCache", { rows: lawyers, at: Date.now() });
+      lawyerState = "ok"; renderLawyers();
+    })
+    .catch(function () { clearTimeout(to); lawyerState = lawyers.length ? "stale" : "error"; renderLawyers(); });
+}
+function renderLawyers() {
+  var el = $("lawyerList"), f = normalize($("lawyerFilter").value);
+  if (lawyerState === "loading") { el.innerHTML = '<p class="empty" style="text-align:center">Loading directory...</p>'; return; }
+  if (lawyerState === "error") { el.innerHTML = '<p style="color:#b02a37;text-align:center;padding:14px 0">Could not load the directory. Please check your internet.</p><button class="btn-send" data-action="lawyers-retry">Try again</button>'; return; }
+  var list = lawyers.filter(function (l) { return !f || normalize(l.name + " " + l.city + " " + l.practiceArea + " " + l.qualification).indexOf(f) > -1; });
+  var note = lawyerState === "stale" ? '<p class="empty" style="text-align:center">Showing the last saved list (you may be offline).</p>' : "";
+  if (!list.length) { el.innerHTML = note + '<p class="empty" style="text-align:center">' + (lawyers.length ? "No match. Try another word." : "No lawyers listed yet.") + "</p>"; return; }
+  el.innerHTML = note + list.map(function (l) {
+    var wa = l.phone.length === 10 ? "91" + l.phone : l.phone, ok = l.phone.length >= 10 && l.phone.length <= 13;
+    var line2 = [l.practiceArea, l.city].filter(Boolean).map(esc).join(" &middot; ");
+    return '<div class="lawyer-card"><strong>' + esc(l.name) + "</strong>" + (l.qualification ? '<div class="l-line">' + esc(l.qualification) + "</div>" : "") + (line2 ? '<div class="l-line">' + line2 + "</div>" : "") +
+      (ok ? '<div class="lawyer-actions"><a class="call" h
